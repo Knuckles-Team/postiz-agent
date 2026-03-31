@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "postiz": {
+      "command": "postiz-mcp",
+      "args": ["--transport", "stdio"],
+      "env": {
+        "POSTIZ_URL": "${POSTIZ_URL:-http://localhost:8080}",
+        "POSTIZ_TOKEN": "${POSTIZ_TOKEN}"
+      }
+    }
+  }
+}

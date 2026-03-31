@@ -1,8 +1,7 @@
 #!/usr/bin/python
-               
+
 
 import os
-import requests
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -18,7 +17,11 @@ def get_client():
     if _client is None:
         base_url = os.getenv("POSTIZ_URL", "https://api.postiz.com/public/v1")
         token = os.getenv("POSTIZ_TOKEN", "")
-        verify = os.getenv("POSTIZ_AGENT_VERIFY", "True").lower() in ("true", "1", "yes")
+        verify = os.getenv("POSTIZ_AGENT_VERIFY", "True").lower() in (
+            "true",
+            "1",
+            "yes",
+        )
 
         try:
             _client = PostizApi(

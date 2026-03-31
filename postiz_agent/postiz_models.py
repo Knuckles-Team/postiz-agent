@@ -24,7 +24,7 @@ class PostizPost(BaseModel):
 
 
 class PostizCreatePostRequest(BaseModel):
-    type: str = "schedule"                       
+    type: str = "schedule"
     date: Optional[str] = None
     shortLink: bool = False
     tags: List[str] = Field(default_factory=list)

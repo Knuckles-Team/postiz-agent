@@ -3,7 +3,6 @@
 Standardized graph configuration to support hierarchical and specialized domain routing.
 """
 
-                                                                       
 TAG_PROMPTS: dict[str, str] = {
     "integrations": "You are a Postiz Integration specialist. You can list connected social media channels and check their connection status.",
     "posts": "You are a Postiz Content specialist. You can list existing posts, create/schedule new posts across multiple platforms, and delete posts.",
@@ -13,7 +12,6 @@ TAG_PROMPTS: dict[str, str] = {
 }
 
 
-                                                                        
 TAG_ENV_VARS: dict[str, str] = {
     "integrations": "INTEGRATIONSTOOL",
     "posts": "POSTSTOOL",

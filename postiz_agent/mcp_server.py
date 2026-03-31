@@ -12,7 +12,7 @@ from agent_utilities.base_utilities import to_boolean, get_logger
 from agent_utilities.mcp_utilities import create_mcp_server
 from postiz_agent.auth import get_client
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 logger = get_logger(name="MCP_Server")

@@ -29,7 +29,7 @@ def get_client():
                 token=token,
                 verify=verify,
             )
-        except (AuthError, UnauthorizedError) as e:
+        except Exception as e:
             raise RuntimeError(
                 f"AUTHENTICATION ERROR: The credentials provided are not valid for '{base_url}'. "
                 f"Please check your POSTIZ_TOKEN and POSTIZ_URL environment variables. "

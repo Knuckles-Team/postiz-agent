@@ -1,15 +1,20 @@
 import requests
 import urllib3
-from typing import Dict, List
+from typing import Dict, List, Optional
 from agent_utilities.api_utilities import require_auth
 from agent_utilities.exceptions import UnauthorizedError
 from .postiz_models import (
     PostizIntegration,
     PostizCreatePostRequest,
-    PostizPostResponse,
-    PostizNotification,
-    PostizAnalytics,
+    PostizPost,
+    PostizNotificationsResponse,
+    PostizAnalyticsData,
     PostizUploadResponse,
+    PostizMissingContentItem,
+    PostizVideoGenerationRequest,
+    PostizVideoGenerationResponseItem,
+    PostizVideoFunctionRequest,
+    PostizVideoFunctionResponse,
 )
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -51,32 +56,60 @@ class PostizApi:
         return []
 
     @require_auth
-    def is_connected(self, integration_id: str) -> bool:
+    def get_integration_url(
+        self, integration: str, refresh: Optional[str] = None
+    ) -> Dict[str, str]:
+        params = {}
+        if refresh:
+            params["refresh"] = refresh
         response = self.session.get(
-            f"{self.base_url}/integrations/is-connected", params={"id": integration_id}
+            f"{self.base_url}/social/{integration}", params=params
         )
+        response.raise_for_status()
+        return response.json()
+
+    @require_auth
+    def delete_channel(self, integration_id: str) -> Dict[str, str]:
+        response = self.session.delete(f"{self.base_url}/integrations/{integration_id}")
+        response.raise_for_status()
+        return response.json()
+
+    @require_auth
+    def is_connected(self) -> bool:
+        response = self.session.get(f"{self.base_url}/is-connected")
         response.raise_for_status()
         return response.json().get("connected", False)
 
     @require_auth
-    def get_posts(self) -> List[PostizPostResponse]:
-        response = self.session.get(f"{self.base_url}/posts")
+    def find_slot(self, integration_id: str) -> Dict[str, str]:
+        response = self.session.get(f"{self.base_url}/find-slot/{integration_id}")
+        response.raise_for_status()
+        return response.json()
+
+    @require_auth
+    def list_posts(
+        self,
+        start_date: str,
+        end_date: str,
+        customer: Optional[str] = None,
+    ) -> List[PostizPost]:
+        params = {"startDate": start_date, "endDate": end_date}
+        if customer:
+            params["customer"] = customer
+        response = self.session.get(f"{self.base_url}/posts", params=params)
         response.raise_for_status()
         data = response.json()
-        if isinstance(data, list):
-            return [PostizPostResponse(**p) for p in data]
+        if "posts" in data:
+            return [PostizPost(**p) for p in data["posts"]]
         return []
 
     @require_auth
-    def create_post(self, request: PostizCreatePostRequest) -> List[PostizPostResponse]:
+    def create_post(self, request: PostizCreatePostRequest) -> List[Dict[str, str]]:
         response = self.session.post(
             f"{self.base_url}/posts", json=request.model_dump(exclude_none=True)
         )
         response.raise_for_status()
-        data = response.json()
-        if isinstance(data, list):
-            return [PostizPostResponse(**p) for p in data]
-        return []
+        return response.json()
 
     @require_auth
     def delete_post(self, post_id: str) -> Dict[str, str]:
@@ -85,10 +118,70 @@ class PostizApi:
         return response.json()
 
     @require_auth
+    def delete_post_by_group(self, group: str) -> Dict[str, str]:
+        response = self.session.delete(f"{self.base_url}/posts/group/{group}")
+        response.raise_for_status()
+        return response.json()
+
+    @require_auth
+    def get_missing_content(self, post_id: str) -> List[PostizMissingContentItem]:
+        response = self.session.get(f"{self.base_url}/posts/{post_id}/missing")
+        response.raise_for_status()
+        data = response.json()
+        if isinstance(data, list):
+            return [PostizMissingContentItem(**i) for i in data]
+        return []
+
+    @require_auth
+    def update_release_id(self, post_id: str, release_id: str) -> Dict[str, str]:
+        response = self.session.put(
+            f"{self.base_url}/posts/{post_id}/release-id",
+            json={"releaseId": release_id},
+        )
+        response.raise_for_status()
+        return response.json()
+
+    @require_auth
+    def get_analytics(
+        self, integration_id: str, date: str = "7"
+    ) -> List[PostizAnalyticsData]:
+        response = self.session.get(
+            f"{self.base_url}/analytics/{integration_id}", params={"date": date}
+        )
+        response.raise_for_status()
+        data = response.json()
+        if isinstance(data, list):
+            return [PostizAnalyticsData(**d) for d in data]
+        return []
+
+    @require_auth
+    def get_post_analytics(
+        self, post_id: str, date: str = "7"
+    ) -> List[PostizAnalyticsData]:
+        response = self.session.get(
+            f"{self.base_url}/analytics/post/{post_id}", params={"date": date}
+        )
+        response.raise_for_status()
+        data = response.json()
+        if isinstance(data, list):
+            return [PostizAnalyticsData(**d) for d in data]
+        return []
+
+    @require_auth
+    def list_notifications(self, page: int = 0) -> PostizNotificationsResponse:
+        response = self.session.get(
+            f"{self.base_url}/notifications", params={"page": page}
+        )
+        response.raise_for_status()
+        return PostizNotificationsResponse(**response.json())
+
+    @require_auth
     def upload_file(self, file_path: str) -> PostizUploadResponse:
         url = f"{self.base_url}/upload"
+        import os
+
         with open(file_path, "rb") as f:
-            files = {"file": f}
+            files = {"file": (os.path.basename(file_path), f)}
 
             headers = self.headers.copy()
             if "Content-Type" in headers:
@@ -98,24 +191,34 @@ class PostizApi:
         return PostizUploadResponse(**response.json())
 
     @require_auth
-    def get_platform_analytics(self) -> PostizAnalytics:
-        response = self.session.get(f"{self.base_url}/analytics/platform")
-        response.raise_for_status()
-        return PostizAnalytics(**response.json())
-
-    @require_auth
-    def get_post_analytics(self, post_id: str) -> PostizAnalytics:
-        response = self.session.get(
-            f"{self.base_url}/analytics/post", params={"id": post_id}
+    def upload_from_url(self, url: str) -> PostizUploadResponse:
+        response = self.session.post(
+            f"{self.base_url}/upload-from-url", json={"url": url}
         )
         response.raise_for_status()
-        return PostizAnalytics(**response.json())
+        return PostizUploadResponse(**response.json())
 
     @require_auth
-    def get_notifications(self) -> List[PostizNotification]:
-        response = self.session.get(f"{self.base_url}/notifications")
+    def generate_video(
+        self, request: PostizVideoGenerationRequest
+    ) -> List[PostizVideoGenerationResponseItem]:
+        response = self.session.post(
+            f"{self.base_url}/generate-video",
+            json=request.model_dump(exclude_none=True),
+        )
         response.raise_for_status()
         data = response.json()
         if isinstance(data, list):
-            return [PostizNotification(**n) for n in data]
+            return [PostizVideoGenerationResponseItem(**i) for i in data]
         return []
+
+    @require_auth
+    def video_function(
+        self, request: PostizVideoFunctionRequest
+    ) -> PostizVideoFunctionResponse:
+        response = self.session.post(
+            f"{self.base_url}/video/function",
+            json=request.model_dump(exclude_none=True),
+        )
+        response.raise_for_status()
+        return PostizVideoFunctionResponse(**response.json())

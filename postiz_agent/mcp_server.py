@@ -6,6 +6,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     try:
         from requests.exceptions import RequestsDependencyWarning
+
         warnings.filterwarnings("ignore", category=RequestsDependencyWarning)
     except ImportError:
         pass
@@ -25,7 +26,7 @@ from agent_utilities.base_utilities import to_boolean, get_logger
 from agent_utilities.mcp_utilities import create_mcp_server
 from postiz_agent.auth import get_client
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 logger = get_logger(name="MCP_Server")

@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -11,14 +12,14 @@ class PostizIntegration(BaseModel):
     id: str
     name: str
     identifier: str
-    picture: Optional[str] = None
+    picture: str | None = None
     disabled: bool = False
-    profile: Optional[str] = None
-    customer: Optional[PostizIntegrationCustomer] = None
+    profile: str | None = None
+    customer: PostizIntegrationCustomer | None = None
     # legacy fields for compatibility
-    type: Optional[str] = None
-    connected: Optional[bool] = None
-    settings: Optional[Dict[str, Any]] = None
+    type: str | None = None
+    connected: bool | None = None
+    settings: dict[str, Any] | None = None
 
 
 class PostizTag(BaseModel):
@@ -33,58 +34,58 @@ class PostizMedia(BaseModel):
 
 class PostizPostPart(BaseModel):
     content: str
-    id: Optional[str] = None
-    image: List[PostizMedia] = Field(default_factory=list)
+    id: str | None = None
+    image: list[PostizMedia] = Field(default_factory=list)
 
 
 class PostizPostItem(BaseModel):
-    integration: Dict[str, str] = Field(
+    integration: dict[str, str] = Field(
         description="Integration ID e.g., {'id': '...'} "
     )
-    value: List[PostizPostPart]
-    group: Optional[str] = None
-    settings: Optional[Dict[str, Any]] = None
+    value: list[PostizPostPart]
+    group: str | None = None
+    settings: dict[str, Any] | None = None
 
 
 class PostizCreatePostRequest(BaseModel):
     type: str = "schedule"  # 'draft', 'schedule', 'now'
     date: str
     shortLink: bool = False
-    order: Optional[str] = None
-    inter: Optional[int] = None
-    tags: List[PostizTag] = Field(default_factory=list)
-    posts: Optional[List[PostizPostItem]] = None
+    order: str | None = None
+    inter: int | None = None
+    tags: list[PostizTag] = Field(default_factory=list)
+    posts: list[PostizPostItem] | None = None
 
 
 class PostizPostIntegration(BaseModel):
     id: str
     providerIdentifier: str
     name: str
-    picture: Optional[str] = None
+    picture: str | None = None
 
 
 class PostizPost(BaseModel):
     id: str
     content: str
     publishDate: str
-    releaseURL: Optional[str] = None
+    releaseURL: str | None = None
     state: str  # QUEUE, PUBLISHED, ERROR, DRAFT
     integration: PostizPostIntegration
 
 
 class PostizPostsResponse(BaseModel):
-    posts: List[PostizPost]
+    posts: list[PostizPost]
 
 
 class PostizNotification(BaseModel):
     id: str
     content: str
-    link: Optional[str] = None
+    link: str | None = None
     createdAt: str
 
 
 class PostizNotificationsResponse(BaseModel):
-    notifications: List[PostizNotification]
+    notifications: list[PostizNotification]
     total: int
     page: int
     limit: int
@@ -98,17 +99,17 @@ class PostizAnalyticsDataItem(BaseModel):
 
 class PostizAnalyticsData(BaseModel):
     label: str
-    data: List[PostizAnalyticsDataItem]
-    percentageChange: Optional[float] = None
+    data: list[PostizAnalyticsDataItem]
+    percentageChange: float | None = None
 
 
 class PostizUploadResponse(BaseModel):
     id: str
     path: str
-    name: Optional[str] = None
-    organizationId: Optional[str] = None
-    createdAt: Optional[str] = None
-    updatedAt: Optional[str] = None
+    name: str | None = None
+    organizationId: str | None = None
+    createdAt: str | None = None
+    updatedAt: str | None = None
 
 
 class PostizMissingContentItem(BaseModel):
@@ -119,7 +120,7 @@ class PostizMissingContentItem(BaseModel):
 class PostizVideoGenerationRequest(BaseModel):
     type: str  # 'image-text-slides', 'veo3'
     output: str  # 'vertical', 'horizontal'
-    customParams: Dict[str, Any]
+    customParams: dict[str, Any]
 
 
 class PostizVideoGenerationResponseItem(BaseModel):
@@ -130,7 +131,7 @@ class PostizVideoGenerationResponseItem(BaseModel):
 class PostizVideoFunctionRequest(BaseModel):
     functionName: str
     identifier: str
-    params: Optional[Dict[str, Any]] = None
+    params: dict[str, Any] | None = None
 
 
 class PostizVoice(BaseModel):
@@ -139,4 +140,4 @@ class PostizVoice(BaseModel):
 
 
 class PostizVideoFunctionResponse(BaseModel):
-    voices: Optional[List[PostizVoice]] = None
+    voices: list[PostizVoice] | None = None

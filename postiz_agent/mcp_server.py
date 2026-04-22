@@ -15,15 +15,16 @@ with warnings.catch_warnings():
 warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
 warnings.filterwarnings("ignore", message=".*urllib3.*or charset_normalizer.*")
 
+import logging
 import os
 import sys
-import logging
-from typing import Optional, List, Dict, Any
+from typing import Any
 
-from dotenv import load_dotenv, find_dotenv
-from fastmcp import FastMCP
-from agent_utilities.base_utilities import to_boolean, get_logger
+from agent_utilities.base_utilities import get_logger, to_boolean
 from agent_utilities.mcp_utilities import create_mcp_server
+from dotenv import find_dotenv, load_dotenv
+from fastmcp import FastMCP
+
 from postiz_agent.auth import get_client
 
 __version__ = "0.2.1"
@@ -39,7 +40,7 @@ def register_integrations_tools(mcp: FastMCP):
         description="List all connected social media channels.",
         tags={"integrations"},
     )
-    def postiz_list_integrations() -> List[Dict[str, Any]]:
+    def postiz_list_integrations() -> list[dict[str, Any]]:
         return [i.model_dump() for i in get_client().get_integrations()]
 
     @mcp.tool(
@@ -48,8 +49,8 @@ def register_integrations_tools(mcp: FastMCP):
         tags={"integrations"},
     )
     def postiz_get_integration_url(
-        integration: str, refresh: Optional[str] = None
-    ) -> Dict[str, str]:
+        integration: str, refresh: str | None = None
+    ) -> dict[str, str]:
         return get_client().get_integration_url(integration, refresh)
 
     @mcp.tool(
@@ -57,7 +58,7 @@ def register_integrations_tools(mcp: FastMCP):
         description="Delete a connected channel by its integration ID.",
         tags={"integrations"},
     )
-    def postiz_delete_channel(integration_id: str) -> Dict[str, str]:
+    def postiz_delete_channel(integration_id: str) -> dict[str, str]:
         return get_client().delete_channel(integration_id)
 
     @mcp.tool(
@@ -73,7 +74,7 @@ def register_integrations_tools(mcp: FastMCP):
         description="Get the next available time slot for posting to a specific channel.",
         tags={"integrations"},
     )
-    def postiz_find_slot(integration_id: str) -> Dict[str, str]:
+    def postiz_find_slot(integration_id: str) -> dict[str, str]:
         return get_client().find_slot(integration_id)
 
 
@@ -84,8 +85,8 @@ def register_posts_tools(mcp: FastMCP):
         tags={"posts"},
     )
     def postiz_list_posts(
-        start_date: str, end_date: str, customer: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+        start_date: str, end_date: str, customer: str | None = None
+    ) -> list[dict[str, Any]]:
         return [
             p.model_dump()
             for p in get_client().list_posts(start_date, end_date, customer)
@@ -98,13 +99,13 @@ def register_posts_tools(mcp: FastMCP):
     )
     def postiz_create_post(
         date: str,
-        posts: List[Dict[str, Any]],
+        posts: list[dict[str, Any]],
         type: str = "schedule",
         shortLink: bool = False,
-        order: Optional[str] = None,
-        inter: Optional[int] = None,
-        tags: Optional[List[Dict[str, str]]] = None,
-    ) -> List[Dict[str, str]]:
+        order: str | None = None,
+        inter: int | None = None,
+        tags: list[dict[str, str]] | None = None,
+    ) -> list[dict[str, str]]:
         from .postiz_models import PostizCreatePostRequest
 
         request = PostizCreatePostRequest(
@@ -123,7 +124,7 @@ def register_posts_tools(mcp: FastMCP):
         description="Delete a post by its ID.",
         tags={"posts"},
     )
-    def postiz_delete_post(post_id: str) -> Dict[str, str]:
+    def postiz_delete_post(post_id: str) -> dict[str, str]:
         return get_client().delete_post(post_id)
 
     @mcp.tool(
@@ -131,7 +132,7 @@ def register_posts_tools(mcp: FastMCP):
         description="Delete all posts in a group by the group identifier.",
         tags={"posts"},
     )
-    def postiz_delete_post_by_group(group: str) -> Dict[str, str]:
+    def postiz_delete_post_by_group(group: str) -> dict[str, str]:
         return get_client().delete_post_by_group(group)
 
     @mcp.tool(
@@ -139,7 +140,7 @@ def register_posts_tools(mcp: FastMCP):
         description="Fetch recent content from the provider to match and connect to a post with 'missing' releaseId.",
         tags={"posts"},
     )
-    def postiz_get_missing_content(post_id: str) -> List[Dict[str, Any]]:
+    def postiz_get_missing_content(post_id: str) -> list[dict[str, Any]]:
         return [i.model_dump() for i in get_client().get_missing_content(post_id)]
 
     @mcp.tool(
@@ -147,7 +148,7 @@ def register_posts_tools(mcp: FastMCP):
         description="Update the releaseId of a post that currently has its release ID set to 'missing'.",
         tags={"posts"},
     )
-    def postiz_update_release_id(post_id: str, release_id: str) -> Dict[str, str]:
+    def postiz_update_release_id(post_id: str, release_id: str) -> dict[str, str]:
         return get_client().update_release_id(post_id, release_id)
 
 
@@ -157,7 +158,7 @@ def register_uploads_tools(mcp: FastMCP):
         description="Upload a media file using multipart form data.",
         tags={"uploads"},
     )
-    def postiz_upload_file(file_path: str) -> Dict[str, Any]:
+    def postiz_upload_file(file_path: str) -> dict[str, Any]:
         return get_client().upload_file(file_path).model_dump()
 
     @mcp.tool(
@@ -165,7 +166,7 @@ def register_uploads_tools(mcp: FastMCP):
         description="Upload a file from an existing URL.",
         tags={"uploads"},
     )
-    def postiz_upload_from_url(url: str) -> Dict[str, Any]:
+    def postiz_upload_from_url(url: str) -> dict[str, Any]:
         return get_client().upload_from_url(url).model_dump()
 
 
@@ -177,7 +178,7 @@ def register_analytics_tools(mcp: FastMCP):
     )
     def postiz_get_analytics(
         integration_id: str, date: str = "7"
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         return [
             d.model_dump() for d in get_client().get_analytics(integration_id, date)
         ]
@@ -189,7 +190,7 @@ def register_analytics_tools(mcp: FastMCP):
     )
     def postiz_get_post_analytics(
         post_id: str, date: str = "7"
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         return [d.model_dump() for d in get_client().get_post_analytics(post_id, date)]
 
 
@@ -199,7 +200,7 @@ def register_notifications_tools(mcp: FastMCP):
         description="Get paginated notifications for your organization.",
         tags={"notifications"},
     )
-    def postiz_list_notifications(page: int = 0) -> Dict[str, Any]:
+    def postiz_list_notifications(page: int = 0) -> dict[str, Any]:
         return get_client().list_notifications(page).model_dump()
 
 
@@ -210,8 +211,8 @@ def register_video_tools(mcp: FastMCP):
         tags={"video"},
     )
     def postiz_generate_video(
-        type: str, output: str, customParams: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        type: str, output: str, customParams: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         from .postiz_models import PostizVideoGenerationRequest
 
         request = PostizVideoGenerationRequest(
@@ -225,8 +226,8 @@ def register_video_tools(mcp: FastMCP):
         tags={"video"},
     )
     def postiz_video_function(
-        functionName: str, identifier: str, params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        functionName: str, identifier: str, params: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         from .postiz_models import PostizVideoFunctionRequest
 
         request = PostizVideoFunctionRequest(

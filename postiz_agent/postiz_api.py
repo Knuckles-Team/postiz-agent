@@ -1,20 +1,22 @@
+from typing import Any
+
 import requests
 import urllib3
-from typing import Dict, List, Optional
 from agent_utilities.api_utilities import require_auth
 from agent_utilities.exceptions import UnauthorizedError
+
 from .postiz_models import (
-    PostizIntegration,
-    PostizCreatePostRequest,
-    PostizPost,
-    PostizNotificationsResponse,
     PostizAnalyticsData,
-    PostizUploadResponse,
+    PostizCreatePostRequest,
+    PostizIntegration,
     PostizMissingContentItem,
-    PostizVideoGenerationRequest,
-    PostizVideoGenerationResponseItem,
+    PostizNotificationsResponse,
+    PostizPost,
+    PostizUploadResponse,
     PostizVideoFunctionRequest,
     PostizVideoFunctionResponse,
+    PostizVideoGenerationRequest,
+    PostizVideoGenerationResponseItem,
 )
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -45,7 +47,7 @@ class PostizApi:
                 raise e
 
     @require_auth
-    def get_integrations(self) -> List[PostizIntegration]:
+    def get_integrations(self) -> list[PostizIntegration]:
         response = self.session.get(f"{self.base_url}/integrations")
         if response.status_code == 401:
             raise UnauthorizedError("Invalid API key")
@@ -57,9 +59,9 @@ class PostizApi:
 
     @require_auth
     def get_integration_url(
-        self, integration: str, refresh: Optional[str] = None
-    ) -> Dict[str, str]:
-        params = {}
+        self, integration: str, refresh: str | None = None
+    ) -> dict[str, str]:
+        params: dict[str, Any] = {}
         if refresh:
             params["refresh"] = refresh
         response = self.session.get(
@@ -69,7 +71,7 @@ class PostizApi:
         return response.json()
 
     @require_auth
-    def delete_channel(self, integration_id: str) -> Dict[str, str]:
+    def delete_channel(self, integration_id: str) -> dict[str, str]:
         response = self.session.delete(f"{self.base_url}/integrations/{integration_id}")
         response.raise_for_status()
         return response.json()
@@ -81,7 +83,7 @@ class PostizApi:
         return response.json().get("connected", False)
 
     @require_auth
-    def find_slot(self, integration_id: str) -> Dict[str, str]:
+    def find_slot(self, integration_id: str) -> dict[str, str]:
         response = self.session.get(f"{self.base_url}/find-slot/{integration_id}")
         response.raise_for_status()
         return response.json()
@@ -91,8 +93,8 @@ class PostizApi:
         self,
         start_date: str,
         end_date: str,
-        customer: Optional[str] = None,
-    ) -> List[PostizPost]:
+        customer: str | None = None,
+    ) -> list[PostizPost]:
         params = {"startDate": start_date, "endDate": end_date}
         if customer:
             params["customer"] = customer
@@ -104,7 +106,7 @@ class PostizApi:
         return []
 
     @require_auth
-    def create_post(self, request: PostizCreatePostRequest) -> List[Dict[str, str]]:
+    def create_post(self, request: PostizCreatePostRequest) -> list[dict[str, str]]:
         response = self.session.post(
             f"{self.base_url}/posts", json=request.model_dump(exclude_none=True)
         )
@@ -112,19 +114,19 @@ class PostizApi:
         return response.json()
 
     @require_auth
-    def delete_post(self, post_id: str) -> Dict[str, str]:
+    def delete_post(self, post_id: str) -> dict[str, str]:
         response = self.session.delete(f"{self.base_url}/posts/{post_id}")
         response.raise_for_status()
         return response.json()
 
     @require_auth
-    def delete_post_by_group(self, group: str) -> Dict[str, str]:
+    def delete_post_by_group(self, group: str) -> dict[str, str]:
         response = self.session.delete(f"{self.base_url}/posts/group/{group}")
         response.raise_for_status()
         return response.json()
 
     @require_auth
-    def get_missing_content(self, post_id: str) -> List[PostizMissingContentItem]:
+    def get_missing_content(self, post_id: str) -> list[PostizMissingContentItem]:
         response = self.session.get(f"{self.base_url}/posts/{post_id}/missing")
         response.raise_for_status()
         data = response.json()
@@ -133,7 +135,7 @@ class PostizApi:
         return []
 
     @require_auth
-    def update_release_id(self, post_id: str, release_id: str) -> Dict[str, str]:
+    def update_release_id(self, post_id: str, release_id: str) -> dict[str, str]:
         response = self.session.put(
             f"{self.base_url}/posts/{post_id}/release-id",
             json={"releaseId": release_id},
@@ -144,7 +146,7 @@ class PostizApi:
     @require_auth
     def get_analytics(
         self, integration_id: str, date: str = "7"
-    ) -> List[PostizAnalyticsData]:
+    ) -> list[PostizAnalyticsData]:
         response = self.session.get(
             f"{self.base_url}/analytics/{integration_id}", params={"date": date}
         )
@@ -157,7 +159,7 @@ class PostizApi:
     @require_auth
     def get_post_analytics(
         self, post_id: str, date: str = "7"
-    ) -> List[PostizAnalyticsData]:
+    ) -> list[PostizAnalyticsData]:
         response = self.session.get(
             f"{self.base_url}/analytics/post/{post_id}", params={"date": date}
         )
@@ -201,7 +203,7 @@ class PostizApi:
     @require_auth
     def generate_video(
         self, request: PostizVideoGenerationRequest
-    ) -> List[PostizVideoGenerationResponseItem]:
+    ) -> list[PostizVideoGenerationResponseItem]:
         response = self.session.post(
             f"{self.base_url}/generate-video",
             json=request.model_dump(exclude_none=True),

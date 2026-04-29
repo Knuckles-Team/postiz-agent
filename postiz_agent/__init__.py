@@ -4,7 +4,6 @@
 import importlib
 import inspect
 import warnings
-from typing import List
 
 warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
 
@@ -59,6 +58,7 @@ _MCP_AVAILABLE = OPTIONAL_MODULES.get("postiz_agent.mcp_server") in [
 _AGENT_AVAILABLE = "postiz_agent.agent_server" in globals()
 
 __all__.extend(["_MCP_AVAILABLE", "_AGENT_AVAILABLE"])
+__version__ = "0.2.1"
 
 
 """
@@ -66,3 +66,4 @@ postiz-agent
 
 Agent for interacting with Postiz Public API
 """
+__version__ = "0.2.1"

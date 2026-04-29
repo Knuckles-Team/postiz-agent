@@ -185,7 +185,7 @@ class PostizApi:
         with open(file_path, "rb") as f:
             files = {"file": (os.path.basename(file_path), f)}
 
-            headers = self.headers.copy()
+            headers = dict(self.headers)
             if "Content-Type" in headers:
                 del headers["Content-Type"]
             response = self.session.post(url, files=files, headers=headers)

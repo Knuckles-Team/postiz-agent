@@ -21,9 +21,15 @@ import sys
 from typing import Any
 
 from agent_utilities.base_utilities import get_logger, to_boolean
-from agent_utilities.mcp_utilities import create_mcp_server
+from agent_utilities.mcp_utilities import (
+    create_mcp_server,
+    ctx_confirm_destructive,
+    ctx_progress,
+    ctx_sample,
+)
 from dotenv import find_dotenv, load_dotenv
-from fastmcp import FastMCP
+from fastmcp import Context, FastMCP
+from pydantic import Field
 
 from postiz_agent.auth import get_client
 
@@ -40,7 +46,11 @@ def register_integrations_tools(mcp: FastMCP):
         description="List all connected social media channels.",
         tags={"integrations"},
     )
-    def postiz_list_integrations() -> list[dict[str, Any]]:
+    def postiz_list_integrations(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> list[dict[str, Any]]:
         return [i.model_dump() for i in get_client().get_integrations()]
 
     @mcp.tool(
@@ -49,7 +59,11 @@ def register_integrations_tools(mcp: FastMCP):
         tags={"integrations"},
     )
     def postiz_get_integration_url(
-        integration: str, refresh: str | None = None
+        integration: str,
+        refresh: str | None = None,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict[str, str]:
         return get_client().get_integration_url(integration, refresh)
 
@@ -58,7 +72,15 @@ def register_integrations_tools(mcp: FastMCP):
         description="Delete a connected channel by its integration ID.",
         tags={"integrations"},
     )
-    def postiz_delete_channel(integration_id: str) -> dict[str, str]:
+    async def postiz_delete_channel(
+        integration_id: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, str]:
+        if not await ctx_confirm_destructive(ctx, "postiz delete channel"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         return get_client().delete_channel(integration_id)
 
     @mcp.tool(
@@ -66,7 +88,11 @@ def register_integrations_tools(mcp: FastMCP):
         description="Verify if your API key is valid and connected.",
         tags={"integrations"},
     )
-    def postiz_check_connection() -> bool:
+    def postiz_check_connection(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> bool:
         return get_client().is_connected()
 
     @mcp.tool(
@@ -74,7 +100,12 @@ def register_integrations_tools(mcp: FastMCP):
         description="Get the next available time slot for posting to a specific channel.",
         tags={"integrations"},
     )
-    def postiz_find_slot(integration_id: str) -> dict[str, str]:
+    def postiz_find_slot(
+        integration_id: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, str]:
         return get_client().find_slot(integration_id)
 
 
@@ -85,7 +116,12 @@ def register_posts_tools(mcp: FastMCP):
         tags={"posts"},
     )
     def postiz_list_posts(
-        start_date: str, end_date: str, customer: str | None = None
+        start_date: str,
+        end_date: str,
+        customer: str | None = None,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict[str, Any]]:
         return [
             p.model_dump()
@@ -105,8 +141,11 @@ def register_posts_tools(mcp: FastMCP):
         order: str | None = None,
         inter: int | None = None,
         tags: list[dict[str, str]] | None = None,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict[str, str]]:
-        from .postiz_models import PostizCreatePostRequest
+        from .postiz_models import PostizCreatePostRequest, PostizPostItem, PostizTag
 
         request = PostizCreatePostRequest(
             type=type,
@@ -114,8 +153,8 @@ def register_posts_tools(mcp: FastMCP):
             shortLink=shortLink,
             order=order,
             inter=inter,
-            tags=tags or [],
-            posts=posts,
+            tags=[PostizTag(**t) for t in (tags or [])],
+            posts=[PostizPostItem(**p) for p in posts],
         )
         return get_client().create_post(request)
 
@@ -124,7 +163,15 @@ def register_posts_tools(mcp: FastMCP):
         description="Delete a post by its ID.",
         tags={"posts"},
     )
-    def postiz_delete_post(post_id: str) -> dict[str, str]:
+    async def postiz_delete_post(
+        post_id: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, str]:
+        if not await ctx_confirm_destructive(ctx, "postiz delete post"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         return get_client().delete_post(post_id)
 
     @mcp.tool(
@@ -132,7 +179,15 @@ def register_posts_tools(mcp: FastMCP):
         description="Delete all posts in a group by the group identifier.",
         tags={"posts"},
     )
-    def postiz_delete_post_by_group(group: str) -> dict[str, str]:
+    async def postiz_delete_post_by_group(
+        group: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, str]:
+        if not await ctx_confirm_destructive(ctx, "postiz delete post by group"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         return get_client().delete_post_by_group(group)
 
     @mcp.tool(
@@ -140,15 +195,32 @@ def register_posts_tools(mcp: FastMCP):
         description="Fetch recent content from the provider to match and connect to a post with 'missing' releaseId.",
         tags={"posts"},
     )
-    def postiz_get_missing_content(post_id: str) -> list[dict[str, Any]]:
-        return [i.model_dump() for i in get_client().get_missing_content(post_id)]
+    async def postiz_get_missing_content(
+        post_id: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> list[dict[str, Any]] | dict[str, Any]:
+        result = [i.model_dump() for i in get_client().get_missing_content(post_id)]
+        summary = await ctx_sample(
+            ctx, f"Summarize this missing content for post {post_id}: {result}"
+        )
+        if summary:
+            return {"results": result, "ai_summary": summary}
+        return result
 
     @mcp.tool(
         name="postiz-update-release-id",
         description="Update the releaseId of a post that currently has its release ID set to 'missing'.",
         tags={"posts"},
     )
-    def postiz_update_release_id(post_id: str, release_id: str) -> dict[str, str]:
+    def postiz_update_release_id(
+        post_id: str,
+        release_id: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, str]:
         return get_client().update_release_id(post_id, release_id)
 
 
@@ -158,7 +230,14 @@ def register_uploads_tools(mcp: FastMCP):
         description="Upload a media file using multipart form data.",
         tags={"uploads"},
     )
-    def postiz_upload_file(file_path: str) -> dict[str, Any]:
+    async def postiz_upload_file(
+        file_path: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, Any]:
+        await ctx_progress(ctx, 0, 100)
+        await ctx_progress(ctx, 100, 100)
         return get_client().upload_file(file_path).model_dump()
 
     @mcp.tool(
@@ -166,7 +245,14 @@ def register_uploads_tools(mcp: FastMCP):
         description="Upload a file from an existing URL.",
         tags={"uploads"},
     )
-    def postiz_upload_from_url(url: str) -> dict[str, Any]:
+    async def postiz_upload_from_url(
+        url: str,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, Any]:
+        await ctx_progress(ctx, 0, 100)
+        await ctx_progress(ctx, 100, 100)
         return get_client().upload_from_url(url).model_dump()
 
 
@@ -177,7 +263,11 @@ def register_analytics_tools(mcp: FastMCP):
         tags={"analytics"},
     )
     def postiz_get_analytics(
-        integration_id: str, date: str = "7"
+        integration_id: str,
+        date: str = "7",
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict[str, Any]]:
         return [
             d.model_dump() for d in get_client().get_analytics(integration_id, date)
@@ -189,7 +279,11 @@ def register_analytics_tools(mcp: FastMCP):
         tags={"analytics"},
     )
     def postiz_get_post_analytics(
-        post_id: str, date: str = "7"
+        post_id: str,
+        date: str = "7",
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict[str, Any]]:
         return [d.model_dump() for d in get_client().get_post_analytics(post_id, date)]
 
@@ -200,7 +294,12 @@ def register_notifications_tools(mcp: FastMCP):
         description="Get paginated notifications for your organization.",
         tags={"notifications"},
     )
-    def postiz_list_notifications(page: int = 0) -> dict[str, Any]:
+    def postiz_list_notifications(
+        page: int = 0,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict[str, Any]:
         return get_client().list_notifications(page).model_dump()
 
 
@@ -211,7 +310,12 @@ def register_video_tools(mcp: FastMCP):
         tags={"video"},
     )
     def postiz_generate_video(
-        type: str, output: str, customParams: dict[str, Any]
+        type: str,
+        output: str,
+        customParams: dict[str, Any],
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict[str, Any]]:
         from .postiz_models import PostizVideoGenerationRequest
 
@@ -226,7 +330,12 @@ def register_video_tools(mcp: FastMCP):
         tags={"video"},
     )
     def postiz_video_function(
-        functionName: str, identifier: str, params: dict[str, Any] | None = None
+        functionName: str,
+        identifier: str,
+        params: dict[str, Any] | None = None,
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict[str, Any]:
         from .postiz_models import PostizVideoFunctionRequest
 

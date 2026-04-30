@@ -3,7 +3,7 @@ from typing import Any
 import requests
 import urllib3
 from agent_utilities.api_utilities import require_auth
-from agent_utilities.exceptions import UnauthorizedError
+from agent_utilities.core.exceptions import UnauthorizedError
 
 from .postiz_models import (
     PostizAnalyticsData,

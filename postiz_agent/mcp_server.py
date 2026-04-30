@@ -33,7 +33,7 @@ from pydantic import Field
 
 from postiz_agent.auth import get_client
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 
 logger = get_logger(name="MCP_Server")

@@ -21,7 +21,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/postiz-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/postiz-agent)
 
-*Version: 0.6.0*
+*Version: 0.7.0*
 
 ## Overview
 
@@ -138,3 +138,72 @@ uv pip install postiz-agent
 
 ![GitHub followers](https://img.shields.io/github/followers/Knucklessg1)
 ![GitHub User's stars](https://img.shields.io/github/stars/Knucklessg1)
+
+
+## MCP Configuration Examples
+
+### 1. Standard IO (stdio) Deployment
+
+```json
+{
+  "mcpServers": {
+    "postiz-agent": {
+      "command": "uv",
+      "args": [
+        "run",
+        "postiz-mcp"
+      ],
+      "env": {
+        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
+        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
+        "ANALYTICSTOOL": "True",
+        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
+        "INTEGRATIONSTOOL": "True",
+        "NOTIFICATIONSTOOL": "True",
+        "POSTIZ_AGENT_VERIFY": "<YOUR_POSTIZ_AGENT_VERIFY>",
+        "POSTIZ_TOKEN": "<YOUR_POSTIZ_TOKEN>",
+        "POSTIZ_URL": "<YOUR_POSTIZ_URL>",
+        "POSTSTOOL": "True",
+        "UPLOADSTOOL": "True",
+        "VIDEOTOOL": "True"
+      }
+    }
+  }
+}
+```
+
+### 2. Streamable HTTP (SSE) Deployment
+
+```json
+{
+  "mcpServers": {
+    "postiz-agent": {
+      "command": "uv",
+      "args": [
+        "run",
+        "postiz-mcp",
+        "--transport",
+        "http",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "env": {
+        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
+        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
+        "ANALYTICSTOOL": "True",
+        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
+        "INTEGRATIONSTOOL": "True",
+        "NOTIFICATIONSTOOL": "True",
+        "POSTIZ_AGENT_VERIFY": "<YOUR_POSTIZ_AGENT_VERIFY>",
+        "POSTIZ_TOKEN": "<YOUR_POSTIZ_TOKEN>",
+        "POSTIZ_URL": "<YOUR_POSTIZ_URL>",
+        "POSTSTOOL": "True",
+        "UPLOADSTOOL": "True",
+        "VIDEOTOOL": "True"
+      }
+    }
+  }
+}
+```

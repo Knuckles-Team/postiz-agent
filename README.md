@@ -207,3 +207,16 @@ uv pip install postiz-agent
   }
 }
 ```
+
+## Available MCP Tools
+
+This server utilizes dynamic Action-Routed tools to optimize token overhead and maximize IDE compatibility.
+
+| Tool Name | Description |
+|-----------|-------------|
+| `postiz_analytics` | Consolidated Action-Routed tool for analytics. Methods: postiz_get_analytics, postiz_get_post_analytics |
+| `postiz_integrations` | Consolidated Action-Routed tool for integrations. Methods: postiz_list_integrations, postiz_get_integration_url, postiz_delete_channel, postiz_check_connection, postiz_find_slot |
+| `postiz_notifications` | Consolidated Action-Routed tool for notifications. Methods: postiz_list_notifications |
+| `postiz_posts` | Consolidated Action-Routed tool for posts. Methods: postiz_list_posts, postiz_create_post, postiz_delete_post, postiz_delete_post_by_group, postiz_get_missing_content, postiz_update_release_id |
+| `postiz_uploads` | Consolidated Action-Routed tool for uploads. Methods: postiz_upload_file, postiz_upload_from_url |
+| `postiz_video` | Consolidated Action-Routed tool for video. Methods: postiz_generate_video, postiz_video_function |

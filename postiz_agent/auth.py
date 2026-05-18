@@ -7,7 +7,7 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-from postiz_agent.postiz_api import PostizApi
+from postiz_agent.api_client import PostizApi
 
 _client = None
 

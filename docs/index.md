@@ -154,10 +154,7 @@ uv pip install postiz-agent
         "postiz-mcp"
       ],
       "env": {
-        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
-        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
         "ANALYTICSTOOL": "True",
-        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
         "INTEGRATIONSTOOL": "True",
         "NOTIFICATIONSTOOL": "True",
         "POSTIZ_AGENT_VERIFY": "<YOUR_POSTIZ_AGENT_VERIFY>",
@@ -190,10 +187,7 @@ uv pip install postiz-agent
         "8000"
       ],
       "env": {
-        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
-        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
         "ANALYTICSTOOL": "True",
-        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
         "INTEGRATIONSTOOL": "True",
         "NOTIFICATIONSTOOL": "True",
         "POSTIZ_AGENT_VERIFY": "<YOUR_POSTIZ_AGENT_VERIFY>",

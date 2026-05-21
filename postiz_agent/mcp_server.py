@@ -1,6 +1,11 @@
 #!/usr/bin/python
 import warnings
 
+from fastmcp import Context, FastMCP
+from fastmcp.dependencies import Depends
+from fastmcp.utilities.logging import get_logger
+from pydantic import Field
+
 # Filter RequestsDependencyWarning early to prevent log spam
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
@@ -22,16 +27,12 @@ from typing import Any
 from agent_utilities.base_utilities import to_boolean
 from agent_utilities.mcp_utilities import create_mcp_server
 from dotenv import find_dotenv, load_dotenv
-from fastmcp import FastMCP
-from fastmcp.dependencies import Depends
-from fastmcp.utilities.logging import get_logger
-from pydantic import Field
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from postiz_agent.auth import get_client
 
-__version__ = "0.12.0"
+__version__ = "0.12.1"
 
 logger = get_logger(name="postiz-agent")
 logger.setLevel(logging.INFO)
@@ -43,41 +44,37 @@ def register_integrations_tools(mcp: FastMCP):
         action: str = Field(
             description="Action to perform. Must be one of: 'postiz_list_integrations', 'postiz_get_integration_url', 'postiz_delete_channel', 'postiz_check_connection', 'postiz_find_slot'"
         ),
+        params_json: str = Field(
+            default="{}", description="JSON string of parameters to pass to the action."
+        ),
         client=Depends(get_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
     ) -> dict:
-        """Manage integrations operations.
+        """Manage postiz integrations operations."""
+        if ctx:
+            ctx.info("Executing tool...")
+        import json
 
-        Actions:
-          - 'postiz_list_integrations': Call postiz_list_integrations
-          - 'postiz_get_integration_url': Call postiz_get_integration_url
-          - 'postiz_delete_channel': Call postiz_delete_channel
-          - 'postiz_check_connection': Call postiz_check_connection
-          - 'postiz_find_slot': Call postiz_find_slot
-        """
-        kwargs: dict[str, Any]
+        try:
+            kwargs = json.loads(params_json)
+        except Exception as e:
+            return {"error": f"Invalid params_json: {e}"}
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
         if action == "postiz_list_integrations":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_list_integrations(**kwargs)
         if action == "postiz_get_integration_url":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_get_integration_url(**kwargs)
         if action == "postiz_delete_channel":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_delete_channel(**kwargs)
         if action == "postiz_check_connection":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_check_connection(**kwargs)
         if action == "postiz_find_slot":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_find_slot(**kwargs)
-        raise ValueError(
-            f"Unknown action: {action}. Must be one of: postiz_list_integrations', 'postiz_get_integration_url', 'postiz_delete_channel', 'postiz_check_connection', 'postiz_find_slot"
-        )
+        raise ValueError(f"Unknown action: {action}")
 
 
 def register_posts_tools(mcp: FastMCP):
@@ -86,46 +83,39 @@ def register_posts_tools(mcp: FastMCP):
         action: str = Field(
             description="Action to perform. Must be one of: 'postiz_list_posts', 'postiz_create_post', 'postiz_delete_post', 'postiz_delete_post_by_group', 'postiz_get_missing_content', 'postiz_update_release_id'"
         ),
+        params_json: str = Field(
+            default="{}", description="JSON string of parameters to pass to the action."
+        ),
         client=Depends(get_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
     ) -> dict:
-        """Manage posts operations.
+        """Manage postiz posts operations."""
+        if ctx:
+            ctx.info("Executing tool...")
+        import json
 
-        Actions:
-          - 'postiz_list_posts': Call postiz_list_posts
-          - 'postiz_create_post': Call postiz_create_post
-          - 'postiz_delete_post': Call postiz_delete_post
-          - 'postiz_delete_post_by_group': Call postiz_delete_post_by_group
-          - 'postiz_get_missing_content': Call postiz_get_missing_content
-          - 'postiz_update_release_id': Call postiz_update_release_id
-        """
-        kwargs: dict[str, Any]
+        try:
+            kwargs = json.loads(params_json)
+        except Exception as e:
+            return {"error": f"Invalid params_json: {e}"}
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
         if action == "postiz_list_posts":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_list_posts(**kwargs)
         if action == "postiz_create_post":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_create_post(**kwargs)
         if action == "postiz_delete_post":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_delete_post(**kwargs)
         if action == "postiz_delete_post_by_group":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_delete_post_by_group(**kwargs)
         if action == "postiz_get_missing_content":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_get_missing_content(**kwargs)
         if action == "postiz_update_release_id":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_update_release_id(**kwargs)
-        raise ValueError(
-            f"Unknown action: {action}. Must be one of: postiz_list_posts', 'postiz_create_post', 'postiz_delete_post', 'postiz_delete_post_by_group', 'postiz_get_missing_content', 'postiz_update_release_id"
-        )
+        raise ValueError(f"Unknown action: {action}")
 
 
 def register_uploads_tools(mcp: FastMCP):
@@ -134,26 +124,31 @@ def register_uploads_tools(mcp: FastMCP):
         action: str = Field(
             description="Action to perform. Must be one of: 'postiz_upload_file', 'postiz_upload_from_url'"
         ),
+        params_json: str = Field(
+            default="{}", description="JSON string of parameters to pass to the action."
+        ),
         client=Depends(get_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
     ) -> dict:
-        """Manage uploads operations.
+        """Manage postiz uploads operations."""
+        if ctx:
+            ctx.info("Executing tool...")
+        import json
 
-        Actions:
-          - 'postiz_upload_file': Call postiz_upload_file
-          - 'postiz_upload_from_url': Call postiz_upload_from_url
-        """
-        kwargs: dict[str, Any]
+        try:
+            kwargs = json.loads(params_json)
+        except Exception as e:
+            return {"error": f"Invalid params_json: {e}"}
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
         if action == "postiz_upload_file":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_upload_file(**kwargs)
         if action == "postiz_upload_from_url":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_upload_from_url(**kwargs)
-        raise ValueError(
-            f"Unknown action: {action}. Must be one of: postiz_upload_file', 'postiz_upload_from_url"
-        )
+        raise ValueError(f"Unknown action: {action}")
 
 
 def register_analytics_tools(mcp: FastMCP):
@@ -162,26 +157,31 @@ def register_analytics_tools(mcp: FastMCP):
         action: str = Field(
             description="Action to perform. Must be one of: 'postiz_get_analytics', 'postiz_get_post_analytics'"
         ),
+        params_json: str = Field(
+            default="{}", description="JSON string of parameters to pass to the action."
+        ),
         client=Depends(get_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
     ) -> dict:
-        """Manage analytics operations.
+        """Manage postiz analytics operations."""
+        if ctx:
+            ctx.info("Executing tool...")
+        import json
 
-        Actions:
-          - 'postiz_get_analytics': Call postiz_get_analytics
-          - 'postiz_get_post_analytics': Call postiz_get_post_analytics
-        """
-        kwargs: dict[str, Any]
+        try:
+            kwargs = json.loads(params_json)
+        except Exception as e:
+            return {"error": f"Invalid params_json: {e}"}
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
         if action == "postiz_get_analytics":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_get_analytics(**kwargs)
         if action == "postiz_get_post_analytics":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_get_post_analytics(**kwargs)
-        raise ValueError(
-            f"Unknown action: {action}. Must be one of: postiz_get_analytics', 'postiz_get_post_analytics"
-        )
+        raise ValueError(f"Unknown action: {action}")
 
 
 def register_notifications_tools(mcp: FastMCP):
@@ -190,21 +190,29 @@ def register_notifications_tools(mcp: FastMCP):
         action: str = Field(
             description="Action to perform. Must be one of: 'postiz_list_notifications'"
         ),
+        params_json: str = Field(
+            default="{}", description="JSON string of parameters to pass to the action."
+        ),
         client=Depends(get_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
     ) -> dict:
-        """Manage notifications operations.
+        """Manage postiz notifications operations."""
+        if ctx:
+            ctx.info("Executing tool...")
+        import json
 
-        Actions:
-          - 'postiz_list_notifications': Call postiz_list_notifications
-        """
-        kwargs: dict[str, Any]
+        try:
+            kwargs = json.loads(params_json)
+        except Exception as e:
+            return {"error": f"Invalid params_json: {e}"}
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
         if action == "postiz_list_notifications":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_list_notifications(**kwargs)
-        raise ValueError(
-            f"Unknown action: {action}. Must be one of: postiz_list_notifications"
-        )
+        raise ValueError(f"Unknown action: {action}")
 
 
 def register_video_tools(mcp: FastMCP):
@@ -213,26 +221,31 @@ def register_video_tools(mcp: FastMCP):
         action: str = Field(
             description="Action to perform. Must be one of: 'postiz_generate_video', 'postiz_video_function'"
         ),
+        params_json: str = Field(
+            default="{}", description="JSON string of parameters to pass to the action."
+        ),
         client=Depends(get_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
     ) -> dict:
-        """Manage video operations.
+        """Manage postiz video operations."""
+        if ctx:
+            ctx.info("Executing tool...")
+        import json
 
-        Actions:
-          - 'postiz_generate_video': Call postiz_generate_video
-          - 'postiz_video_function': Call postiz_video_function
-        """
-        kwargs: dict[str, Any]
+        try:
+            kwargs = json.loads(params_json)
+        except Exception as e:
+            return {"error": f"Invalid params_json: {e}"}
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
         if action == "postiz_generate_video":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_generate_video(**kwargs)
         if action == "postiz_video_function":
-            kwargs = {}
-            kwargs = {k: v for k, v in kwargs.items() if v is not None}
             return client.postiz_video_function(**kwargs)
-        raise ValueError(
-            f"Unknown action: {action}. Must be one of: postiz_generate_video', 'postiz_video_function"
-        )
+        raise ValueError(f"Unknown action: {action}")
 
 
 def get_mcp_instance() -> tuple[Any, ...]:

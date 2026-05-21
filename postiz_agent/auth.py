@@ -1,13 +1,11 @@
 #!/usr/bin/python
-
-
 import os
 
 import urllib3
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 from postiz_agent.api_client import PostizApi
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _client = None
 

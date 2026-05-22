@@ -79,8 +79,8 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
         "postiz-mcp"
       ],
       "env": {
-        "POSTIZ_SUBDOMAIN": "your_postiz_subdomain_here",
-        "POSTIZ_TOKEN": "your_postiz_token_here"
+        "POSTIZ_TOKEN": "your_postiz_token_here",
+        "POSTIZ_SUBDOMAIN": "your_postiz_subdomain_here"
       }
     }
   }
@@ -88,31 +88,7 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
 ```
 
 #### Streamable-HTTP Transport (Recommended for production deployments)
-Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx` with explicit host and port definition:
-
-```json
-{
-  "mcpServers": {
-    "postiz-agent": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "postiz-agent",
-        "postiz-mcp"
-      ],
-      "env": {
-        "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
-        "PORT": "8000",
-        "POSTIZ_SUBDOMAIN": "your_postiz_subdomain_here",
-        "POSTIZ_TOKEN": "your_postiz_token_here"
-      }
-    }
-  }
-}
-```
-
-Alternatively, connect to a pre-deployed remote or local Streamable-HTTP instance:
+To run the server as a long-running Streamable-HTTP service:
 
 ```json
 {
@@ -132,8 +108,8 @@ docker run -d \
   -p 8000:8000 \
   -e TRANSPORT=streamable-http \
   -e PORT=8000 \
-  -e POSTIZ_SUBDOMAIN="your_value" \
   -e POSTIZ_TOKEN="your_value" \
+  -e POSTIZ_SUBDOMAIN="your_value" \
   knucklessg1/postiz-agent:latest
 ```
 
@@ -148,8 +124,8 @@ To start the interactive command-line agent:
 
 ```bash
 # Set credentials
-export POSTIZ_SUBDOMAIN="your_value"
 export POSTIZ_TOKEN="your_value"
+export POSTIZ_SUBDOMAIN="your_value"
 
 # Run the agent server
 postiz-agent --provider openai --model-id gpt-4o

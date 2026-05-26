@@ -140,3 +140,15 @@ To run tests with a timeout to prevent hanging, use the `pytest-timeout` plugin.
 ```bash
 uv run pytest --timeout=60 -k "test_name_pattern"
 ```
+
+---
+
+## Concept Registry
+
+To maintain architectural traceability across development sprints, this project implements standard conceptual tracking tags:
+
+- **`CONCEPT:PA-1.0`**: Dynamic module lazy loading, availability flag exports, and namespace attribute lookups via dynamic module caching hooks.
+- **`CONCEPT:PA-2.0`**: CommandLine Interface argument parser, debug modes, and FastAPI/FastMCP daemon router orchestrators.
+- **`CONCEPT:PA-3.0`**: Parity settings validation, singletons client setup, and exception translation wrappers.
+- **`CONCEPT:PA-4.0`**: Type-safe REST client sub-modules, base paths sanitization, and streaming JSON serializers.
+- **`CONCEPT:PA-5.0`**: Grouped action-routed FastMCP tools, Starlette `/health` router mounts, and SSE custom transports.

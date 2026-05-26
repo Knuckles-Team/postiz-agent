@@ -1,4 +1,9 @@
 #!/usr/bin/python
+"""
+Postiz Agent Authentication Context.
+CONCEPT:PA-3.0 - Singleton API client initialization, environment validations, and credentials fallback.
+"""
+
 import os
 
 import urllib3
@@ -16,11 +21,10 @@ def get_client():
     if _client is None:
         base_url = os.getenv("POSTIZ_URL", "https://api.postiz.com/public/v1")
         token = os.getenv("POSTIZ_TOKEN", "")
-        verify = os.getenv("POSTIZ_AGENT_VERIFY", "True").lower() in (
-            "true",
-            "1",
-            "yes",
+        verify_env = (
+            os.getenv("POSTIZ_SSL_VERIFY") or os.getenv("POSTIZ_AGENT_VERIFY") or "True"
         )
+        verify = verify_env.lower() in ("true", "1", "yes")
 
         try:
             _client = PostizApi(

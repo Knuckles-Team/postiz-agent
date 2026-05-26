@@ -5,7 +5,9 @@ from postiz_agent.mcp_server import get_mcp_instance
 
 def test_mcp_instance_creation():
     """Test that the MCP instance can be created successfully."""
-    mcp, args, middlewares = get_mcp_instance()
+    from unittest.mock import patch
+    with patch("sys.argv", ["mcp_server.py"]):
+        mcp, args, middlewares = get_mcp_instance()
     assert isinstance(mcp, FastMCP)
     assert "postiz" in mcp.name
 

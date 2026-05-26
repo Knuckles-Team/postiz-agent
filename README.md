@@ -43,7 +43,7 @@
 
 This agent wraps the Agent for interacting with Postiz Public API API. You can interact with it programmatically or via its integrated execution entrypoints.
 
-Detailed instructions on how to use the underlying API wrappers, extended schema bindings, and developer SDK references are maintained in [docs/index.md](file:///home/apps/workspace/agent-packages/agents/postiz-agent/docs/index.md).
+Detailed instructions on how to use the underlying API wrappers, extended schema bindings, and developer SDK references are maintained in [docs/index.md](docs/index.md).
 
 ---
 
@@ -54,14 +54,35 @@ This server utilizes dynamic Action-Routed tools to optimize token overhead and 
 ### Available MCP Tools
 | Tool Module | Toggle Env Var | Enabled by Default | Description & Nested Methods |
 |-------------|----------------|--------------------|------------------------------|
-| **Integrations** | `INTEGRATIONSTOOL` | `True` | Manage postiz integrations operations. Action-routed methods: `postiz_list_integrations`, `postiz_get_integration_url`, `postiz_delete_channel`, `postiz_check_connection`, `postiz_find_slot`. |
-| **Posts** | `POSTSTOOL` | `True` | Manage postiz posts operations. Action-routed methods: `postiz_list_posts`, `postiz_create_post`, `postiz_delete_post`, `postiz_delete_post_by_group`, `postiz_get_missing_content`, `postiz_update_release_id`. |
-| **Uploads** | `UPLOADSTOOL` | `True` | Manage postiz uploads operations. Action-routed methods: `postiz_upload_file`, `postiz_upload_from_url`. |
-| **Analytics** | `ANALYTICSTOOL` | `True` | Manage postiz analytics operations. Action-routed methods: `postiz_get_analytics`, `postiz_get_post_analytics`. |
-| **Notifications** | `NOTIFICATIONSTOOL` | `True` | Manage postiz notifications operations. Action-routed methods: `postiz_list_notifications`. |
-| **Video** | `VIDEOTOOL` | `True` | Manage postiz video operations. Action-routed methods: `postiz_generate_video`, `postiz_video_function`. |
+| **Integrations** | `INTEGRATIONS_TOOL` | `True` | Manage postiz integrations operations. Action-routed methods: `postiz_check_connection`, `postiz_delete_channel`, `postiz_find_slot`, `postiz_get_integration_url`, `postiz_list_integrations`. |
+| **Posts** | `POSTS_TOOL` | `True` | Manage postiz posts operations. Action-routed methods: `postiz_create_post`, `postiz_delete_post`, `postiz_delete_post_by_group`, `postiz_get_missing_content`, `postiz_list_posts`, `postiz_update_release_id`. |
+| **Uploads** | `UPLOADS_TOOL` | `True` | Manage postiz uploads operations. Action-routed methods: `postiz_upload_file`, `postiz_upload_from_url`. |
+| **Analytics** | `ANALYTICS_TOOL` | `True` | Manage postiz analytics operations. Action-routed methods: `postiz_get_analytics`, `postiz_get_post_analytics`. |
+| **Notifications** | `NOTIFICATIONS_TOOL` | `True` | Manage postiz notifications operations. Action-routed methods: `postiz_list_notifications`. |
+| **Video** | `VIDEO_TOOL` | `True` | Manage postiz video operations. Action-routed methods: `postiz_generate_video`, `postiz_video_function`. |
 
-Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](file:///home/apps/workspace/agent-packages/agents/postiz-agent/docs/mcp.md).
+Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
+
+### Dynamic Tool Selection & Visibility
+
+This MCP server supports dynamic toolset selection and visibility filtering at runtime. This allows you to restrict the set of exposed tools in order to prevent blowing up the LLM's context window.
+
+You can configure tool filtering via multiple input channels:
+
+- **CLI Arguments:** Pass `--tools` or `--toolsets` (or their disabled counterparts `--disabled-tools` and `--disabled-toolsets`) during startup.
+- **Environment Variables:** Define standard environment variables:
+  - `MCP_ENABLED_TOOLS` / `MCP_DISABLED_TOOLS`
+  - `MCP_ENABLED_TAGS` / `MCP_DISABLED_TAGS`
+- **HTTP SSE Request Headers:** Pass custom headers during transport initialization:
+  - `x-mcp-enabled-tools` / `x-mcp-disabled-tools`
+  - `x-mcp-enabled-tags` / `x-mcp-disabled-tags`
+- **HTTP SSE Request Query Parameters:** Append query parameters directly to your transport connection URL:
+  - `?tools=tool1,tool2`
+  - `?tags=tag1`
+
+When query strings or parameters are supplied, an LLM-free **Knowledge Graph resolution layer** (using `DynamicToolOrchestrator`) matches query intents against known tool tags, names, or descriptions, with safe fallback and automated 24-hour background cache refreshing.
+
+---
 
 ### MCP Configuration Examples
 
@@ -223,7 +244,7 @@ services:
 
 ```
 
-Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](file:///home/apps/workspace/agent-packages/agents/postiz-agent/docs/agent.md).
+Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](docs/agent.md).
 
 ---
 
@@ -242,6 +263,36 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 | **Tool Guard** | Sensitivity inspection with human-in-the-loop validation | Enabled by default |
 | **Prompt Injection Defense** | Input scanning, repetition monitoring, and recursive loop blocks | Enabled by default |
 | **Context Safety Guard** | Stuck-loop detectors and contextual overflow preemptive alerts | Enabled by default |
+
+---
+
+## Environment Variables
+
+The agent and MCP server can be configured using the following environment variables:
+
+| Variable | Description | Default / Type |
+| :--- | :--- | :---: |
+| **`HOST`** | Host to bind the server to (Streamable-HTTP). | `0.0.0.0` |
+| **`PORT`** | Port to bind the server to. | `8000` |
+| **`TRANSPORT`** | MCP communication channel style. Options: `stdio`, `streamable-http`, `sse`. | `stdio` |
+| **`DEFAULT_AGENT_NAME`** | Display name for the Pydantic AI Graph Agent. | `"Postiz Agent"` |
+| **`AGENT_DESCRIPTION`** | System description metadata for the Pydantic AI Graph Agent. | *Loaded from manifest* |
+| **`AGENT_SYSTEM_PROMPT`**| Custom prompt injected into the Pydantic AI Graph Agent core. | *Loaded from manifest* |
+| **`POSTIZ_TOKEN`** | API authentication token used for Postiz endpoints. | *Required* |
+| **`POSTIZ_URL`** | Base endpoint URL for the Postiz Public API. | `https://api.postiz.com/public/v1` |
+| **`POSTIZ_SUBDOMAIN`** | User account subdomain registered with Postiz. | *Optional* |
+| **`POSTIZ_AGENT_VERIFY`** | Whether to enforce HTTPS certificate verification. | `True` |
+| **`AUTH_TYPE`** | Authentication method. Option: `token`. | `token` |
+| **`ENABLE_OTEL`** | Whether to enable OpenTelemetry exporter logs. | `True` |
+| **`OTEL_EXPORTER_OTLP_ENDPOINT`** | Enterprise telemetry collection OTLP target URL. | *Optional* |
+| **`EUNOMIA_TYPE`** | Access control policy engine mode. Options: `none`, `embedded`, `remote`. | `none` |
+| **`EUNOMIA_POLICY_FILE`** | Path to the local policy configuration file. | `mcp_policies.json` |
+| **`INTEGRATIONSTOOL`** | Toggle to enable/disable the Integrations MCP tool group. | `True` |
+| **`POSTSTOOL`** | Toggle to enable/disable the Posts MCP tool group. | `True` |
+| **`UPLOADSTOOL`** | Toggle to enable/disable the Uploads MCP tool group. | `True` |
+| **`ANALYTICSTOOL`** | Toggle to enable/disable the Analytics MCP tool group. | `True` |
+| **`NOTIFICATIONSTOOL`** | Toggle to enable/disable the Notifications MCP tool group. | `True` |
+| **`VIDEOTOOL`** | Toggle to enable/disable the Video MCP tool group. | `True` |
 
 ---
 

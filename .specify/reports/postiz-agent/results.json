@@ -1,0 +1,1909 @@
+{
+  "project": "postiz-agent",
+  "path": "/home/apps/workspace/agent-packages/agents/postiz-agent",
+  "domain_results": [
+    {
+      "domain": "Project Analysis",
+      "score": 74,
+      "grade": "C",
+      "findings": [
+        "Detected ecosystem marker: agent-utilities \u2192 Agent-Utilities Ecosystem",
+        "Protocol support: MCP"
+      ],
+      "justifications": [
+        {
+          "criterion": "has_pyproject",
+          "points": 10,
+          "evidence": "pyproject.toml and requirements.txt",
+          "reasoning": "Both pyproject.toml and requirements.txt exist, fulfilling mandatory Python project requirements"
+        },
+        {
+          "criterion": "project_type_detected",
+          "points": 10,
+          "evidence": "Agent-Utilities Ecosystem",
+          "reasoning": "Identified 1 ecosystem marker(s) in dependencies"
+        },
+        {
+          "criterion": "externalized_prompts",
+          "points": 0,
+          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent",
+          "reasoning": "No prompts/ directory found. Prompts may be hardcoded in source."
+        },
+        {
+          "criterion": "observability",
+          "points": 0,
+          "evidence": "dependency list",
+          "reasoning": "No observability tools (logfire, sentry, opentelemetry) found"
+        },
+        {
+          "criterion": "testing_suite",
+          "points": 10,
+          "evidence": "tests dir: True, pytest dep: True",
+          "reasoning": "Tests directory exists, pytest in dependencies"
+        },
+        {
+          "criterion": "agents_md",
+          "points": 10,
+          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/AGENTS.md (3921 bytes)",
+          "reasoning": "AGENTS.md exists with comprehensive content"
+        },
+        {
+          "criterion": "pre_commit_hooks",
+          "points": 10,
+          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.pre-commit-config.yaml",
+          "reasoning": "Pre-commit configuration found for automated code quality checks"
+        },
+        {
+          "criterion": "gitignore",
+          "points": 10,
+          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.gitignore",
+          "reasoning": ".gitignore exists to prevent committing build artifacts and secrets"
+        },
+        {
+          "criterion": "env_template",
+          "points": 10,
+          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.env.example",
+          "reasoning": "Environment template exists for onboarding and secret management"
+        },
+        {
+          "criterion": "protocol_support",
+          "points": 4,
+          "evidence": "MCP",
+          "reasoning": "1 communication protocol(s) detected"
+        }
+      ],
+      "details": {
+        "has_pyproject": true,
+        "has_requirements": true,
+        "dep_count": 5,
+        "project_types": [
+          "Agent-Utilities Ecosystem"
+        ],
+        "has_agent_skills": false
+      }
+    },
+    {
+      "domain": "Dependency Audit",
+      "score": 94,
+      "grade": "A",
+      "findings": [
+        "Minor update: agent-utilities 0.2.40 (installed) -> 0.16.0",
+        "Minor update: pytest-xdist 3.6.0 (constraint \u2014 not installed) -> 3.8.0"
+      ],
+      "justifications": [
+        {
+          "criterion": "dependency_freshness",
+          "points": 94,
+          "evidence": "source=/home/apps/workspace/agent-packages/agents/postiz-agent/pyproject.toml total=5 major=0 minor=2 patch=0 not_installed=2",
+          "reasoning": "Audited 5 deps (3 installed, 2 constraint-only). 0 major, 2 minor, 0 patch updates."
+        }
+      ],
+      "packages": {
+        "pytest-cov": {
+          "current": "7.1.0",
+          "constraint": "Any",
+          "installed": "7.1.0",
+          "latest": "7.1.0",
+          "status": "up-to-date",
+          "version_source": "installed",
+          "summary": "Pytest plugin for measuring coverage."
+        },
+        "pytest-asyncio": {
+          "current": "Any",
+          "constraint": "Any",
+          "installed": null,
+          "latest": "1.3.0",
+          "status": "unknown",
+          "version_source": "constraint",
+          "summary": "Pytest support for asyncio"
+        },
+        "agent-utilities": {
+          "current": "0.2.40",
+          "constraint": "0.16.0",
+          "installed": "0.2.40",
+          "latest": "0.16.0",
+          "status": "minor",
+          "version_source": "installed",
+          "summary": "Agent Utilities for Pydantic AI Agents"
+        },
+        "pytest-xdist": {
+          "current": "3.6.0",
+          "constraint": "3.6.0",
+          "installed": null,
+          "latest": "3.8.0",
+          "status": "minor",
+          "version_source": "constraint",
+          "summary": "pytest xdist plugin for distributed testing, most importantly across multiple CPUs"
+        },
+        "pytest": {
+          "current": "9.0.3",
+          "constraint": "Any",
+          "installed": "9.0.3",
+          "latest": "9.0.3",
+          "status": "up-to-date",
+          "version_source": "installed",
+          "summary": "pytest: simple powerful testing with Python"
+        }
+      }
+    },
+    {
+      "domain": "Codebase Optimization",
+      "score": 90,
+      "grade": "A",
+      "findings": [],
+      "justifications": [
+        {
+          "criterion": "code_quality",
+          "points": 90,
+          "evidence": "{\"file_count\": 20, \"total_lines\": 2021, \"function_count\": 74, \"avg_complexity\": 4.91, \"max_complexity\": 33, \"avg_function_length\": 22.0, \"max_function_length\": 159, \"max_nesting_depth\": 6, \"duplication_ratio\": 0.012, \"long_functions\": 4, \"complex_functions\": 5, \"deep_nesting_functions\": 3, \"parse_errors\": 0, \"structural_issues\": 0, \"truly_monolithic\": 0}",
+          "reasoning": "Analyzed 20 files, 74 functions. Avg CC=4.9, max length=159, duplication=1.2%, 0 structural issues (0 monolithic)."
+        }
+      ],
+      "metrics": {
+        "file_count": 20,
+        "total_lines": 2021,
+        "function_count": 74,
+        "avg_complexity": 4.91,
+        "max_complexity": 33,
+        "avg_function_length": 22.0,
+        "max_function_length": 159,
+        "max_nesting_depth": 6,
+        "duplication_ratio": 0.012,
+        "long_functions": 4,
+        "complex_functions": 5,
+        "deep_nesting_functions": 3,
+        "parse_errors": 0,
+        "structural_issues": 0,
+        "truly_monolithic": 0
+      },
+      "top_complex": [
+        {
+          "name": "test_api_client_endpoints",
+          "line": 208,
+          "length": 159,
+          "complexity": 33,
+          "nesting_depth": 2,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+        },
+        {
+          "name": "test_mcp_server_tools_exception_handling",
+          "line": 392,
+          "length": 137,
+          "complexity": 21,
+          "nesting_depth": 1,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+        },
+        {
+          "name": "main",
+          "line": 177,
+          "length": 99,
+          "complexity": 19,
+          "nesting_depth": 4,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+        },
+        {
+          "name": "parse_mcp_server",
+          "line": 94,
+          "length": 41,
+          "complexity": 14,
+          "nesting_depth": 5,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+        },
+        {
+          "name": "__getattr__",
+          "line": 46,
+          "length": 26,
+          "complexity": 12,
+          "nesting_depth": 3,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/__init__.py"
+        }
+      ],
+      "top_long": [
+        {
+          "name": "test_api_client_endpoints",
+          "line": 208,
+          "length": 159,
+          "complexity": 33,
+          "nesting_depth": 2,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+        },
+        {
+          "name": "test_mcp_server_tools_exception_handling",
+          "line": 392,
+          "length": 137,
+          "complexity": 21,
+          "nesting_depth": 1,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+        },
+        {
+          "name": "main",
+          "line": 177,
+          "length": 99,
+          "complexity": 19,
+          "nesting_depth": 4,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+        },
+        {
+          "name": "test_agent_server_debug_mode",
+          "line": 96,
+          "length": 52,
+          "complexity": 1,
+          "nesting_depth": 1,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+        },
+        {
+          "name": "parse_mcp_server",
+          "line": 94,
+          "length": 41,
+          "complexity": 14,
+          "nesting_depth": 5,
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+        }
+      ],
+      "structural_issues": [],
+      "flat_directories": []
+    },
+    {
+      "domain": "Security Analysis",
+      "score": 100,
+      "grade": "A",
+      "findings": [],
+      "justifications": [
+        {
+          "criterion": "security_posture",
+          "points": 100,
+          "evidence": "high=0 med=0 low=0 attack_surface={\"subprocess_calls\": 0, \"file_io_calls\": 5, \"network_endpoints\": 0, \"eval_exec_usage\": 0, \"sql_usage\": 0}",
+          "reasoning": "Scanned 20 files. Found 0 security findings. High: -0pts, Med: -0pts, Low: -0pts."
+        }
+      ],
+      "vulnerabilities": [],
+      "attack_surface": {
+        "subprocess_calls": 0,
+        "file_io_calls": 5,
+        "network_endpoints": 0,
+        "eval_exec_usage": 0,
+        "sql_usage": 0
+      }
+    },
+    {
+      "domain": "Test Coverage",
+      "score": 75,
+      "grade": "C",
+      "findings": [
+        "Test suite lacks intent diversity (only one type)",
+        "12 potential doc-test drift items"
+      ],
+      "justifications": [
+        {
+          "criterion": "test_coverage_quality",
+          "points": 75,
+          "evidence": "{\"test_file_count\": 4, \"test_count\": 20, \"source_file_count\": 20, \"test_to_source_ratio\": 1.0, \"intent_distribution\": {\"unit\": 20}, \"tests_without_assertions\": 2, \"concept_traced_tests\": 0, \"drift_items\": 12}",
+          "reasoning": "20 tests across 4 files. Ratio: 1.00. Intent: {'unit': 20}. 2 without assertions, 12 drift items."
+        }
+      ],
+      "metrics": {
+        "test_file_count": 4,
+        "test_count": 20,
+        "source_file_count": 20,
+        "test_to_source_ratio": 1.0,
+        "intent_distribution": {
+          "unit": 20
+        },
+        "tests_without_assertions": 2,
+        "concept_traced_tests": 0,
+        "drift_items": 12
+      },
+      "tests": [
+        {
+          "name": "test_concept_parity",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_concept_parity.py",
+          "line": 58,
+          "length": 30,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_mcp_instance_creation",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "line": 6,
+          "length": 5,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_import_postiz_agent",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "line": 13,
+          "length": 5,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_server_startup",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_startup.py",
+          "line": 1,
+          "length": 12,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": false
+        },
+        {
+          "name": "test_init_module_lazy_attributes",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 33,
+          "length": 28,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_init_lazy_import_failure",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 63,
+          "length": 21,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_main_invocation",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 88,
+          "length": 4,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_agent_server_debug_mode",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 96,
+          "length": 52,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_auth_singleton_and_exception_handling",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 152,
+          "length": 28,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_api_client_url_normalization",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 184,
+          "length": 12,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_api_client_unauthorized_handling",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 198,
+          "length": 8,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_api_client_endpoints",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 208,
+          "length": 159,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_mcp_server_custom_route",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 372,
+          "length": 17,
+          "intent": "unit",
+          "markers": [
+            "asyncio"
+          ],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_mcp_server_tools_exception_handling",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 392,
+          "length": 137,
+          "intent": "unit",
+          "markers": [
+            "asyncio"
+          ],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_mcp_server_startup_transports",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 531,
+          "length": 32,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_requests_dependency_warning_import_failure",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 565,
+          "length": 12,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": false
+        },
+        {
+          "name": "test_init_missing_optional_keys",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 579,
+          "length": 5,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_agent_server_main_execution",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 586,
+          "length": 32,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_api_client_upload_file_removes_content_type",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 620,
+          "length": 17,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        },
+        {
+          "name": "test_mcp_server_main_execution",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 639,
+          "length": 17,
+          "intent": "unit",
+          "markers": [],
+          "concept_id": "",
+          "has_assertions": true
+        }
+      ],
+      "drift": [
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "overview",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "key features",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "cli or api",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "mcp",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "mcp configuration examples",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "docker compose orchestration",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "security & governance",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "access control & policy enforcement",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "runtime security grid",
+          "detail": "Feature heading in README has no corresponding test"
+        },
+        {
+          "type": "untested_feature",
+          "source": "README.md",
+          "feature": "installation",
+          "detail": "Feature heading in README has no corresponding test"
+        }
+      ]
+    },
+    {
+      "domain": "Documentation & Governance",
+      "score": 97,
+      "grade": "A",
+      "findings": [
+        "README.md missing sections: usage|quick start",
+        "2 broken internal links in README.md",
+        "README missing: Has a Table of Contents",
+        "README missing: Has usage examples with code blocks"
+      ],
+      "justifications": [
+        {
+          "criterion": "documentation_quality",
+          "points": 97,
+          "evidence": "{\"README.md\": {\"exists\": true, \"missing\": [\"usage|quick start\"]}, \"AGENTS.md\": {\"exists\": true, \"missing\": []}, \"STANDARDS.md\": {\"exists\": false, \"missing\": []}, \"CONTRIBUTING.md\": {\"exists\": false, \"missing\": []}, \"CHANGELOG.md\": {\"exists\": true, \"missing\": []}, \"LICENSE\": {\"exists\": true, \"missing\": []}, \"docs/\": {\"exists\": true, \"missing\": []}}",
+          "reasoning": "Audited 6 standard docs + docs/ directory. 0 broken references, 5 docs present. README industry grade: B (81.2%)."
+        }
+      ],
+      "doc_results": {
+        "README.md": {
+          "exists": true,
+          "size": 10008,
+          "headings": [
+            "Postiz Agent",
+            "CLI or API | MCP | Agent",
+            "Overview",
+            "Key Features",
+            "CLI or API",
+            "MCP",
+            "Available MCP Tools",
+            "MCP Configuration Examples",
+            "stdio Transport (Recommended for local IDEs e.g., Cursor, Claude Desktop)",
+            "Streamable-HTTP Transport (Recommended for production deployments)",
+            "Agent",
+            "Running the Agent CLI",
+            "Set credentials",
+            "Run the agent server",
+            "Docker Compose Orchestration",
+            "Security & Governance",
+            "Access Control & Policy Enforcement",
+            "Runtime Security Grid",
+            "Installation",
+            "Using uv (highly recommended)"
+          ],
+          "missing_sections": [
+            "usage|quick start"
+          ],
+          "heading_count": 23,
+          "stale": false,
+          "last_modified": "2026-05-22 08:19:45 -0500",
+          "category": "project_overview"
+        },
+        "AGENTS.md": {
+          "exists": true,
+          "size": 3777,
+          "headings": [
+            "AGENTS.md",
+            "Tech Stack & Architecture",
+            "Architecture Diagram",
+            "Workflow Diagram",
+            "Commands (run these exactly)",
+            "Installation",
+            "Quality & Linting (run from project root)",
+            "Execution Commands",
+            "Run MCP Server",
+            "Run Agent",
+            "Project Structure Quick Reference",
+            "File Tree",
+            "Code Style & Conventions",
+            "Dos and Don'ts",
+            "Safety & Boundaries",
+            "When Stuck",
+            "Testing with Timeout"
+          ],
+          "missing_sections": [],
+          "heading_count": 17,
+          "stale": false,
+          "last_modified": "2026-05-05 09:28:18 -0500",
+          "category": "agentic_metadata"
+        },
+        "STANDARDS.md": {
+          "exists": false,
+          "missing_sections": [],
+          "size": 0,
+          "headings": [],
+          "stale": true,
+          "last_modified": "unknown",
+          "category": "standards"
+        },
+        "CONTRIBUTING.md": {
+          "exists": false,
+          "missing_sections": [],
+          "size": 0,
+          "headings": [],
+          "stale": true,
+          "last_modified": "unknown",
+          "category": "contributing"
+        },
+        "CHANGELOG.md": {
+          "exists": true,
+          "size": 364,
+          "headings": [
+            "Changelog",
+            "[Unreleased]",
+            "Added",
+            "Changed",
+            "Fixed",
+            "[0.2.1] - 2026-04-29",
+            "Added"
+          ],
+          "missing_sections": [],
+          "heading_count": 7,
+          "stale": false,
+          "last_modified": "2026-04-30 01:12:44 -0500",
+          "category": "changelog"
+        },
+        "LICENSE": {
+          "exists": true,
+          "size": 1068,
+          "headings": [],
+          "missing_sections": [],
+          "heading_count": 0,
+          "stale": false,
+          "last_modified": "2026-03-31 01:08:03 -0500",
+          "category": "license"
+        },
+        "docs/": {
+          "exists": true,
+          "file_count": 3,
+          "files": [
+            "docs/legacy_readme.md",
+            "docs/overview.md",
+            "docs/index.md"
+          ]
+        }
+      },
+      "drift": [
+        {
+          "type": "info",
+          "doc": "README.md",
+          "reference": "postiz-agent[all], postiz-agent[all]",
+          "detail": "README references 2 install commands"
+        }
+      ],
+      "readme_grade": {
+        "score": 26,
+        "max_score": 32,
+        "percentage": 81.2,
+        "grade": "B",
+        "criteria": {
+          "has_title": true,
+          "has_badges": true,
+          "has_description": true,
+          "has_toc": false,
+          "has_installation": true,
+          "has_usage": false,
+          "has_api_docs": true,
+          "has_architecture": true,
+          "has_contributing": true,
+          "has_license": false,
+          "has_code_blocks": true,
+          "has_docs_refs": true,
+          "no_broken_links": false,
+          "reasonable_length": true,
+          "has_cli_api_details": true,
+          "has_mcp_configs": true,
+          "has_agent_configs": true,
+          "has_env_var_docs": true,
+          "has_mcp_tool_table": true,
+          "has_deployment_docs": true
+        },
+        "findings": [
+          "2 broken internal links in README.md",
+          "README missing: Has a Table of Contents",
+          "README missing: Has usage examples with code blocks"
+        ]
+      }
+    },
+    {
+      "domain": "Architecture & Design Patterns",
+      "score": 70,
+      "grade": "C",
+      "findings": [
+        "SRP: 1 modules exceed 500 lines (god modules)",
+        "No discernible layer architecture (no domain/service/adapter separation)",
+        "Low dependency injection ratio: 7%"
+      ],
+      "justifications": [
+        {
+          "criterion": "architecture_quality",
+          "points": 70,
+          "evidence": "{\"layers\": 0, \"di_ratio\": 0.07, \"solid_violations\": 1}",
+          "reasoning": "Analyzed 20 files. 0/5 architecture layers present, DI ratio: 7%, 1 SOLID violations."
+        }
+      ],
+      "analysis": {
+        "solid_findings": [
+          {
+            "principle": "SRP",
+            "status": "violation",
+            "detail": "1 modules exceed 500 lines (god modules)",
+            "items": [
+              {
+                "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+                "lines": 655
+              }
+            ]
+          }
+        ],
+        "layer_architecture": {
+          "has_domain_layer": false,
+          "has_adapter_layer": false,
+          "has_port_interfaces": false,
+          "has_service_layer": false,
+          "has_model_layer": false
+        },
+        "dependency_injection": {
+          "total_classes": 30,
+          "di_classes": 2,
+          "di_ratio": 0.07
+        },
+        "event_driven": {
+          "event_classes": 0,
+          "callback_patterns": 0,
+          "observer_patterns": 0,
+          "signal_patterns": 0
+        },
+        "file_count": 20
+      }
+    },
+    {
+      "domain": "Concept Traceability",
+      "score": 30,
+      "grade": "F",
+      "findings": [
+        "Low traceability ratio: 0% concepts fully traced",
+        "20 test functions missing concept markers",
+        "29 significant functions (>10 lines) missing concept markers in docstrings"
+      ],
+      "justifications": [
+        {
+          "criterion": "concept_traceability",
+          "points": 30,
+          "evidence": "{\"total_concepts\": 5, \"well_traced\": 0, \"orphans\": 5, \"drift\": 0, \"code_concepts\": 0, \"doc_concepts\": 7, \"test_concepts\": 0, \"decorator_concepts\": 0, \"tests_missing_markers\": 20, \"functions_missing_docstrings\": 29, \"registry_concepts\": 0, \"unimplemented_concepts\": 0}",
+          "reasoning": "5 unique concepts found. 0 fully traced (code+docs+tests), 5 orphans, 0 drifted. 20 tests without concept markers. 29 functions without concept docstrings."
+        }
+      ],
+      "metrics": {
+        "total_concepts": 5,
+        "well_traced": 0,
+        "orphans": 5,
+        "drift": 0,
+        "code_concepts": 0,
+        "doc_concepts": 7,
+        "test_concepts": 0,
+        "decorator_concepts": 0,
+        "tests_missing_markers": 20,
+        "functions_missing_docstrings": 29,
+        "registry_concepts": 0,
+        "unimplemented_concepts": 0
+      },
+      "concept_map": {
+        "OS-5.4": {
+          "code": 0,
+          "docs": 2,
+          "test": 0,
+          "test_decorator": 0,
+          "test_docstring": 0
+        },
+        "OS-5.1": {
+          "code": 0,
+          "docs": 1,
+          "test": 0,
+          "test_decorator": 0,
+          "test_docstring": 0
+        },
+        "OS-5.3": {
+          "code": 0,
+          "docs": 2,
+          "test": 0,
+          "test_decorator": 0,
+          "test_docstring": 0
+        },
+        "ORCH-1.4": {
+          "code": 0,
+          "docs": 1,
+          "test": 0,
+          "test_decorator": 0,
+          "test_docstring": 0
+        },
+        "OS-5.2": {
+          "code": 0,
+          "docs": 1,
+          "test": 0,
+          "test_decorator": 0,
+          "test_docstring": 0
+        }
+      },
+      "orphans": [
+        {
+          "concept_id": "OS-5.4",
+          "present_in": [
+            "docs"
+          ],
+          "missing_from": [
+            "code",
+            "test"
+          ]
+        },
+        {
+          "concept_id": "OS-5.1",
+          "present_in": [
+            "docs"
+          ],
+          "missing_from": [
+            "code",
+            "test"
+          ]
+        },
+        {
+          "concept_id": "OS-5.3",
+          "present_in": [
+            "docs"
+          ],
+          "missing_from": [
+            "code",
+            "test"
+          ]
+        },
+        {
+          "concept_id": "ORCH-1.4",
+          "present_in": [
+            "docs"
+          ],
+          "missing_from": [
+            "code",
+            "test"
+          ]
+        },
+        {
+          "concept_id": "OS-5.2",
+          "present_in": [
+            "docs"
+          ],
+          "missing_from": [
+            "code",
+            "test"
+          ]
+        }
+      ],
+      "drift": [],
+      "tests_missing_markers": [
+        {
+          "test_name": "test_concept_parity",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_concept_parity.py",
+          "line": 58
+        },
+        {
+          "test_name": "test_mcp_instance_creation",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "line": 6
+        },
+        {
+          "test_name": "test_import_postiz_agent",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "line": 13
+        },
+        {
+          "test_name": "test_server_startup",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_startup.py",
+          "line": 1
+        },
+        {
+          "test_name": "test_init_module_lazy_attributes",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 33
+        },
+        {
+          "test_name": "test_init_lazy_import_failure",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 63
+        },
+        {
+          "test_name": "test_main_invocation",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 88
+        },
+        {
+          "test_name": "test_agent_server_debug_mode",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 96
+        },
+        {
+          "test_name": "test_auth_singleton_and_exception_handling",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 152
+        },
+        {
+          "test_name": "test_api_client_url_normalization",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 184
+        },
+        {
+          "test_name": "test_api_client_unauthorized_handling",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 198
+        },
+        {
+          "test_name": "test_api_client_endpoints",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 208
+        },
+        {
+          "test_name": "test_mcp_server_custom_route",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 372
+        },
+        {
+          "test_name": "test_mcp_server_tools_exception_handling",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 392
+        },
+        {
+          "test_name": "test_mcp_server_startup_transports",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 531
+        },
+        {
+          "test_name": "test_requests_dependency_warning_import_failure",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 565
+        },
+        {
+          "test_name": "test_init_missing_optional_keys",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 579
+        },
+        {
+          "test_name": "test_agent_server_main_execution",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 586
+        },
+        {
+          "test_name": "test_api_client_upload_file_removes_content_type",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 620
+        },
+        {
+          "test_name": "test_mcp_server_main_execution",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "line": 639
+        }
+      ],
+      "functions_missing_docstrings": [
+        {
+          "function": "parse_api_client",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "line": 33,
+          "length": 26
+        },
+        {
+          "function": "parse_mcp_server",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "line": 94,
+          "length": 41
+        },
+        {
+          "function": "verify_agent",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "line": 137,
+          "length": 38
+        },
+        {
+          "function": "main",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "line": 177,
+          "length": 99
+        },
+        {
+          "function": "register_integrations_tools",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 41,
+          "length": 37
+        },
+        {
+          "function": "register_posts_tools",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 80,
+          "length": 39
+        },
+        {
+          "function": "register_uploads_tools",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 121,
+          "length": 31
+        },
+        {
+          "function": "register_analytics_tools",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 154,
+          "length": 31
+        },
+        {
+          "function": "register_notifications_tools",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 187,
+          "length": 29
+        },
+        {
+          "function": "register_video_tools",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 218,
+          "length": 31
+        },
+        {
+          "function": "get_mcp_instance",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 251,
+          "length": 35
+        },
+        {
+          "function": "mcp_server",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 288,
+          "length": 16
+        },
+        {
+          "function": "postiz_integrations",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 43,
+          "length": 35
+        },
+        {
+          "function": "postiz_posts",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 82,
+          "length": 37
+        },
+        {
+          "function": "postiz_uploads",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 123,
+          "length": 29
+        },
+        {
+          "function": "postiz_analytics",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 156,
+          "length": 29
+        },
+        {
+          "function": "postiz_notifications",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 189,
+          "length": 27
+        },
+        {
+          "function": "postiz_video",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "line": 220,
+          "length": 29
+        },
+        {
+          "function": "get_client",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/auth.py",
+          "line": 13,
+          "length": 26
+        },
+        {
+          "function": "agent_server",
+          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/agent_server.py",
+          "line": 41,
+          "length": 34
+        }
+      ],
+      "unimplemented_concepts": []
+    },
+    {
+      "domain": "Linting & Formatting",
+      "score": 100,
+      "grade": "A",
+      "findings": [
+        "Total lint findings: 0 (high/error: 0, medium/warning: 0, low: 0)"
+      ],
+      "justifications": [
+        {
+          "criterion": "lint_compliance",
+          "points": 100,
+          "evidence": "ruff=0, bandit=0, mypy=0",
+          "reasoning": "0 total findings across 3 tools. High/error: -0pts, Med/warning: -0pts, Low: -0pt."
+        }
+      ],
+      "tool_results": {
+        "ruff": {
+          "available": true,
+          "finding_count": 0,
+          "returncode": 1
+        },
+        "bandit": {
+          "available": true,
+          "finding_count": 0,
+          "returncode": 1
+        },
+        "mypy": {
+          "available": true,
+          "finding_count": 0,
+          "returncode": 1
+        }
+      },
+      "all_findings": []
+    },
+    {
+      "domain": "Pre-Commit Compliance",
+      "score": 89,
+      "grade": "B",
+      "findings": [
+        "1/27 pre-commit hooks failed: don't commit to branch",
+        "2 hook(s) may be outdated: ruff-pre-commit, uv-pre-commit",
+        "Pytest hooks skipped (handled by CE-016 Test Execution): pytest, local-pytest"
+      ],
+      "justifications": [
+        {
+          "criterion": "precommit_compliance",
+          "points": 89,
+          "evidence": "{\"total_hooks\": 27, \"passed\": 25, \"failed\": 1, \"skipped\": 1, \"outdated_hooks\": 2, \"pytest_hooks_skipped\": 2, \"exit_code\": 1}",
+          "reasoning": "Ran pre-commit with 27 hooks: 25 passed, 1 failed, 1 skipped. 2 potentially outdated. 2 pytest hooks deferred to CE-016."
+        }
+      ],
+      "hook_results": [
+        {
+          "hook": "check for added large files",
+          "status": "passed"
+        },
+        {
+          "hook": "check python ast",
+          "status": "passed"
+        },
+        {
+          "hook": "check yaml",
+          "status": "passed"
+        },
+        {
+          "hook": "check toml",
+          "status": "passed"
+        },
+        {
+          "hook": "check json",
+          "status": "passed"
+        },
+        {
+          "hook": "fix utf-8 byte order marker",
+          "status": "passed"
+        },
+        {
+          "hook": "check for merge conflicts",
+          "status": "passed"
+        },
+        {
+          "hook": "detect private key",
+          "status": "passed"
+        },
+        {
+          "hook": "trim trailing whitespace",
+          "status": "passed"
+        },
+        {
+          "hook": "fix end of files",
+          "status": "passed"
+        },
+        {
+          "hook": "don't commit to branch",
+          "status": "failed"
+        },
+        {
+          "hook": "ruff check",
+          "status": "passed"
+        },
+        {
+          "hook": "ruff format",
+          "status": "passed"
+        },
+        {
+          "hook": "mypy",
+          "status": "passed"
+        },
+        {
+          "hook": "vulture",
+          "status": "passed"
+        },
+        {
+          "hook": "codespell",
+          "status": "passed"
+        },
+        {
+          "hook": "bandit",
+          "status": "passed"
+        },
+        {
+          "hook": "nbqa-ruff",
+          "status": "passed"
+        },
+        {
+          "hook": "uv-lock",
+          "status": "passed"
+        },
+        {
+          "hook": "mermaid-validate",
+          "status": "passed"
+        },
+        {
+          "hook": "check agent standards",
+          "status": "passed"
+        },
+        {
+          "hook": "check cli help",
+          "status": "passed"
+        },
+        {
+          "hook": "validate bumpversion config",
+          "status": "passed"
+        },
+        {
+          "hook": "pytest",
+          "status": "skipped"
+        },
+        {
+          "hook": "Hadolint",
+          "status": "passed"
+        },
+        {
+          "hook": "Validate docker compose files",
+          "status": "passed"
+        },
+        {
+          "hook": "Verify API-to-MCP Integration Coverage",
+          "status": "passed"
+        }
+      ],
+      "pytest_hooks_skipped": [
+        "pytest",
+        "local-pytest"
+      ],
+      "outdated_hooks": [
+        {
+          "repo": "https://github.com/astral-sh/ruff-pre-commit",
+          "current_rev": "v0.15.12",
+          "issue": "Pre-1.0 version \u2014 check for updates"
+        },
+        {
+          "repo": "https://github.com/astral-sh/uv-pre-commit",
+          "current_rev": "0.11.8",
+          "issue": "Pre-1.0 version \u2014 check for updates"
+        }
+      ],
+      "metrics": {
+        "total_hooks": 27,
+        "passed": 25,
+        "failed": 1,
+        "skipped": 1,
+        "outdated_hooks": 2,
+        "pytest_hooks_skipped": 2,
+        "exit_code": 1
+      }
+    },
+    {
+      "domain": "Test Execution",
+      "score": 25,
+      "grade": "F",
+      "findings": [
+        "No tests were executed (test framework detected but no tests found)"
+      ],
+      "justifications": [
+        {
+          "criterion": "test_execution",
+          "points": 25,
+          "evidence": "{\"frameworks_detected\": 1, \"total_passed\": 0, \"total_failed\": 0, \"total_errors\": 0, \"pass_rate\": 0.0, \"timeout\": 300}",
+          "reasoning": "Executed 1 framework(s). 0 passed, 0 failed, 0 errors. Pass rate: 0%."
+        }
+      ],
+      "framework_results": [
+        {
+          "language": "python",
+          "framework": "pytest",
+          "command": [
+            "/usr/bin/python3",
+            "-m",
+            "pytest",
+            "--tb=line",
+            "-q",
+            "--timeout=300",
+            "--no-header"
+          ],
+          "status": "failed",
+          "exit_code": 4,
+          "parsed": {
+            "passed": 0,
+            "failed": 0,
+            "errors": 0,
+            "warnings": 0,
+            "skipped": 0,
+            "failures": []
+          }
+        }
+      ],
+      "metrics": {
+        "frameworks_detected": 1,
+        "total_passed": 0,
+        "total_failed": 0,
+        "total_errors": 0,
+        "pass_rate": 0.0,
+        "timeout": 300
+      }
+    },
+    {
+      "domain": "Directory Organization",
+      "score": 100,
+      "grade": "A",
+      "findings": [],
+      "justifications": [
+        {
+          "criterion": "directory_organization",
+          "points": 100,
+          "evidence": "{\"total_source_files\": 53, \"total_directories\": 10, \"max_depth\": 3, \"avg_depth\": 1.4, \"crowded_dirs_20plus\": 0, \"severely_crowded_40plus\": 0, \"monolithic_dirs\": 0, \"empty_dirs\": 1, \"avg_files_per_dir\": 5.3, \"rogue_scripts\": 0}",
+          "reasoning": "53 files across 10 directories. Max depth: 3, avg files/dir: 5.3. 0 crowded, 0 severely crowded, 0 monolithic, 0 rogue scripts."
+        }
+      ],
+      "metrics": {
+        "total_source_files": 53,
+        "total_directories": 10,
+        "max_depth": 3,
+        "avg_depth": 1.4,
+        "crowded_dirs_20plus": 0,
+        "severely_crowded_40plus": 0,
+        "monolithic_dirs": 0,
+        "empty_dirs": 1,
+        "avg_files_per_dir": 5.3,
+        "rogue_scripts": 0
+      },
+      "crowded_dirs": [],
+      "monolithic_dirs": [],
+      "suggestions": [],
+      "rogue_scripts": []
+    },
+    {
+      "domain": "Version Sync Analysis",
+      "score": 100,
+      "grade": "A",
+      "findings": [
+        "All version '0.15.0' declarations appear to be tracked correctly."
+      ],
+      "justifications": [
+        {
+          "criterion": "bumpversion_exists",
+          "points": 20,
+          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.bumpversion.cfg",
+          "reasoning": ".bumpversion.cfg found"
+        },
+        {
+          "criterion": "current_version_defined",
+          "points": 20,
+          "evidence": "0.15.0",
+          "reasoning": "Current version tracked is 0.15.0"
+        },
+        {
+          "criterion": "files_tracked",
+          "points": 20,
+          "evidence": "5 files tracked",
+          "reasoning": "Found 5 files tracked in .bumpversion.cfg"
+        },
+        {
+          "criterion": "version_drift_check",
+          "points": 40,
+          "evidence": "0 drifted files",
+          "reasoning": "No version drift detected in codebase files"
+        }
+      ],
+      "details": {
+        "tracked_files": [
+          "pyproject.toml",
+          "README.md",
+          "docker/Dockerfile",
+          "postiz_agent/agent_server.py",
+          "postiz_agent/mcp_server.py"
+        ],
+        "drifted_files": []
+      }
+    },
+    {
+      "domain": "Changelog Audit",
+      "score": 75,
+      "grade": "C",
+      "findings": [
+        "CHANGELOG.md exists but could not be parsed \u2014 check format compliance",
+        "No changelog entries within the last 30 days",
+        "keepachangelog not installed \u2014 pip install 'universal-skills[code-enhancer]'"
+      ],
+      "justifications": [
+        {
+          "criterion": "changelog_quality",
+          "points": 75,
+          "evidence": "{\"exists\": true, \"parseable\": false, \"version_count\": 0, \"has_drift\": false, \"dep_deltas_found\": 0}",
+          "reasoning": "CHANGELOG.md exists. 0 versions tracked. 0 dependency changelogs analyzed."
+        }
+      ],
+      "format_validation": {
+        "exists": true,
+        "parseable": false,
+        "has_unreleased": false,
+        "version_count": 0,
+        "uses_semver": true,
+        "valid_categories": true,
+        "has_dates": true,
+        "has_header": true,
+        "issues": [
+          "keepachangelog not installed \u2014 pip install 'universal-skills[code-enhancer]'"
+        ]
+      },
+      "version_drift": {
+        "has_drift": false,
+        "changelog_version": null,
+        "pyproject_version": "0.15.0"
+      },
+      "dependency_deltas": {}
+    },
+    {
+      "domain": "Pytest Quality",
+      "score": 70,
+      "grade": "C",
+      "findings": [
+        "1 test files exceed 500 lines \u2014 split into focused modules",
+        "Missing conftest.py for shared fixtures",
+        "Low fixture usage: only 0% of tests use fixtures",
+        "No @pytest.mark.parametrize usage \u2014 consider data-driven tests",
+        "No shared fixtures in conftest.py",
+        "2 tests have no assertions",
+        "2 tests exceed 100 lines \u2014 likely doing too much per test"
+      ],
+      "justifications": [
+        {
+          "criterion": "pytest_quality",
+          "points": 70,
+          "evidence": "{\"test_files\": 4, \"total_tests\": 20, \"descriptive_name_ratio\": 1.0, \"generic_names\": 0, \"fixture_usage_ratio\": 0.0, \"parametrize_users\": 0, \"conftest_fixtures\": 0, \"no_assertion_tests\": 2, \"weak_assertion_tests\": 1, \"duplicate_groups\": 0, \"large_files\": 1, \"over_mocked_tests\": 1, \"very_long_tests\": 2, \"subscores\": {\"naming\": 20, \"structure\": 15, \"fixtures\": 3, \"assertions\": 16, \"ai_slop\": 16}}",
+          "reasoning": "20 tests across 4 files. Naming: 20/20, Structure: 15/20, Fixtures: 3/20, Assertions: 16/20, AI Slop: 16/20."
+        }
+      ],
+      "metrics": {
+        "test_files": 4,
+        "total_tests": 20,
+        "descriptive_name_ratio": 1.0,
+        "generic_names": 0,
+        "fixture_usage_ratio": 0.0,
+        "parametrize_users": 0,
+        "conftest_fixtures": 0,
+        "no_assertion_tests": 2,
+        "weak_assertion_tests": 1,
+        "duplicate_groups": 0,
+        "large_files": 1,
+        "over_mocked_tests": 1,
+        "very_long_tests": 2,
+        "subscores": {
+          "naming": 20,
+          "structure": 15,
+          "fixtures": 3,
+          "assertions": 16,
+          "ai_slop": 16
+        }
+      },
+      "conftest": {
+        "conftest_count": 0,
+        "total_shared_fixtures": 0,
+        "has_root_conftest": false
+      },
+      "duplicates": [],
+      "large_files": [
+        {
+          "file": "test_coverage_gap_fillers.py",
+          "lines": 655
+        }
+      ]
+    },
+    {
+      "domain": "Environment Variables",
+      "score": 79,
+      "grade": "C",
+      "findings": [
+        "Partial env var documentation: 32% coverage",
+        "Undocumented env vars: ANALYTICSTOOL, AUTH_TYPE, DEFAULT_AGENT_NAME, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, OTEL_EXPORTER_OTLP_ENDPOINT, POSTIZ_AGENT_VERIFY, POSTIZ_URL",
+        "3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, POSTIZ_AGENT_VERIFY, POSTIZ_URL"
+      ],
+      "justifications": [
+        {
+          "criterion": "env_var_documentation",
+          "points": 79,
+          "evidence": "{\"total_vars\": 19, \"python_vars\": 10, \"dockerfile_vars\": 4, \"compose_vars\": 0, \"dotenv_vars\": 15, \"readme_documented\": 6, \"readme_undocumented\": 13, \"documentation_coverage\": 0.32}",
+          "reasoning": "Found 19 unique env vars across 48 occurrences. README documents 6/19. Has .env.example."
+        }
+      ],
+      "metrics": {
+        "total_vars": 19,
+        "python_vars": 10,
+        "dockerfile_vars": 4,
+        "compose_vars": 0,
+        "dotenv_vars": 15,
+        "readme_documented": 6,
+        "readme_undocumented": 13,
+        "documentation_coverage": 0.32
+      },
+      "variables": {
+        "INTEGRATIONSTOOL": {
+          "name": "INTEGRATIONSTOOL",
+          "sources": [
+            "postiz_agent/mcp_server.py:264",
+            ".env:27",
+            ".env.example:27"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "dotenv",
+            "python"
+          ]
+        },
+        "POSTSTOOL": {
+          "name": "POSTSTOOL",
+          "sources": [
+            "postiz_agent/mcp_server.py:267",
+            ".env:28",
+            ".env.example:28"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "dotenv",
+            "python"
+          ]
+        },
+        "UPLOADSTOOL": {
+          "name": "UPLOADSTOOL",
+          "sources": [
+            "postiz_agent/mcp_server.py:270",
+            ".env:29",
+            ".env.example:29"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "dotenv",
+            "python"
+          ]
+        },
+        "ANALYTICSTOOL": {
+          "name": "ANALYTICSTOOL",
+          "sources": [
+            "postiz_agent/mcp_server.py:273",
+            ".env:30",
+            ".env.example:30"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "dotenv",
+            "python"
+          ]
+        },
+        "NOTIFICATIONSTOOL": {
+          "name": "NOTIFICATIONSTOOL",
+          "sources": [
+            "postiz_agent/mcp_server.py:276",
+            ".env:31",
+            ".env.example:31"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "dotenv",
+            "python"
+          ]
+        },
+        "VIDEOTOOL": {
+          "name": "VIDEOTOOL",
+          "sources": [
+            "postiz_agent/mcp_server.py:279",
+            ".env:32",
+            ".env.example:32"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "dotenv",
+            "python"
+          ]
+        },
+        "POSTIZ_URL": {
+          "name": "POSTIZ_URL",
+          "sources": [
+            "postiz_agent/auth.py:17"
+          ],
+          "defaults": [
+            "https://api.postiz.com/public/v1"
+          ],
+          "source_types": [
+            "python"
+          ]
+        },
+        "POSTIZ_TOKEN": {
+          "name": "POSTIZ_TOKEN",
+          "sources": [
+            "postiz_agent/auth.py:18",
+            ".env:24"
+          ],
+          "defaults": [
+            "your_postiz_token_here"
+          ],
+          "source_types": [
+            "dotenv",
+            "python"
+          ]
+        },
+        "POSTIZ_AGENT_VERIFY": {
+          "name": "POSTIZ_AGENT_VERIFY",
+          "sources": [
+            "postiz_agent/auth.py:19"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "python"
+          ]
+        },
+        "DEFAULT_AGENT_NAME": {
+          "name": "DEFAULT_AGENT_NAME",
+          "sources": [
+            "postiz_agent/agent_server.py:27"
+          ],
+          "defaults": [
+            "meta.get("
+          ],
+          "source_types": [
+            "python"
+          ]
+        },
+        "HOST": {
+          "name": "HOST",
+          "sources": [
+            "docker/Dockerfile:8",
+            "docker/Dockerfile:3",
+            "docker/debug.Dockerfile:8",
+            "docker/debug.Dockerfile:3",
+            ".env:6"
+          ],
+          "defaults": [
+            "0.0.0.0"
+          ],
+          "source_types": [
+            "dockerfile",
+            "dotenv"
+          ]
+        },
+        "PORT": {
+          "name": "PORT",
+          "sources": [
+            "docker/Dockerfile:4",
+            "docker/debug.Dockerfile:4",
+            ".env:7",
+            ".env.example:7"
+          ],
+          "defaults": [
+            "8000"
+          ],
+          "source_types": [
+            "dockerfile",
+            "dotenv"
+          ]
+        },
+        "TRANSPORT": {
+          "name": "TRANSPORT",
+          "sources": [
+            "docker/Dockerfile:5",
+            "docker/debug.Dockerfile:5",
+            ".env:8",
+            ".env.example:8"
+          ],
+          "defaults": [
+            "stdio # options: stdio, streamable-http, sse",
+            "stdio"
+          ],
+          "source_types": [
+            "dockerfile",
+            "dotenv"
+          ]
+        },
+        "AUTH_TYPE": {
+          "name": "AUTH_TYPE",
+          "sources": [
+            "docker/Dockerfile:6",
+            "docker/debug.Dockerfile:6"
+          ],
+          "defaults": [],
+          "source_types": [
+            "dockerfile"
+          ]
+        },
+        "ENABLE_OTEL": {
+          "name": "ENABLE_OTEL",
+          "sources": [
+            ".env:11",
+            ".env.example:11"
+          ],
+          "defaults": [
+            "True"
+          ],
+          "source_types": [
+            "dotenv"
+          ]
+        },
+        "OTEL_EXPORTER_OTLP_ENDPOINT": {
+          "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+          "sources": [
+            ".env:12"
+          ],
+          "defaults": [
+            "http://langfuse.arpa/api/public/otel"
+          ],
+          "source_types": [
+            "dotenv"
+          ]
+        },
+        "EUNOMIA_TYPE": {
+          "name": "EUNOMIA_TYPE",
+          "sources": [
+            ".env:18",
+            ".env.example:18"
+          ],
+          "defaults": [
+            "none",
+            "none # options: none, embedded, remote"
+          ],
+          "source_types": [
+            "dotenv"
+          ]
+        },
+        "EUNOMIA_POLICY_FILE": {
+          "name": "EUNOMIA_POLICY_FILE",
+          "sources": [
+            ".env:19",
+            ".env.example:19"
+          ],
+          "defaults": [
+            "mcp_policies.json"
+          ],
+          "source_types": [
+            "dotenv"
+          ]
+        },
+        "POSTIZ_SUBDOMAIN": {
+          "name": "POSTIZ_SUBDOMAIN",
+          "sources": [
+            ".env:23",
+            ".env.example:23"
+          ],
+          "defaults": [
+            "your_subdomain"
+          ],
+          "source_types": [
+            "dotenv"
+          ]
+        }
+      },
+      "readme_coverage": {
+        "documented": [
+          "ENABLE_OTEL",
+          "HOST",
+          "PORT",
+          "POSTIZ_SUBDOMAIN",
+          "POSTIZ_TOKEN",
+          "TRANSPORT"
+        ],
+        "undocumented": [
+          "ANALYTICSTOOL",
+          "AUTH_TYPE",
+          "DEFAULT_AGENT_NAME",
+          "EUNOMIA_POLICY_FILE",
+          "EUNOMIA_TYPE",
+          "INTEGRATIONSTOOL",
+          "NOTIFICATIONSTOOL",
+          "OTEL_EXPORTER_OTLP_ENDPOINT",
+          "POSTIZ_AGENT_VERIFY",
+          "POSTIZ_URL",
+          "POSTSTOOL",
+          "UPLOADSTOOL",
+          "VIDEOTOOL"
+        ],
+        "coverage": 0.3157894736842105
+      }
+    }
+  ],
+  "gpa": 2.69,
+  "domain_count": 16,
+  "timing": {
+    "analyze_project": 0.14,
+    "audit_dependencies": 0.26,
+    "analyze_codebase": 0.59,
+    "analyze_security": 1.04,
+    "analyze_tests": 0.44,
+    "audit_documentation": 0.3,
+    "analyze_architecture": 0.16,
+    "trace_concepts": 1.42,
+    "run_linters": 0.63,
+    "run_precommit": 36.71,
+    "run_tests": 1.89,
+    "analyze_directory_density": 1.34,
+    "analyze_ui": 1.83,
+    "analyze_version_sync": 1.4,
+    "audit_changelog": 0.0,
+    "grade_pytest": 0.21,
+    "scan_env_vars": 1.37
+  }
+}

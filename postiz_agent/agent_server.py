@@ -1,4 +1,9 @@
 #!/usr/bin/python
+"""
+Postiz Agent Server Entry point.
+CONCEPT:PA-2.0 - CLI Parsing, settings, and agent daemon routers setup.
+"""
+
 import logging
 import os
 import sys

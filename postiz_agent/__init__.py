@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+Postiz Agent Core Package Initialization.
+CONCEPT:PA-1.0 - Dynamic module lazy loading and availability verification.
+"""
 
 import importlib
 import inspect

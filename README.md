@@ -20,7 +20,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/postiz-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/postiz-agent)
 
-*Version: 0.17.0*
+*Version: 0.18.0*
 
 ---
 

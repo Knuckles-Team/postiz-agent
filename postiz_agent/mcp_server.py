@@ -37,10 +37,11 @@ from starlette.responses import JSONResponse
 
 from postiz_agent.auth import get_client
 
-__version__ = "0.15.0"
+__version__ = "0.16.0"
 
 logger = get_logger(name="postiz-agent")
 logger.setLevel(logging.INFO)
+
 
 def register_integrations_tools(mcp: FastMCP):
     @mcp.tool(tags={"integrations"})
@@ -79,6 +80,7 @@ def register_integrations_tools(mcp: FastMCP):
         if action == "postiz_find_slot":
             return client.postiz_find_slot(**kwargs)
         raise ValueError(f"Unknown action: {action}")
+
 
 def register_posts_tools(mcp: FastMCP):
     @mcp.tool(tags={"posts"})
@@ -120,6 +122,7 @@ def register_posts_tools(mcp: FastMCP):
             return client.postiz_update_release_id(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
+
 def register_uploads_tools(mcp: FastMCP):
     @mcp.tool(tags={"uploads"})
     async def postiz_uploads(
@@ -151,6 +154,7 @@ def register_uploads_tools(mcp: FastMCP):
         if action == "postiz_upload_from_url":
             return client.postiz_upload_from_url(**kwargs)
         raise ValueError(f"Unknown action: {action}")
+
 
 def register_analytics_tools(mcp: FastMCP):
     @mcp.tool(tags={"analytics"})
@@ -184,6 +188,7 @@ def register_analytics_tools(mcp: FastMCP):
             return client.postiz_get_post_analytics(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
+
 def register_notifications_tools(mcp: FastMCP):
     @mcp.tool(tags={"notifications"})
     async def postiz_notifications(
@@ -213,6 +218,7 @@ def register_notifications_tools(mcp: FastMCP):
         if action == "postiz_list_notifications":
             return client.postiz_list_notifications(**kwargs)
         raise ValueError(f"Unknown action: {action}")
+
 
 def register_video_tools(mcp: FastMCP):
     @mcp.tool(tags={"video"})
@@ -245,6 +251,7 @@ def register_video_tools(mcp: FastMCP):
         if action == "postiz_video_function":
             return client.postiz_video_function(**kwargs)
         raise ValueError(f"Unknown action: {action}")
+
 
 def get_mcp_instance() -> tuple[Any, ...]:
     """Initialize and return the MCP instance."""
@@ -282,6 +289,7 @@ def get_mcp_instance() -> tuple[Any, ...]:
         mcp.add_middleware(mw)
     return mcp, args, middlewares
 
+
 def mcp_server() -> None:
     mcp, args, middlewares = get_mcp_instance()
     print(f"postiz-agent MCP v{__version__}", file=sys.stderr)
@@ -298,6 +306,7 @@ def mcp_server() -> None:
     else:
         logger.error("Invalid transport", extra={"transport": args.transport})
         sys.exit(1)
+
 
 if __name__ == "__main__":
     mcp_server()

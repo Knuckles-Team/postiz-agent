@@ -425,6 +425,7 @@ def test_api_client_endpoints():
 async def test_mcp_server_custom_route():
     """CONCEPT:PA-5.0 - Verify HTTP server and health check endpoints."""
     from unittest.mock import patch
+
     with patch("sys.argv", ["mcp_server.py"]):
         mcp, _, _ = get_mcp_instance()
     app = mcp.http_app()
@@ -451,6 +452,7 @@ async def test_mcp_server_custom_route():
 async def test_mcp_server_tools_exception_handling(mock_context):
     """CONCEPT:PA-5.0 - Action routing parameter validation and exceptions."""
     from unittest.mock import patch
+
     with patch("sys.argv", ["mcp_server.py"]):
         mcp, _, _ = get_mcp_instance()
 

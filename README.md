@@ -22,6 +22,10 @@
 
 *Version: 0.29.0*
 
+> **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
+> interfaces, and guidance for provisioning a self-hosted Postiz instance are
+> maintained in the [official documentation](https://knuckles-team.github.io/postiz-agent/).
+
 ---
 
 ## Overview
@@ -307,6 +311,25 @@ uv pip install postiz-agent[all]
 # Using standard pip
 python -m pip install postiz-agent[all]
 ```
+
+---
+
+## Documentation
+
+The complete documentation is published as the
+[official documentation site](https://knuckles-team.github.io/postiz-agent/) and is
+the recommended reference for installation, deployment, and day-to-day operation.
+
+| Page | Contents |
+|---|---|
+| [Installation](https://knuckles-team.github.io/postiz-agent/installation/) | pip, source, extras, prebuilt Docker image |
+| [Deployment](https://knuckles-team.github.io/postiz-agent/deployment/) | run the MCP and agent servers, Compose, Caddy + Technitium, env config |
+| [Usage](https://knuckles-team.github.io/postiz-agent/usage/) | the MCP tools, the `PostizApi` client, the CLI |
+| [Backing Platform](https://knuckles-team.github.io/postiz-agent/platform/) | deploy a self-hosted Postiz instance with Docker |
+| [Overview](https://knuckles-team.github.io/postiz-agent/overview/) | the connector's role, architecture, and enterprise posture |
+| [Concepts](https://knuckles-team.github.io/postiz-agent/concepts/) | concept registry (`CONCEPT:PA-*`) |
+
+`AGENTS.md` is the canonical contributor/agent guidance.
 
 ---
 

@@ -1,203 +1,62 @@
-# Postiz Agent - A2A | AG-UI | MCP
+# postiz-agent
 
-![PyPI - Version](https://img.shields.io/pypi/v/postiz-agent)
+Postiz Public API **client, MCP Server, and A2A agent** for the agent-utilities
+ecosystem — schedule, publish, and govern social-media content across every
+connected channel from a single typed tool surface.
+
+!!! info "Official documentation"
+    This site is the canonical reference for `postiz-agent`, maintained alongside
+    every release.
+
+[![PyPI](https://img.shields.io/pypi/v/postiz-agent)](https://pypi.org/project/postiz-agent/)
 ![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
-![PyPI - Downloads](https://img.shields.io/pypi/dd/postiz-agent)
-![GitHub Repo stars](https://img.shields.io/github/stars/Knuckles-Team/postiz-agent)
-![GitHub forks](https://img.shields.io/github/forks/Knuckles-Team/postiz-agent)
-![GitHub contributors](https://img.shields.io/github/contributors/Knuckles-Team/postiz-agent)
-![PyPI - License](https://img.shields.io/pypi/l/postiz-agent)
-![GitHub](https://img.shields.io/github/license/Knuckles-Team/postiz-agent)
-
-![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/postiz-agent)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/Knuckles-Team/postiz-agent)
-![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/Knuckles-Team/postiz-agent)
-![GitHub issues](https://img.shields.io/github/issues/Knuckles-Team/postiz-agent)
-
-![GitHub top language](https://img.shields.io/github/languages/top/Knuckles-Team/postiz-agent)
-![GitHub language count](https://img.shields.io/github/languages/count/Knuckles-Team/postiz-agent)
-![GitHub repo size](https://img.shields.io/github/repo-size/Knuckles-Team/postiz-agent)
-![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/Knuckles-Team/postiz-agent)
-![PyPI - Wheel](https://img.shields.io/pypi/wheel/postiz-agent)
-![PyPI - Implementation](https://img.shields.io/pypi/implementation/postiz-agent)
-
-*Version: 0.9.0*
+[![License](https://img.shields.io/pypi/l/postiz-agent)](https://github.com/Knuckles-Team/postiz-agent/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/source-GitHub-181717?logo=github)](https://github.com/Knuckles-Team/postiz-agent)
 
 ## Overview
 
-**Postiz Agent MCP Server + A2A Agent**
+`postiz-agent` wraps the [Postiz](https://postiz.com/) Public API with typed,
+deterministic MCP tools and a Pydantic-AI agent server. It provides:
 
-Agent for interacting with Postiz Public API
+- **`PostizApi`** — a `requests`-based REST facade over the Postiz Public API,
+  aggregating the integrations, posts, uploads, video, notifications, and analytics
+  surfaces into one client.
+- **Action-routed MCP tools** across six domains (integrations, posts, uploads,
+  video, notifications, analytics), each gated by an environment toggle.
+- **An A2A agent server** (`postiz-agent` console script) that exposes the same
+  capability to other agents over the agent-to-agent protocol.
 
-This repository is actively maintained - Contributions are welcome!
+Every domain remains inactive when its tool toggle is disabled, so the deployed
+surface is exactly what you configure.
 
-## MCP
+## Explore the documentation
 
-### Using as an MCP Server
+<div class="grid cards" markdown>
 
-The MCP Server can be run in two modes: `stdio` (for local testing) or `http` (for networked access).
+- :material-rocket-launch: **[Installation](installation.md)** — pip, source, extras, and the prebuilt Docker image.
+- :material-server-network: **[Deployment](deployment.md)** — run the MCP and agent servers, Docker Compose, Caddy + Technitium.
+- :material-console: **[Usage](usage.md)** — the MCP tools, the `PostizApi` client, and the CLI.
+- :material-database-cog: **[Backing Platform](platform.md)** — deploy a self-hosted Postiz instance with Docker.
+- :material-sitemap: **[Overview](overview.md)** — the connector's role, architecture, and enterprise posture.
+- :material-tag-multiple: **[Concepts](concepts.md)** — the `CONCEPT:PA-*` registry.
 
-#### Environment Variables
+</div>
 
-*   `POSTIZ_URL`: The URL of the target service.
-*   `POSTIZ_TOKEN`: The API token or access token.
-
-#### Run in stdio mode (default):
-```bash
-export POSTIZ_URL="http://localhost:8080"
-export POSTIZ_TOKEN="your_token"
-postiz-mcp --transport "stdio"
-```
-
-#### Run in HTTP mode:
-```bash
-export POSTIZ_URL="http://localhost:8080"
-export POSTIZ_TOKEN="your_token"
-postiz-mcp --transport "http" --host "0.0.0.0" --port "8000"
-```
-
-## A2A Agent
-
-### Run A2A Server
-```bash
-export POSTIZ_URL="http://localhost:8080"
-export POSTIZ_TOKEN="your_token"
-postiz-agent --provider openai --model-id gpt-4o --api-key sk-...
-```
-
-## Docker
-
-### Build
+## Quick start
 
 ```bash
-docker build -t postiz-agent .
+pip install postiz-agent
+postiz-mcp                       # stdio MCP server (default transport)
 ```
 
-### Run MCP Server
+Connect it to a Postiz instance:
 
 ```bash
-docker run -d \
-  --name postiz-agent \
-  -p 8000:8000 \
-  -e TRANSPORT=http \
-  -e POSTIZ_URL="http://your-service:8080" \
-  -e POSTIZ_TOKEN="your_token" \
-  knucklessg1/postiz-agent:latest
+export POSTIZ_URL=https://api.postiz.com/public/v1
+export POSTIZ_TOKEN=your_postiz_token
+postiz-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 ```
 
-### Deploy with Docker Compose
-
-```yaml
-services:
-  postiz-agent:
-    image: knucklessg1/postiz-agent:latest
-    environment:
-      - HOST=0.0.0.0
-      - PORT=8000
-      - TRANSPORT=http
-      - POSTIZ_URL=http://your-service:8080
-      - POSTIZ_TOKEN=your_token
-    ports:
-      - 8000:8000
-```
-
-#### Configure `mcp.json` for AI Integration (e.g. Claude Desktop)
-
-```json
-{
-  "mcpServers": {
-    "postiz": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--with",
-        "postiz-agent",
-        "postiz-mcp"
-      ],
-      "env": {
-        "POSTIZ_URL": "http://your-service:8080",
-        "POSTIZ_TOKEN": "your_token"
-      }
-    }
-  }
-}
-```
-
-## Install Python Package
-
-```bash
-python -m pip install postiz-agent
-```
-```bash
-uv pip install postiz-agent
-```
-
-## Repository Owners
-
-<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=Knucklessg1&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
-
-![GitHub followers](https://img.shields.io/github/followers/Knucklessg1)
-![GitHub User's stars](https://img.shields.io/github/stars/Knucklessg1)
-
-
-## MCP Configuration Examples
-
-### 1. Standard IO (stdio) Deployment
-
-```json
-{
-  "mcpServers": {
-    "postiz-agent": {
-      "command": "uv",
-      "args": [
-        "run",
-        "postiz-mcp"
-      ],
-      "env": {
-        "ANALYTICSTOOL": "True",
-        "INTEGRATIONSTOOL": "True",
-        "NOTIFICATIONSTOOL": "True",
-        "POSTIZ_AGENT_VERIFY": "<YOUR_POSTIZ_AGENT_VERIFY>",
-        "POSTIZ_TOKEN": "<YOUR_POSTIZ_TOKEN>",
-        "POSTIZ_URL": "<YOUR_POSTIZ_URL>",
-        "POSTSTOOL": "True",
-        "UPLOADSTOOL": "True",
-        "VIDEOTOOL": "True"
-      }
-    }
-  }
-}
-```
-
-### 2. Streamable HTTP (SSE) Deployment
-
-```json
-{
-  "mcpServers": {
-    "postiz-agent": {
-      "command": "uv",
-      "args": [
-        "run",
-        "postiz-mcp",
-        "--transport",
-        "http",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8000"
-      ],
-      "env": {
-        "ANALYTICSTOOL": "True",
-        "INTEGRATIONSTOOL": "True",
-        "NOTIFICATIONSTOOL": "True",
-        "POSTIZ_AGENT_VERIFY": "<YOUR_POSTIZ_AGENT_VERIFY>",
-        "POSTIZ_TOKEN": "<YOUR_POSTIZ_TOKEN>",
-        "POSTIZ_URL": "<YOUR_POSTIZ_URL>",
-        "POSTSTOOL": "True",
-        "UPLOADSTOOL": "True",
-        "VIDEOTOOL": "True"
-      }
-    }
-  }
-}
-```
+See **[Installation](installation.md)** and **[Deployment](deployment.md)** for the
+full matrix (PyPI extras, Docker image, all transports, the agent server, reverse
+proxy, and DNS).

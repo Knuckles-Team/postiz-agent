@@ -30,7 +30,7 @@ import sys
 from typing import Any
 
 from agent_utilities.base_utilities import to_boolean
-from agent_utilities.mcp_utilities import create_mcp_server
+from agent_utilities.mcp_utilities import create_mcp_server, resolve_action
 from dotenv import find_dotenv, load_dotenv
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -68,6 +68,18 @@ def register_integrations_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "postiz_list_integrations",
+            "postiz_get_integration_url",
+            "postiz_delete_channel",
+            "postiz_check_connection",
+            "postiz_find_slot",
+        )
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "postiz_list_integrations":
             return client.postiz_list_integrations(**kwargs)
@@ -107,6 +119,19 @@ def register_posts_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "postiz_list_posts",
+            "postiz_create_post",
+            "postiz_delete_post",
+            "postiz_delete_post_by_group",
+            "postiz_get_missing_content",
+            "postiz_update_release_id",
+        )
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "postiz_list_posts":
             return client.postiz_list_posts(**kwargs)
@@ -149,6 +174,12 @@ def register_uploads_tools(mcp: FastMCP):
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = ("postiz_upload_file", "postiz_upload_from_url")
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "postiz_upload_file":
             return client.postiz_upload_file(**kwargs)
         if action == "postiz_upload_from_url":
@@ -181,6 +212,12 @@ def register_analytics_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = ("postiz_get_analytics", "postiz_get_post_analytics")
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "postiz_get_analytics":
             return client.postiz_get_analytics(**kwargs)
@@ -215,6 +252,12 @@ def register_notifications_tools(mcp: FastMCP):
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = ("postiz_list_notifications",)
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "postiz_list_notifications":
             return client.postiz_list_notifications(**kwargs)
         raise ValueError(f"Unknown action: {action}")
@@ -245,6 +288,12 @@ def register_video_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = ("postiz_generate_video", "postiz_video_function")
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "postiz_generate_video":
             return client.postiz_generate_video(**kwargs)

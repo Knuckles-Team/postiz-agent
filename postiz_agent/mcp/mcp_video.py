@@ -3,6 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp_utilities import resolve_action
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -35,6 +36,12 @@ def register_video_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = ("postiz_generate_video", "postiz_video_function")
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "postiz_generate_video":
             return client.postiz_generate_video(**kwargs)

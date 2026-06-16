@@ -3,7 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
-from agent_utilities.mcp_utilities import resolve_action
+from agent_utilities.mcp_utilities import resolve_action, run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -50,13 +50,13 @@ def register_integrations_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_list_integrations":
-            return client.postiz_list_integrations(**kwargs)
+            return await run_blocking(client.postiz_list_integrations, **kwargs)
         if action == "postiz_get_integration_url":
-            return client.postiz_get_integration_url(**kwargs)
+            return await run_blocking(client.postiz_get_integration_url, **kwargs)
         if action == "postiz_delete_channel":
-            return client.postiz_delete_channel(**kwargs)
+            return await run_blocking(client.postiz_delete_channel, **kwargs)
         if action == "postiz_check_connection":
-            return client.postiz_check_connection(**kwargs)
+            return await run_blocking(client.postiz_check_connection, **kwargs)
         if action == "postiz_find_slot":
-            return client.postiz_find_slot(**kwargs)
+            return await run_blocking(client.postiz_find_slot, **kwargs)
         raise ValueError(f"Unknown action: {action}")

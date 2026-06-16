@@ -30,7 +30,11 @@ import sys
 from typing import Any
 
 from agent_utilities.base_utilities import to_boolean
-from agent_utilities.mcp_utilities import create_mcp_server, resolve_action
+from agent_utilities.mcp_utilities import (
+    create_mcp_server,
+    resolve_action,
+    run_blocking,
+)
 from dotenv import find_dotenv, load_dotenv
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -82,15 +86,15 @@ def register_integrations_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_list_integrations":
-            return client.postiz_list_integrations(**kwargs)
+            return await run_blocking(client.postiz_list_integrations, **kwargs)
         if action == "postiz_get_integration_url":
-            return client.postiz_get_integration_url(**kwargs)
+            return await run_blocking(client.postiz_get_integration_url, **kwargs)
         if action == "postiz_delete_channel":
-            return client.postiz_delete_channel(**kwargs)
+            return await run_blocking(client.postiz_delete_channel, **kwargs)
         if action == "postiz_check_connection":
-            return client.postiz_check_connection(**kwargs)
+            return await run_blocking(client.postiz_check_connection, **kwargs)
         if action == "postiz_find_slot":
-            return client.postiz_find_slot(**kwargs)
+            return await run_blocking(client.postiz_find_slot, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -134,17 +138,17 @@ def register_posts_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_list_posts":
-            return client.postiz_list_posts(**kwargs)
+            return await run_blocking(client.postiz_list_posts, **kwargs)
         if action == "postiz_create_post":
-            return client.postiz_create_post(**kwargs)
+            return await run_blocking(client.postiz_create_post, **kwargs)
         if action == "postiz_delete_post":
-            return client.postiz_delete_post(**kwargs)
+            return await run_blocking(client.postiz_delete_post, **kwargs)
         if action == "postiz_delete_post_by_group":
-            return client.postiz_delete_post_by_group(**kwargs)
+            return await run_blocking(client.postiz_delete_post_by_group, **kwargs)
         if action == "postiz_get_missing_content":
-            return client.postiz_get_missing_content(**kwargs)
+            return await run_blocking(client.postiz_get_missing_content, **kwargs)
         if action == "postiz_update_release_id":
-            return client.postiz_update_release_id(**kwargs)
+            return await run_blocking(client.postiz_update_release_id, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -181,9 +185,9 @@ def register_uploads_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_upload_file":
-            return client.postiz_upload_file(**kwargs)
+            return await run_blocking(client.postiz_upload_file, **kwargs)
         if action == "postiz_upload_from_url":
-            return client.postiz_upload_from_url(**kwargs)
+            return await run_blocking(client.postiz_upload_from_url, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -220,9 +224,9 @@ def register_analytics_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_get_analytics":
-            return client.postiz_get_analytics(**kwargs)
+            return await run_blocking(client.postiz_get_analytics, **kwargs)
         if action == "postiz_get_post_analytics":
-            return client.postiz_get_post_analytics(**kwargs)
+            return await run_blocking(client.postiz_get_post_analytics, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -259,7 +263,7 @@ def register_notifications_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_list_notifications":
-            return client.postiz_list_notifications(**kwargs)
+            return await run_blocking(client.postiz_list_notifications, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -296,9 +300,9 @@ def register_video_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_generate_video":
-            return client.postiz_generate_video(**kwargs)
+            return await run_blocking(client.postiz_generate_video, **kwargs)
         if action == "postiz_video_function":
-            return client.postiz_video_function(**kwargs)
+            return await run_blocking(client.postiz_video_function, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 

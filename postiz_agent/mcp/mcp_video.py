@@ -3,7 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
-from agent_utilities.mcp_utilities import resolve_action
+from agent_utilities.mcp_utilities import resolve_action, run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -44,7 +44,7 @@ def register_video_tools(mcp: FastMCP):
         action = resolved
 
         if action == "postiz_generate_video":
-            return client.postiz_generate_video(**kwargs)
+            return await run_blocking(client.postiz_generate_video, **kwargs)
         if action == "postiz_video_function":
-            return client.postiz_video_function(**kwargs)
+            return await run_blocking(client.postiz_video_function, **kwargs)
         raise ValueError(f"Unknown action: {action}")

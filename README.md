@@ -56,14 +56,22 @@ Detailed instructions on how to use the underlying API wrappers, extended schema
 This server utilizes dynamic Action-Routed tools to optimize token overhead and maximize IDE compatibility.
 
 ### Available MCP Tools
-| Tool Module | Toggle Env Var | Enabled by Default | Description & Nested Methods |
-|-------------|----------------|--------------------|------------------------------|
-| **Integrations** | `INTEGRATIONS_TOOL` | `True` | Manage postiz integrations operations. Action-routed methods: `postiz_check_connection`, `postiz_delete_channel`, `postiz_find_slot`, `postiz_get_integration_url`, `postiz_list_integrations`. |
-| **Posts** | `POSTS_TOOL` | `True` | Manage postiz posts operations. Action-routed methods: `postiz_create_post`, `postiz_delete_post`, `postiz_delete_post_by_group`, `postiz_get_missing_content`, `postiz_list_posts`, `postiz_update_release_id`. |
-| **Uploads** | `UPLOADS_TOOL` | `True` | Manage postiz uploads operations. Action-routed methods: `postiz_upload_file`, `postiz_upload_from_url`. |
-| **Analytics** | `ANALYTICS_TOOL` | `True` | Manage postiz analytics operations. Action-routed methods: `postiz_get_analytics`, `postiz_get_post_analytics`. |
-| **Notifications** | `NOTIFICATIONS_TOOL` | `True` | Manage postiz notifications operations. Action-routed methods: `postiz_list_notifications`. |
-| **Video** | `VIDEO_TOOL` | `True` | Manage postiz video operations. Action-routed methods: `postiz_generate_video`, `postiz_video_function`. |
+
+This table is auto-generated from the live server — do not edit by hand.
+
+<!-- MCP-TOOLS-TABLE:START -->
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `postiz_analytics` | `ANALYTICSTOOL` | Manage postiz analytics operations. |
+| `postiz_integrations` | `INTEGRATIONSTOOL` | Manage postiz integrations operations. |
+| `postiz_notifications` | `NOTIFICATIONSTOOL` | Manage postiz notifications operations. |
+| `postiz_posts` | `POSTSTOOL` | Manage postiz posts operations. |
+| `postiz_uploads` | `UPLOADSTOOL` | Manage postiz uploads operations. |
+| `postiz_video` | `VIDEOTOOL` | Manage postiz video operations. |
+
+_6 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+<!-- MCP-TOOLS-TABLE:END -->
 
 Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
 

@@ -25,20 +25,20 @@ warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
 warnings.filterwarnings("ignore", message=".*urllib3.*or charset_normalizer.*")
 
 import logging
-import os
 import sys
 from typing import Any
 
-from agent_utilities.base_utilities import to_boolean
 from agent_utilities.mcp_utilities import (
     create_mcp_server,
     load_config,
+    register_tool_surface,
     resolve_action,
     run_blocking,
 )
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from postiz_agent.api_client import PostizApi
 from postiz_agent.auth import get_client
 
 __version__ = "0.34.0"
@@ -319,24 +319,13 @@ def get_mcp_instance() -> tuple[Any, ...]:
     async def health_check(request: Request) -> JSONResponse:
         return JSONResponse({"status": "OK"})
 
-    DEFAULT_INTEGRATIONSTOOL = to_boolean(os.getenv("INTEGRATIONSTOOL", "True"))
-    if DEFAULT_INTEGRATIONSTOOL:
-        register_integrations_tools(mcp)
-    DEFAULT_POSTSTOOL = to_boolean(os.getenv("POSTSTOOL", "True"))
-    if DEFAULT_POSTSTOOL:
-        register_posts_tools(mcp)
-    DEFAULT_UPLOADSTOOL = to_boolean(os.getenv("UPLOADSTOOL", "True"))
-    if DEFAULT_UPLOADSTOOL:
-        register_uploads_tools(mcp)
-    DEFAULT_ANALYTICSTOOL = to_boolean(os.getenv("ANALYTICSTOOL", "True"))
-    if DEFAULT_ANALYTICSTOOL:
-        register_analytics_tools(mcp)
-    DEFAULT_NOTIFICATIONSTOOL = to_boolean(os.getenv("NOTIFICATIONSTOOL", "True"))
-    if DEFAULT_NOTIFICATIONSTOOL:
-        register_notifications_tools(mcp)
-    DEFAULT_VIDEOTOOL = to_boolean(os.getenv("VIDEOTOOL", "True"))
-    if DEFAULT_VIDEOTOOL:
-        register_video_tools(mcp)
+    register_tool_surface(
+        mcp,
+        client_cls=PostizApi,
+        get_client=get_client,
+        service="postiz-agent",
+        tools_module=sys.modules[__name__],
+    )
 
     for mw in middlewares:
         mcp.add_middleware(mw)

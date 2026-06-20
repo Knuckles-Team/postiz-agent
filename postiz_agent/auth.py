@@ -4,9 +4,8 @@ Postiz Agent Authentication Context.
 CONCEPT:PA-3.0 - Singleton API client initialization, environment validations, and credentials fallback.
 """
 
-import os
-
 import urllib3
+from agent_utilities.core.config import setting
 
 from postiz_agent.api_client import PostizApi
 
@@ -19,10 +18,12 @@ def get_client():
     """Get or create a singleton API client instance."""
     global _client
     if _client is None:
-        base_url = os.getenv("POSTIZ_URL", "https://api.postiz.com/public/v1")
-        token = os.getenv("POSTIZ_TOKEN", "")
+        base_url = setting("POSTIZ_URL", "https://api.postiz.com/public/v1")
+        token = setting("POSTIZ_TOKEN", "")
         verify_env = (
-            os.getenv("POSTIZ_SSL_VERIFY") or os.getenv("POSTIZ_AGENT_VERIFY") or "True"
+            setting("POSTIZ_SSL_VERIFY", "")
+            or setting("POSTIZ_AGENT_VERIFY", "")
+            or "True"
         )
         verify = verify_env.lower() in ("true", "1", "yes")
 

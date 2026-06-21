@@ -27,6 +27,12 @@ test = [
 postiz-mcp = "postiz_agent.mcp_server:mcp_server"
 postiz-agent = "postiz_agent.agent_server:agent_server"
 
+[project.entry-points."agent_utilities.skill_providers"]
+postiz-agent = "postiz_agent.skills"
+
+[project.entry-points."agent_utilities.prompt_providers"]
+postiz-agent = "postiz_agent.prompts"
+
 [tool.setuptools]
 include-package-data = true
 
@@ -45,7 +51,7 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-postiz_agent = [ "mcp_config.json", "agent/**", "skills/**",]
+postiz_agent = [ "mcp_config.json", "agent/**", "skills/**", "prompts/**",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]

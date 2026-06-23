@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postiz-agent-mcp:
-    image: knucklessg1/postiz-agent:latest
+    image: knucklessg1/postiz-agent:mcp
     container_name: postiz-agent-mcp
     hostname: postiz-agent-mcp
     restart: always

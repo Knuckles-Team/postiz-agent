@@ -98,6 +98,14 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 ### MCP Configuration Examples
 
+> **Install the slim `[mcp]` extra.** All examples below install
+> `postiz-agent[mcp]` — the MCP-server extra that pulls only the FastMCP /
+> FastAPI tooling (`agent-utilities[mcp]`). It deliberately **excludes** the heavy
+> agent runtime (the epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`,
+> `tree-sitter`), so `uvx`/container installs are dramatically smaller and faster.
+> Use the full `[agent]` extra only when you need the integrated Pydantic AI agent
+> (see [Installation](#installation)).
+
 #### stdio Transport (Recommended for local IDEs e.g., Cursor, Claude Desktop)
 Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
 
@@ -108,7 +116,7 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
       "command": "uvx",
       "args": [
         "--from",
-        "postiz-agent",
+        "postiz-agent[mcp]",
         "postiz-mcp"
       ],
       "env": {
@@ -130,7 +138,7 @@ Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx
       "command": "uvx",
       "args": [
         "--from",
-        "postiz-agent",
+        "postiz-agent[mcp]",
         "postiz-mcp"
       ],
       "env": {
@@ -167,8 +175,15 @@ docker run -d \
   -e PORT=8000 \
   -e POSTIZ_SUBDOMAIN="your_value" \
   -e POSTIZ_TOKEN="your_value" \
-  knucklessg1/postiz-agent:latest
+  knucklessg1/postiz-agent:mcp
 ```
+
+> The `:mcp` tag is the **slim MCP-server image** (built from
+> `docker/Dockerfile --target mcp`, installing `postiz-agent[mcp]`). The default
+> `:latest` tag is the **full agent image** (`--target agent`, `postiz-agent[agent]`)
+> which also bundles the Pydantic AI agent and the epistemic-graph engine — use it
+> when you run `postiz-agent` (the agent), not just the MCP server. See
+> [Container images](#container-images-mcp-vs-agent).
 
 ---
 
@@ -211,7 +226,7 @@ version: '3.8'
 
 services:
   postiz-agent-mcp:
-    image: knucklessg1/postiz-agent:latest
+    image: knucklessg1/postiz-agent:mcp
     container_name: postiz-agent-mcp
     hostname: postiz-agent-mcp
     restart: always
@@ -302,6 +317,10 @@ The agent and MCP server can be configured using the following environment varia
 | **`HOST`** | Host to bind the server to (Streamable-HTTP). | `0.0.0.0` |
 | **`PORT`** | Port to bind the server to. | `8000` |
 | **`TRANSPORT`** | MCP communication channel style. Options: `stdio`, `streamable-http`, `sse`. | `stdio` |
+| **`MCP_TOOL_MODE`** | Tool surface: `condensed`, `verbose`, or `both`. | `condensed` |
+| **`MCP_ENABLED_TOOLS`** / **`MCP_DISABLED_TOOLS`** | Comma-separated tool allow/deny list. | *Optional* |
+| **`MCP_ENABLED_TAGS`** / **`MCP_DISABLED_TAGS`** | Comma-separated tag allow/deny list. | *Optional* |
+| **`PYTHONUNBUFFERED`** | Unbuffered stdout (recommended in containers). | `1` |
 | **`DEFAULT_AGENT_NAME`** | Display name for the Pydantic AI Graph Agent. | `"Postiz Agent"` |
 | **`AGENT_DESCRIPTION`** | System description metadata for the Pydantic AI Graph Agent. | *Loaded from manifest* |
 | **`AGENT_SYSTEM_PROMPT`**| Custom prompt injected into the Pydantic AI Graph Agent core. | *Loaded from manifest* |
@@ -321,19 +340,65 @@ The agent and MCP server can be configured using the following environment varia
 | **`NOTIFICATIONSTOOL`** | Toggle to enable/disable the Notifications MCP tool group. | `True` |
 | **`VIDEOTOOL`** | Toggle to enable/disable the Video MCP tool group. | `True` |
 
+### Agent CLI (full `[agent]` runtime only)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MCP_URL` | URL of the MCP server the agent connects to. | `http://localhost:8000/mcp` |
+| `PROVIDER` | LLM provider (e.g. `openai`). | `openai` |
+| `MODEL_ID` | Model id (e.g. `gpt-4o`). | `gpt-4o` |
+| `ENABLE_WEB_UI` | Serve the AG-UI web interface. | `True` |
+
+See [`.env.example`](.env.example) for a copy-paste starting point.
+
 ---
 
 ## Installation
 
-Install the Python package locally:
+Pick the extra that matches what you want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `postiz-agent[mcp]` | Slim MCP server only (`agent-utilities[mcp]` — FastMCP/FastAPI) | You only run the **MCP server** (smallest install / image) |
+| `postiz-agent[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated agent** |
+| `postiz-agent[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
-# Using uv (highly recommended)
-uv pip install postiz-agent[all]
+# MCP server only (recommended for tool hosting — slim deps)
+uv pip install "postiz-agent[mcp]"
 
-# Using standard pip
-python -m pip install postiz-agent[all]
+# Full agent runtime (Pydantic AI + epistemic-graph engine)
+uv pip install "postiz-agent[agent]"
+
+# Everything (development)
+uv pip install "postiz-agent[all]"      # or: python -m pip install "postiz-agent[all]"
 ```
+
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `knucklessg1/postiz-agent:mcp` | `--target mcp` | `postiz-agent[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `postiz-mcp` |
+| `knucklessg1/postiz-agent:latest` | `--target agent` (default) | `postiz-agent[agent]` — **full** agent runtime + epistemic-graph engine | `postiz-agent` |
+
+```bash
+docker build --target mcp   -t knucklessg1/postiz-agent:mcp    docker/   # slim MCP server
+docker build --target agent -t knucklessg1/postiz-agent:latest docker/   # full agent
+```
+
+`docker/mcp.compose.yml` runs the slim `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`:latest`) with a co-located `:mcp` sidecar.
+
+### Knowledge-graph database (`epistemic-graph`)
+
+The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
+transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
+across multiple agents — run **epistemic-graph as its own database container** and point the
+agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
+config, and the full database architecture (with diagrams) are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+The slim `[mcp]` server does **not** require the database.
 
 ---
 

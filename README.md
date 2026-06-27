@@ -61,6 +61,8 @@ This table is auto-generated from the live server — do not edit by hand.
 
 <!-- MCP-TOOLS-TABLE:START -->
 
+#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
 | `postiz_analytics` | `ANALYTICSTOOL` | Manage postiz analytics operations. |
@@ -70,7 +72,37 @@ This table is auto-generated from the live server — do not edit by hand.
 | `postiz_uploads` | `UPLOADSTOOL` | Manage postiz uploads operations. |
 | `postiz_video` | `VIDEOTOOL` | Manage postiz video operations. |
 
-_6 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+
+<details>
+<summary>20 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `postiz_check_connection` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_check_connection operation. |
+| `postiz_create_post` | `POSTS_CLIENTTOOL` | Invoke the postiz_create_post operation. |
+| `postiz_delete_channel` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_delete_channel operation. |
+| `postiz_delete_post` | `POSTS_CLIENTTOOL` | Invoke the postiz_delete_post operation. |
+| `postiz_delete_post_by_group` | `POSTS_CLIENTTOOL` | Invoke the postiz_delete_post_by_group operation. |
+| `postiz_find_slot` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_find_slot operation. |
+| `postiz_generate_video` | `VIDEO_CLIENTTOOL` | Invoke the postiz_generate_video operation. |
+| `postiz_get_analytics` | `ANALYTICS_CLIENTTOOL` | Invoke the postiz_get_analytics operation. |
+| `postiz_get_integration_url` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_get_integration_url operation. |
+| `postiz_get_integrations` | `INTEGRATIONS_CLIENTTOOL` | Invoke the get_integrations operation. |
+| `postiz_get_missing_content` | `POSTS_CLIENTTOOL` | Invoke the postiz_get_missing_content operation. |
+| `postiz_get_post_analytics` | `ANALYTICS_CLIENTTOOL` | Invoke the postiz_get_post_analytics operation. |
+| `postiz_is_connected` | `INTEGRATIONS_CLIENTTOOL` | Invoke the is_connected operation. |
+| `postiz_list_integrations` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_list_integrations operation. |
+| `postiz_list_notifications` | `NOTIFICATIONS_CLIENTTOOL` | Invoke the postiz_list_notifications operation. |
+| `postiz_list_posts` | `POSTS_CLIENTTOOL` | Invoke the postiz_list_posts operation. |
+| `postiz_update_release_id` | `POSTS_CLIENTTOOL` | Invoke the update_release_id operation. |
+| `postiz_upload_file` | `UPLOADS_CLIENTTOOL` | Invoke the upload_file operation. |
+| `postiz_upload_from_url` | `UPLOADS_CLIENTTOOL` | Invoke the upload_from_url operation. |
+| `postiz_video_function` | `VIDEO_CLIENTTOOL` | Invoke the video_function operation. |
+
+</details>
+
+_6 action-routed tool(s) (default) · 20 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
 Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
@@ -120,7 +152,6 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
         "postiz-mcp"
       ],
       "env": {
-        "POSTIZ_SUBDOMAIN": "your_postiz_subdomain_here",
         "POSTIZ_TOKEN": "your_postiz_token_here"
       }
     }
@@ -145,7 +176,6 @@ Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx
         "TRANSPORT": "streamable-http",
         "HOST": "0.0.0.0",
         "PORT": "8000",
-        "POSTIZ_SUBDOMAIN": "your_postiz_subdomain_here",
         "POSTIZ_TOKEN": "your_postiz_token_here"
       }
     }
@@ -173,7 +203,6 @@ docker run -d \
   -p 8000:8000 \
   -e TRANSPORT=streamable-http \
   -e PORT=8000 \
-  -e POSTIZ_SUBDOMAIN="your_value" \
   -e POSTIZ_TOKEN="your_value" \
   knucklessg1/postiz-agent:mcp
 ```
@@ -211,7 +240,6 @@ To start the interactive command-line agent:
 
 ```bash
 # Set credentials
-export POSTIZ_SUBDOMAIN="your_value"
 export POSTIZ_TOKEN="your_value"
 
 # Run the agent server
@@ -327,9 +355,9 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 | `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
 | `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
 | `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
-| `POSTIZ_SUBDOMAIN` | `your_subdomain` |  |
 | `POSTIZ_TOKEN` | `your_postiz_token_here` |  |
 | `POSTIZ_URL` | `https://api.postiz.com/public/v1` |  |
+| `POSTIZ_SSL_VERIFY` | `True` | verify TLS certs (preferred over POSTIZ_AGENT_VERIFY) |
 | `POSTIZ_AGENT_VERIFY` | `True` |  |
 | `AUTH_TYPE` | `token` |  |
 | `DEFAULT_AGENT_NAME` | `"Postiz Agent"` |  |
@@ -379,7 +407,7 @@ The agent and MCP server can be configured using the following environment varia
 | **`AGENT_SYSTEM_PROMPT`**| Custom prompt injected into the Pydantic AI Graph Agent core. | *Loaded from manifest* |
 | **`POSTIZ_TOKEN`** | API authentication token used for Postiz endpoints. | *Required* |
 | **`POSTIZ_URL`** | Base endpoint URL for the Postiz Public API. | `https://api.postiz.com/public/v1` |
-| **`POSTIZ_SUBDOMAIN`** | User account subdomain registered with Postiz. | *Optional* |
+| **`POSTIZ_SSL_VERIFY`** | Whether to verify TLS certificates (preferred over `POSTIZ_AGENT_VERIFY`). | `True` |
 | **`POSTIZ_AGENT_VERIFY`** | Whether to enforce HTTPS certificate verification. | `True` |
 | **`AUTH_TYPE`** | Authentication method. Option: `token`. | `token` |
 | **`ENABLE_OTEL`** | Whether to enable OpenTelemetry exporter logs. | `True` |

@@ -445,7 +445,9 @@ async def test_mcp_server_custom_route():
     assert response.status_code == 200
     import json
 
-    assert json.loads(response.body.decode()) == {"status": "OK"}
+    payload = json.loads(response.body.decode())
+    assert payload.get("status") == "ok"
+    assert "server" in payload
 
 
 @pytest.mark.anyio
@@ -807,7 +809,15 @@ def test_mcp_server_main_execution():
         ),
         patch("sys.exit") as mock_exit,
     ):
-        if "postiz_agent.mcp_server" in sys.modules:
-            del sys.modules["postiz_agent.mcp_server"]
-        runpy.run_module("postiz_agent.mcp_server", run_name="__main__")
-        mock_mcp.run.assert_called_with(transport="stdio")
+        saved = sys.modules.pop("postiz_agent.mcp_server", None)
+        try:
+            runpy.run_module("postiz_agent.mcp_server", run_name="__main__")
+            mock_mcp.run.assert_called_with(transport="stdio")
+        finally:
+            # runpy registers the module under "__main__", leaving
+            # "postiz_agent.mcp_server" absent — restore it so later tests
+            # (e.g. get_mcp_instance's sys.modules[__name__]) still resolve.
+            if saved is not None:
+                sys.modules["postiz_agent.mcp_server"] = saved
+            else:
+                importlib.import_module("postiz_agent.mcp_server")

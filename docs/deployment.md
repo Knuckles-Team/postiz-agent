@@ -185,7 +185,7 @@ curl -s http://localhost:8000/health        # {"status":"OK"}
 |---|---|---|
 | `POSTIZ_URL` | `https://api.postiz.com/public/v1` | Postiz Public API base URL |
 | `POSTIZ_TOKEN` | *(empty)* | Postiz API token |
-| `POSTIZ_SUBDOMAIN` | `your_subdomain` | Account subdomain |
+| `POSTIZ_SSL_VERIFY` | `True` | Verify TLS certs (preferred over `POSTIZ_AGENT_VERIFY`) |
 | `POSTIZ_AGENT_VERIFY` | `True` | Verify TLS (set `False` for self-signed homelab) |
 | `AUTH_TYPE` | `token` | Authentication mode |
 | `HOST` | `0.0.0.0` | Bind address (HTTP transports) |

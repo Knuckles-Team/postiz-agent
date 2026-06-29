@@ -20,7 +20,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/postiz-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/postiz-agent)
 
-*Version: 0.34.0*
+*Version: 1.0.0*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
 > interfaces, and guidance for provisioning a self-hosted Postiz instance are

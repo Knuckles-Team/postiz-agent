@@ -8,15 +8,12 @@
       ],
       "env": {
         "MCP_TOOL_MODE": "condensed",
-        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
-        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
         "ANALYTICSTOOL": "True",
-        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
         "INTEGRATIONSTOOL": "True",
         "NOTIFICATIONSTOOL": "True",
-        "POSTIZ_AGENT_VERIFY": "<YOUR_POSTIZ_AGENT_VERIFY>",
-        "POSTIZ_TOKEN": "<YOUR_POSTIZ_TOKEN>",
-        "POSTIZ_URL": "<YOUR_POSTIZ_URL>",
+        "POSTIZ_AGENT_VERIFY": "True",
+        "POSTIZ_TOKEN": "your_postiz_token_here",
+        "POSTIZ_URL": "https://api.postiz.com/public/v1",
         "POSTSTOOL": "True",
         "UPLOADSTOOL": "True",
         "VIDEOTOOL": "True"

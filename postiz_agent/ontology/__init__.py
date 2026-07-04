@@ -1,4 +1,4 @@
-"""Social & Content ontology contribution (CONCEPT:KG-2.325).
+"""Social & Content ontology contribution (CONCEPT:AU-KG.ontology.package-federation-migration).
 
 Data-only subpackage: it carries ``social.ttl`` (the ``owl:Ontology``
 ``http://knuckles.team/kg/social`` module — social media, content creation and

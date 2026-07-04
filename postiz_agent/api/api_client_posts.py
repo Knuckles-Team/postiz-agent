@@ -1,3 +1,5 @@
+import os
+
 from agent_utilities.api_utilities import require_auth
 
 from postiz_agent.api.api_client_base import BaseApiClient
@@ -6,6 +8,16 @@ from postiz_agent.postiz_models import (
     PostizMissingContentItem,
     PostizPost,
 )
+
+
+def _kg_ingest_enabled() -> bool:
+    """Default-on native ingestion; opt out with POSTIZ_KG_INGEST=0/false/no."""
+    return os.getenv("POSTIZ_KG_INGEST", "1").strip().lower() not in (
+        "0",
+        "false",
+        "no",
+        "off",
+    )
 
 
 class PostsClient(BaseApiClient):
@@ -22,9 +34,17 @@ class PostsClient(BaseApiClient):
         response = self.session.get(f"{self.base_url}/posts", params=params)
         response.raise_for_status()
         data = response.json()
-        if "posts" in data:
-            return [PostizPost(**p) for p in data["posts"]]
-        return []
+        posts = data.get("posts", []) if isinstance(data, dict) else []
+        # Native, best-effort ingestion into the epistemic-graph KG (no-op when
+        # off or no engine reachable). CONCEPT:AU-KG.ingest.enterprise-source-extractor.
+        if posts and _kg_ingest_enabled():
+            try:
+                from postiz_agent.kg_ingest import ingest_posts
+
+                ingest_posts(posts)
+            except Exception:  # noqa: BLE001 — ingestion never breaks a fetch
+                pass
+        return [PostizPost(**p) for p in posts]
 
     @require_auth
     def create_post(self, request: PostizCreatePostRequest) -> list[dict[str, str]]:

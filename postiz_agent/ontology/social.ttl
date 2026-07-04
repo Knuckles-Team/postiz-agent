@@ -186,3 +186,61 @@ and aggregated snapshots inherit from this class.
 BFO:SpecificallyDependentContinuant via Observation.""" ;
     rdfs:subClassOf :Observation .
 
+
+# --- Fleet-enrichment extensions (postiz-agent native ingestion) -------------
+
+:SocialChannel a owl:Class ;
+    rdfs:label "Social Channel" ;
+    rdfs:comment """A connected social account / integration managed by Postiz
+(an X, LinkedIn, Mastodon, Bluesky, … channel). A SocialPost is published on
+one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
+    rdfs:seeAlso foaf:OnlineAccount ;
+    rdfs:subClassOf :System .
+
+:hasMedia a owl:ObjectProperty ;
+    rdfs:label "has media" ;
+    rdfs:comment "Links a SocialPost to a MediaAsset blob (image/video) attached to it." ;
+    rdfs:domain :SocialPost ;
+    rdfs:range :MediaAsset .
+
+:providerIdentifier a owl:DatatypeProperty ;
+    rdfs:label "provider identifier" ;
+    rdfs:comment "The upstream provider slug of a SocialChannel (x, linkedin, mastodon, …)." ;
+    rdfs:domain :SocialChannel ;
+    rdfs:range xsd:string .
+
+:channelDisabled a owl:DatatypeProperty ;
+    rdfs:label "channel disabled" ;
+    rdfs:comment "Whether a SocialChannel integration is currently disabled." ;
+    rdfs:domain :SocialChannel ;
+    rdfs:range xsd:boolean .
+
+:postState a owl:DatatypeProperty ;
+    rdfs:label "post state" ;
+    rdfs:comment "Lifecycle state of a SocialPost: QUEUE, PUBLISHED, ERROR, DRAFT." ;
+    rdfs:domain :SocialPost ;
+    rdfs:range xsd:string .
+
+:publishDate a owl:DatatypeProperty ;
+    rdfs:label "publish date" ;
+    rdfs:comment "Scheduled or actual publish timestamp of a SocialPost (ISO-8601)." ;
+    rdfs:domain :SocialPost ;
+    rdfs:range xsd:dateTime .
+
+:releaseURL a owl:DatatypeProperty ;
+    rdfs:label "release URL" ;
+    rdfs:comment "Public URL of a SocialPost once published on its channel." ;
+    rdfs:domain :SocialPost ;
+    rdfs:range xsd:anyURI .
+
+:engagementTotal a owl:DatatypeProperty ;
+    rdfs:label "engagement total" ;
+    rdfs:comment "The measured value of a DailyEngagement/AggregatedEngagement observation for its metric label." ;
+    rdfs:domain :EngagementMetric ;
+    rdfs:range xsd:integer .
+
+:metricLabel a owl:DatatypeProperty ;
+    rdfs:label "metric label" ;
+    rdfs:comment "The analytics series label an EngagementMetric observes (e.g. Impressions, Likes, Followers)." ;
+    rdfs:domain :EngagementMetric ;
+    rdfs:range xsd:string .

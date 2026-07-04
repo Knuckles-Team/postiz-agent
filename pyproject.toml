@@ -40,6 +40,11 @@ postiz-agent = "postiz_agent.prompts"
 [project.entry-points."agent_utilities.ontology_providers"]
 postiz-agent = "postiz_agent.ontology"
 
+# CONCEPT:AU-KG.ingest.mcp-tool-connector — declarative Tier-1 source preset(s) so this
+# package syncs into the KG with no agent-utilities code change.
+[project.entry-points."agent_utilities.source_connector_providers"]
+postiz-agent = "postiz_agent.connectors"
+
 [tool.setuptools]
 include-package-data = true
 
@@ -58,7 +63,7 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-postiz_agent = [ "mcp_config.json", "skills/**", "prompts/**", "ontology/**",]
+postiz_agent = [ "mcp_config.json", "skills/**", "prompts/**", "ontology/**", "connectors/**",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]

@@ -34,6 +34,12 @@ postiz-agent = "postiz_agent.skills"
 [project.entry-points."agent_utilities.prompt_providers"]
 postiz-agent = "postiz_agent.prompts"
 
+# CONCEPT:KG-2.325 — federate this package's OWL/RDF ontology module into the
+# agent-utilities hub (http://knuckles.team/kg/social). Resolved via
+# iter_provider_dirs like the skill/prompt providers.
+[project.entry-points."agent_utilities.ontology_providers"]
+postiz-agent = "postiz_agent.ontology"
+
 [tool.setuptools]
 include-package-data = true
 
@@ -52,7 +58,7 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-postiz_agent = [ "mcp_config.json", "skills/**", "prompts/**",]
+postiz_agent = [ "mcp_config.json", "skills/**", "prompts/**", "ontology/**",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]

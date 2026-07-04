@@ -148,11 +148,11 @@ uv run pytest --timeout=60 -k "test_name_pattern"
 
 To maintain architectural traceability across development sprints, this project implements standard conceptual tracking tags:
 
-- **`CONCEPT:PA-1.0`**: Dynamic module lazy loading, availability flag exports, and namespace attribute lookups via dynamic module caching hooks.
-- **`CONCEPT:PA-2.0`**: CommandLine Interface argument parser, debug modes, and FastAPI/FastMCP daemon router orchestrators.
-- **`CONCEPT:PA-3.0`**: Parity settings validation, singletons client setup, and exception translation wrappers.
-- **`CONCEPT:PA-4.0`**: Type-safe REST client sub-modules, base paths sanitization, and streaming JSON serializers.
-- **`CONCEPT:PA-5.0`**: Grouped action-routed FastMCP tools, Starlette `/health` router mounts, and SSE custom transports.
+- **`CONCEPT:PZ-OS.config.dynamic-module-lazy-loading`**: Dynamic module lazy loading, availability flag exports, and namespace attribute lookups via dynamic module caching hooks.
+- **`CONCEPT:PZ-OS.config.cli-parsing-settings-agent`**: CommandLine Interface argument parser, debug modes, and FastAPI/FastMCP daemon router orchestrators.
+- **`CONCEPT:PZ-OS.identity.singleton-api-client-initialization`**: Parity settings validation, singletons client setup, and exception translation wrappers.
+- **`CONCEPT:PZ-OS.config.unified-interface-integrations-posts`**: Type-safe REST client sub-modules, base paths sanitization, and streaming JSON serializers.
+- **`CONCEPT:PZ-OS.config.verify-command-line-transport`**: Grouped action-routed FastMCP tools, Starlette `/health` router mounts, and SSE custom transports.
 
 ## ⛔ No Scratch or Temporary Files in Repository
 
@@ -276,7 +276,7 @@ alone).
 Working in parallel with other sessions/worktrees? **Reserve a concept id before you write its `CONCEPT:` marker** so two sessions never collide:
 
 ```bash
-agent-utilities --json concept reserve --ns KG-2   # or a package prefix, e.g. KEY
+agent-utilities --json concept reserve --ns EG-KG.compute.backend   # or a package prefix, e.g. KEY
 ```
 
 Full protocol (ledger, merge=union, reconcile, MCP/REST): <https://knuckles-team.github.io/agent-utilities/concept_coordination/>

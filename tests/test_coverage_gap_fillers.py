@@ -38,7 +38,7 @@ from postiz_agent.agent_server import agent_server
 
 
 def test_init_module_lazy_attributes(clean_loaded_modules):
-    """CONCEPT:PA-1.0 - Lazy loaded submodule attributes access."""
+    """CONCEPT:PZ-OS.config.dynamic-module-lazy-loading - Lazy loaded submodule attributes access."""
     _ = clean_loaded_modules
     import postiz_agent
 
@@ -66,7 +66,7 @@ def test_init_module_lazy_attributes(clean_loaded_modules):
 
 
 def test_init_lazy_import_failure():
-    """CONCEPT:PA-1.0 - Handle module import failures gracefully."""
+    """CONCEPT:PZ-OS.config.dynamic-module-lazy-loading - Handle module import failures gracefully."""
     import postiz_agent
 
     # Mock importlib.import_module to raise ImportError for optional modules
@@ -93,7 +93,7 @@ def test_init_lazy_import_failure():
 
 
 def test_main_invocation():
-    """CONCEPT:PA-2.0 - Verify entrypoint calls agent server."""
+    """CONCEPT:PZ-OS.config.cli-parsing-settings-agent - Verify entrypoint calls agent server."""
     with patch("postiz_agent.agent_server.agent_server") as mock_server:
         runpy.run_module("postiz_agent", run_name="__main__")
         mock_server.assert_called_once()
@@ -103,7 +103,7 @@ def test_main_invocation():
 
 
 def test_agent_server_debug_mode():
-    """CONCEPT:PA-2.0 - Verify server boots with debug options enabled."""
+    """CONCEPT:PZ-OS.config.cli-parsing-settings-agent - Verify server boots with debug options enabled."""
     mock_args = MagicMock()
     mock_args.debug = True
     mock_args.mcp_url = "http://mcp"
@@ -161,7 +161,7 @@ def test_agent_server_debug_mode():
 
 
 def test_auth_singleton_and_exception_handling():
-    """CONCEPT:PA-3.0 - Singleton API client and initialization error handling."""
+    """CONCEPT:PZ-OS.identity.singleton-api-client-initialization - Singleton API client and initialization error handling."""
     # Setup clean singleton reference
     with patch("postiz_agent.auth._client", None):
         # 1. Success case returning singleton
@@ -204,7 +204,7 @@ def test_auth_singleton_and_exception_handling():
 
 
 def test_api_client_url_normalization():
-    """CONCEPT:PA-4.0 - URL normalization paths with custom base URL."""
+    """CONCEPT:PZ-OS.config.unified-interface-integrations-posts - URL normalization paths with custom base URL."""
     # Append path if not present
     with patch("requests.Session") as mock_session:
         mock_session.return_value.get.return_value.status_code = 200
@@ -219,7 +219,7 @@ def test_api_client_url_normalization():
 
 
 def test_api_client_unauthorized_handling():
-    """CONCEPT:PA-4.0 - Unauthorized 401 exceptions translation."""
+    """CONCEPT:PZ-OS.config.unified-interface-integrations-posts - Unauthorized 401 exceptions translation."""
     with patch("requests.Session") as mock_session:
         mock_resp = MagicMock()
         mock_resp.status_code = 401
@@ -230,7 +230,7 @@ def test_api_client_unauthorized_handling():
 
 
 def test_api_client_endpoints():
-    """CONCEPT:PA-4.0 - Parity verification on CRUD and video generation endpoints."""
+    """CONCEPT:PZ-OS.config.unified-interface-integrations-posts - Parity verification on CRUD and video generation endpoints."""
     with patch("requests.Session") as mock_session:
         # Prepare session mock setup
         mock_s = mock_session.return_value
@@ -423,7 +423,7 @@ def test_api_client_endpoints():
 
 @pytest.mark.anyio
 async def test_mcp_server_custom_route():
-    """CONCEPT:PA-5.0 - Verify HTTP server and health check endpoints."""
+    """CONCEPT:PZ-OS.config.verify-command-line-transport - Verify HTTP server and health check endpoints."""
     from unittest.mock import patch
 
     with patch("sys.argv", ["mcp_server.py"]):
@@ -452,7 +452,7 @@ async def test_mcp_server_custom_route():
 
 @pytest.mark.anyio
 async def test_mcp_server_tools_exception_handling(mock_context):
-    """CONCEPT:PA-5.0 - Action routing parameter validation and exceptions."""
+    """CONCEPT:PZ-OS.config.verify-command-line-transport - Action routing parameter validation and exceptions."""
     from unittest.mock import patch
 
     with patch("sys.argv", ["mcp_server.py"]):
@@ -670,7 +670,7 @@ async def test_mcp_server_tools_exception_handling(mock_context):
 
 
 def test_mcp_server_startup_transports():
-    """CONCEPT:PA-5.0 - Verify command line transport switches (stdio, sse, http)."""
+    """CONCEPT:PZ-OS.config.verify-command-line-transport - Verify command line transport switches (stdio, sse, http)."""
     mock_args = MagicMock()
     mock_args.transport = "stdio"
     mock_args.host = "localhost"
@@ -710,7 +710,7 @@ def test_mcp_server_startup_transports():
 
 
 def test_requests_dependency_warning_import_failure():
-    """CONCEPT:PA-5.0 - Handle requests warning import warnings gracefully."""
+    """CONCEPT:PZ-OS.config.verify-command-line-transport - Handle requests warning import warnings gracefully."""
     original_import = __import__
 
     def mock_import(name, globals=None, locals=None, fromlist=(), level=0):
@@ -726,7 +726,7 @@ def test_requests_dependency_warning_import_failure():
 
 
 def test_init_missing_optional_keys():
-    """CONCEPT:PA-1.0 - Handle missing dynamic submodules availability."""
+    """CONCEPT:PZ-OS.config.dynamic-module-lazy-loading - Handle missing dynamic submodules availability."""
     import postiz_agent
 
     with patch.dict(postiz_agent.OPTIONAL_MODULES, {}, clear=True):
@@ -735,7 +735,7 @@ def test_init_missing_optional_keys():
 
 
 def test_agent_server_main_execution():
-    """CONCEPT:PA-2.0 - Verify CLI daemon entrypoint execution."""
+    """CONCEPT:PZ-OS.config.cli-parsing-settings-agent - Verify CLI daemon entrypoint execution."""
     with (
         patch("agent_utilities.create_agent_server") as mock_create_server,
         patch("agent_utilities.create_agent_parser") as mock_parser,
@@ -770,7 +770,7 @@ def test_agent_server_main_execution():
 
 
 def test_api_client_upload_file_removes_content_type():
-    """CONCEPT:PA-4.0 - Multipart form upload content-type boundary correction."""
+    """CONCEPT:PZ-OS.config.unified-interface-integrations-posts - Multipart form upload content-type boundary correction."""
     with patch("requests.Session") as mock_session:
         mock_s = mock_session.return_value
         mock_s.headers = {"Content-Type": "application/json"}
@@ -793,7 +793,7 @@ def test_api_client_upload_file_removes_content_type():
 
 
 def test_mcp_server_main_execution():
-    """CONCEPT:PA-5.0 - Verify daemon CLI entrypoint execution."""
+    """CONCEPT:PZ-OS.config.verify-command-line-transport - Verify daemon CLI entrypoint execution."""
     mock_args = MagicMock()
     mock_args.transport = "stdio"
     mock_args.host = "localhost"

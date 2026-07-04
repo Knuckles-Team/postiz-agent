@@ -1,6 +1,6 @@
 """
 Postiz Agent REST API client aggregator.
-CONCEPT:PA-4.0 - Unified interface for integrations, posts, uploads, video, notifications, and analytics clients.
+CONCEPT:PZ-OS.config.unified-interface-integrations-posts - Unified interface for integrations, posts, uploads, video, notifications, and analytics clients.
 """
 
 from agent_utilities.exceptions import UnauthorizedError

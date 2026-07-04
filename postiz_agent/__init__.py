@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Postiz Agent Core Package Initialization.
-CONCEPT:PA-1.0 - Dynamic module lazy loading and availability verification.
+CONCEPT:PZ-OS.config.dynamic-module-lazy-loading - Dynamic module lazy loading and availability verification.
 """
 
 import importlib

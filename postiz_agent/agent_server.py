@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 Postiz Agent Server Entry point.
-CONCEPT:PA-2.0 - CLI Parsing, settings, and agent daemon routers setup.
+CONCEPT:PZ-OS.config.cli-parsing-settings-agent - CLI Parsing, settings, and agent daemon routers setup.
 """
 
 import logging

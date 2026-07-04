@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 Postiz Agent Authentication Context.
-CONCEPT:PA-3.0 - Singleton API client initialization, environment validations, and credentials fallback.
+CONCEPT:PZ-OS.identity.singleton-api-client-initialization - Singleton API client initialization, environment validations, and credentials fallback.
 """
 
 import urllib3

@@ -1,5 +1,6 @@
 ---
 name: postiz-channel-management
+skill_type: skill
 description: >-
   List, connect, and remove social channels (integrations) via the postiz-agent MCP
   server, and land them in the knowledge graph as :SocialChannel nodes — enumerate

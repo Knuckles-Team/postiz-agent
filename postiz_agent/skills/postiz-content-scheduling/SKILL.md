@@ -1,5 +1,6 @@
 ---
 name: postiz-content-scheduling
+skill_type: skill
 description: >-
   Schedule, publish, and manage social posts across connected channels via the
   postiz-agent MCP server — list a date window of posts, create a draft/scheduled/now

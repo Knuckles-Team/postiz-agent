@@ -1,5 +1,6 @@
 ---
 name: postiz-audience-analytics
+skill_type: skill
 description: >-
   Read channel and per-post engagement analytics via the postiz-agent MCP server and
   land them in the knowledge graph as time-series engagement — impressions, likes,

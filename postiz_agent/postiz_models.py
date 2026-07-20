@@ -16,10 +16,6 @@ class PostizIntegration(BaseModel):
     disabled: bool = False
     profile: str | None = None
     customer: PostizIntegrationCustomer | None = None
-    # legacy fields for compatibility
-    type: str | None = None
-    connected: bool | None = None
-    settings: dict[str, Any] | None = None
 
 
 class PostizTag(BaseModel):

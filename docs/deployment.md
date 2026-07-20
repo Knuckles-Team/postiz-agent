@@ -1,5 +1,67 @@
 # Deployment
 
+<!-- BEGIN GENERATED: deployment-options -->
+## Deployment Options
+
+`postiz-agent` supports local stdio, a loopback-only development listener, a
+least-privilege stdio container, and a remote authenticated HTTPS boundary.
+Provider endpoint, credential, selector, identity, and trust material are supplied
+at runtime through `AgentConfig`; none is stored in this repository.
+
+### Installed stdio process
+
+```json
+{
+  "mcpServers": {
+    "postiz": {
+      "command": "postiz-mcp",
+      "args": [],
+      "env": {"MCP_TOOL_MODE": "intent"}
+    }
+  }
+}
+```
+
+### Loopback development listener
+
+```bash
+postiz-mcp --transport streamable-http --host 127.0.0.1 --port 8000
+```
+
+Do not expose this listener beyond loopback. Network deployments require direct TLS
+or an explicitly trusted TLS-terminating ingress, configured authentication, exact
+`MCP_ALLOWED_HOSTS`, and an exact trusted-proxy CIDR policy.
+
+### Least-privilege local container
+
+```bash
+docker run -i --rm \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --pids-limit=256 \
+  --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
+  -e TRANSPORT=stdio \
+  registry.example.invalid/postiz-agent@sha256:<digest> postiz-mcp
+```
+
+The operator projects the selected AgentConfig profile into the process at runtime;
+the image remains immutable and contains no environment connection profile.
+
+### Remote authenticated HTTPS endpoint
+
+```json
+{
+  "mcpServers": {
+    "postiz": {"url": "https://service.example.invalid/mcp"}
+  }
+}
+```
+
+Store the real remote URL, outbound identity reference, and TLS-profile reference in
+`AgentConfig`, not in MCP client JSON or documentation.
+<!-- END GENERATED: deployment-options -->
+
 This page covers running `postiz-agent` as a long-lived service: the transports, a
 Docker Compose stack, the optional A2A agent server, putting it behind a Caddy
 reverse proxy, and giving it a DNS name with Technitium. To provision the **Postiz
@@ -46,10 +108,10 @@ curl -s http://localhost:8000/health        # {"status":"OK"}
 
 | Var | Default | Meaning |
 |---|---|---|
-| `POSTIZ_URL` | `https://api.postiz.com/public/v1` | Postiz Public API base URL |
+| `POSTIZ_URL` | Required | Postiz Public API base URL |
 | `POSTIZ_TOKEN` | *(empty)* | Postiz API token |
-| `POSTIZ_SUBDOMAIN` | `your_subdomain` | Account subdomain |
-| `POSTIZ_AGENT_VERIFY` | `True` | Verify TLS (set `False` for self-signed homelab) |
+| `TLS_PROFILE` | _(empty)_ | Named `AgentConfig` transport-security profile; verification is mandatory |
+| `TLS_PROFILES_REF` | _(empty)_ | Runtime secret reference for the TLS profile catalog |
 | `AUTH_TYPE` | `token` | Authentication mode |
 | `HOST` | `0.0.0.0` | Bind address (HTTP transports) |
 | `PORT` | `8000` | Bind port (HTTP transports) |
@@ -70,7 +132,7 @@ It reads a sibling `.env` and publishes the HTTP server on `:8000`:
 ```yaml
 services:
   postiz-agent-mcp:
-    image: knucklessg1/postiz-agent:latest
+    image: example/postiz-agent@sha256:<digest>
     container_name: postiz-agent-mcp
     hostname: postiz-agent-mcp
     restart: always
@@ -114,7 +176,7 @@ MCP server by container name:
 ```yaml
 services:
   postiz-agent-mcp:
-    image: knucklessg1/postiz-agent:latest
+    image: example/postiz-agent@sha256:<digest>
     container_name: postiz-agent-mcp
     hostname: postiz-agent-mcp
     restart: always
@@ -129,7 +191,7 @@ services:
       - "8000:8000"
 
   postiz-agent-agent:
-    image: knucklessg1/postiz-agent:latest
+    image: example/postiz-agent@sha256:<digest>
     container_name: postiz-agent-agent
     hostname: postiz-agent-agent
     restart: always
@@ -159,8 +221,8 @@ docker compose -f docker/agent.compose.yml up -d
 Expose the HTTP server on a hostname with automatic TLS. Add to your `Caddyfile`:
 
 ```caddy
-# Internal (self-signed) — homelab .arpa zone
-postiz-agent.arpa {
+# Internal (self-signed) — homelab .example.invalid zone
+postiz-agent.example.invalid {
     tls internal
     reverse_proxy postiz-agent-mcp:8000
 }
@@ -184,17 +246,17 @@ docker compose -f services/caddy/compose.yml exec caddy caddy reload --config /e
 Point the hostname at the host running Caddy. Via the Technitium API:
 
 ```bash
-curl -s "http://technitium.arpa:5380/api/zones/records/add" \
+curl -s "http://technitium.example.invalid:5380/api/zones/records/add" \
   --data-urlencode "token=$TECHNITIUM_DNS_TOKEN" \
-  --data-urlencode "domain=postiz-agent.arpa" \
+  --data-urlencode "domain=postiz-agent.example.invalid" \
   --data-urlencode "zone=arpa" \
   --data-urlencode "type=A" \
-  --data-urlencode "ipAddress=10.0.0.10" \
+  --data-urlencode "ipAddress=192.0.2.10" \
   --data-urlencode "ttl=3600"
 ```
 
-…or add an **A record** `postiz-agent.arpa → <caddy-host-ip>` in the Technitium web
-console (`http://technitium.arpa:5380`). The ecosystem
+…or add an **A record** `postiz-agent.example.invalid → <caddy-host-ip>` in the Technitium web
+console (`http://technitium.example.invalid:5380`). The ecosystem
 [`technitium-dns-mcp`](https://knuckles-team.github.io/technitium-dns-mcp/) automates
 this as a tool.
 
@@ -209,13 +271,13 @@ Add to your client's `mcp_config.json` (multiplexer nickname `postiz`):
       "command": "uv",
       "args": ["run", "postiz-mcp"],
       "env": {
-        "POSTIZ_URL": "https://api.postiz.com/public/v1",
-        "POSTIZ_TOKEN": "your_postiz_token"
+        "POSTIZ_URL": "<configured-endpoint>",
+        "POSTIZ_TOKEN": "<runtime-secret>"
       }
     }
   }
 }
 ```
 
-For a remote HTTP server, point the client at `http://postiz-agent.arpa/mcp`
+For a remote HTTP server, point the client at `http://postiz-agent.example.invalid/mcp`
 instead.

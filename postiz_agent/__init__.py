@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Postiz Agent Core Package Initialization.
-CONCEPT:PA-1.0 - Dynamic module lazy loading and availability verification.
+CONCEPT:PZ-OS.config.dynamic-module-lazy-loading - Dynamic module lazy loading and availability verification.
 """
 
 import importlib
@@ -36,7 +36,7 @@ for module_name in CORE_MODULES:
         _expose_members(module)
 
 # Dynamic/lazy loading of optional modules (agent_server, mcp_server)
-_loaded_optional_modules = {}
+_loaded_optional_modules: dict[str, Any] = {}
 
 
 def _import_module_safely(module_name: str):

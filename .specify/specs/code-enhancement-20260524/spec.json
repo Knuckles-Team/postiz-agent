@@ -188,12 +188,12 @@
     },
     {
       "id": "FR-029",
-      "description": "Undocumented env vars: POSTIZ_SSL_VERIFY",
+      "description": "Undocumented env vars: TLS_PROFILES_REF",
       "testable": true
     },
     {
       "id": "FR-030",
-      "description": "1 Python env vars not in .env.example: POSTIZ_SSL_VERIFY",
+      "description": "1 Python env vars not in .env.example: TLS_PROFILES_REF",
       "testable": true
     },
     {

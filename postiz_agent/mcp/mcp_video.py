@@ -3,6 +3,8 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp.action_dispatch import resolve_action
+from agent_utilities.mcp.concurrency import run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -32,12 +34,18 @@ def register_video_tools(mcp: FastMCP):
         try:
             kwargs = json.loads(params_json)
         except Exception as e:
-            return {"error": f"Invalid params_json: {e}"}
+            return {"error": "Operation failed"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = ("postiz_generate_video", "postiz_video_function")
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "postiz_generate_video":
-            return client.postiz_generate_video(**kwargs)
+            return await run_blocking(client.postiz_generate_video, **kwargs)
         if action == "postiz_video_function":
-            return client.postiz_video_function(**kwargs)
+            return await run_blocking(client.postiz_video_function, **kwargs)
         raise ValueError(f"Unknown action: {action}")

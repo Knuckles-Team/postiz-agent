@@ -365,8 +365,8 @@
   },
   {
     "id": "T029",
-    "title": "[Environment Variables] Undocumented env vars: POSTIZ_SSL_VERIFY",
-    "description": "Undocumented env vars: POSTIZ_SSL_VERIFY",
+    "title": "[Environment Variables] Undocumented env vars: TLS_PROFILES_REF",
+    "description": "Undocumented env vars: TLS_PROFILES_REF",
     "domain": "Environment Variables",
     "priority": "P4-Enhancement",
     "effort": "Medium",
@@ -378,8 +378,8 @@
   },
   {
     "id": "T030",
-    "title": "[Environment Variables] 1 Python env vars not in .env.example: POSTIZ_SSL_VERIFY",
-    "description": "1 Python env vars not in .env.example: POSTIZ_SSL_VERIFY",
+    "title": "[Environment Variables] 1 Python env vars not in .env.example: TLS_PROFILES_REF",
+    "description": "1 Python env vars not in .env.example: TLS_PROFILES_REF",
     "domain": "Environment Variables",
     "priority": "P4-Enhancement",
     "effort": "Medium",

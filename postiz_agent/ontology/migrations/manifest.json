@@ -1,0 +1,6 @@
+{
+  "connector": "postiz-agent",
+  "current_ontology_source": "social",
+  "migrations": [],
+  "schema_version": "1"
+}

@@ -1,4 +1,4 @@
-from agent_utilities.api_utilities import require_auth
+from agent_utilities.core.decorators import require_auth
 
 from postiz_agent.api.api_client_base import BaseApiClient
 from postiz_agent.postiz_models import PostizAnalyticsData
@@ -6,7 +6,7 @@ from postiz_agent.postiz_models import PostizAnalyticsData
 
 class AnalyticsClient(BaseApiClient):
     @require_auth
-    def get_analytics(
+    def postiz_get_analytics(
         self, integration_id: str, date: str = "7"
     ) -> list[PostizAnalyticsData]:
         response = self.session.get(
@@ -19,7 +19,7 @@ class AnalyticsClient(BaseApiClient):
         return []
 
     @require_auth
-    def get_post_analytics(
+    def postiz_get_post_analytics(
         self, post_id: str, date: str = "7"
     ) -> list[PostizAnalyticsData]:
         response = self.session.get(
@@ -30,7 +30,3 @@ class AnalyticsClient(BaseApiClient):
         if isinstance(data, list):
             return [PostizAnalyticsData(**d) for d in data]
         return []
-
-    # MCP action-routed aliases
-    postiz_get_analytics = get_analytics
-    postiz_get_post_analytics = get_post_analytics

@@ -50,15 +50,15 @@ uv run postiz-mcp
 
 ## Prebuilt Docker image
 
-A multi-stage, slim image is published on every release (entrypoint `postiz-mcp`):
+A multi-stage runtime image is published on every release (entrypoint `postiz-mcp`):
 
 ```bash
-docker pull knucklessg1/postiz-agent:latest
+docker pull example/postiz-agent@sha256:<digest>
 
 docker run --rm -i \
-  -e POSTIZ_URL=https://api.postiz.com/public/v1 \
-  -e POSTIZ_TOKEN=your_postiz_token \
-  knucklessg1/postiz-agent:latest        # stdio transport (default)
+  -e POSTIZ_URL=<configured-endpoint> \
+  -e POSTIZ_TOKEN=<runtime-secret> \
+  example/postiz-agent@sha256:<digest>        # stdio transport (default)
 ```
 
 For an HTTP server with a published port and the agent server, see

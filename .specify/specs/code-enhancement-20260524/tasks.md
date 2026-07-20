@@ -59,9 +59,9 @@ Skipped informational: 5
   - Priority: P3-Low | Effort: Medium
 - [ ] [P] **T028** [Pytest Quality] 2 tests exceed 100 lines — likely doing too much per test
   - Priority: P3-Low | Effort: Medium
-- [ ] [P] **T029** [Environment Variables] Undocumented env vars: POSTIZ_SSL_VERIFY
+- [ ] [P] **T029** [Environment Variables] Undocumented env vars: TLS_PROFILES_REF
   - Priority: P4-Enhancement | Effort: Medium
-- [ ] [P] **T030** [Environment Variables] 1 Python env vars not in .env.example: POSTIZ_SSL_VERIFY
+- [ ] [P] **T030** [Environment Variables] 1 Python env vars not in .env.example: TLS_PROFILES_REF
   - Priority: P4-Enhancement | Effort: Medium
 - [ ] [P] **T031** [analyze_xdg_kg] Analysis error: No module named 'agent_utilities.knowledge_graph'
   - Priority: P1-High | Effort: Medium

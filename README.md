@@ -20,7 +20,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/postiz-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/postiz-agent)
 
-*Version: 0.29.0*
+*Version: 1.0.1*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
 > interfaces, and guidance for provisioning a self-hosted Postiz instance are
@@ -56,16 +56,56 @@ Detailed instructions on how to use the underlying API wrappers, extended schema
 This server utilizes dynamic Action-Routed tools to optimize token overhead and maximize IDE compatibility.
 
 ### Available MCP Tools
-| Tool Module | Toggle Env Var | Enabled by Default | Description & Nested Methods |
-|-------------|----------------|--------------------|------------------------------|
-| **Integrations** | `INTEGRATIONS_TOOL` | `True` | Manage postiz integrations operations. Action-routed methods: `postiz_check_connection`, `postiz_delete_channel`, `postiz_find_slot`, `postiz_get_integration_url`, `postiz_list_integrations`. |
-| **Posts** | `POSTS_TOOL` | `True` | Manage postiz posts operations. Action-routed methods: `postiz_create_post`, `postiz_delete_post`, `postiz_delete_post_by_group`, `postiz_get_missing_content`, `postiz_list_posts`, `postiz_update_release_id`. |
-| **Uploads** | `UPLOADS_TOOL` | `True` | Manage postiz uploads operations. Action-routed methods: `postiz_upload_file`, `postiz_upload_from_url`. |
-| **Analytics** | `ANALYTICS_TOOL` | `True` | Manage postiz analytics operations. Action-routed methods: `postiz_get_analytics`, `postiz_get_post_analytics`. |
-| **Notifications** | `NOTIFICATIONS_TOOL` | `True` | Manage postiz notifications operations. Action-routed methods: `postiz_list_notifications`. |
-| **Video** | `VIDEO_TOOL` | `True` | Manage postiz video operations. Action-routed methods: `postiz_generate_video`, `postiz_video_function`. |
 
-Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
+This table is auto-generated from the live server — do not edit by hand.
+
+<!-- MCP-TOOLS-TABLE:START -->
+
+#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `postiz_analytics` | `ANALYTICSTOOL` | Manage postiz analytics operations. |
+| `postiz_integrations` | `INTEGRATIONSTOOL` | Manage postiz integrations operations. |
+| `postiz_notifications` | `NOTIFICATIONSTOOL` | Manage postiz notifications operations. |
+| `postiz_posts` | `POSTSTOOL` | Manage postiz posts operations. |
+| `postiz_uploads` | `UPLOADSTOOL` | Manage postiz uploads operations. |
+| `postiz_video` | `VIDEOTOOL` | Manage postiz video operations. |
+
+#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+
+<details>
+<summary>20 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `postiz_check_connection` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_check_connection operation. |
+| `postiz_create_post` | `POSTS_CLIENTTOOL` | Invoke the postiz_create_post operation. |
+| `postiz_delete_channel` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_delete_channel operation. |
+| `postiz_delete_post` | `POSTS_CLIENTTOOL` | Invoke the postiz_delete_post operation. |
+| `postiz_delete_post_by_group` | `POSTS_CLIENTTOOL` | Invoke the postiz_delete_post_by_group operation. |
+| `postiz_find_slot` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_find_slot operation. |
+| `postiz_generate_video` | `VIDEO_CLIENTTOOL` | Invoke the postiz_generate_video operation. |
+| `postiz_get_analytics` | `ANALYTICS_CLIENTTOOL` | Invoke the postiz_get_analytics operation. |
+| `postiz_get_integration_url` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_get_integration_url operation. |
+| `postiz_get_integrations` | `INTEGRATIONS_CLIENTTOOL` | Invoke the get_integrations operation. |
+| `postiz_get_missing_content` | `POSTS_CLIENTTOOL` | Invoke the postiz_get_missing_content operation. |
+| `postiz_get_post_analytics` | `ANALYTICS_CLIENTTOOL` | Invoke the postiz_get_post_analytics operation. |
+| `postiz_is_connected` | `INTEGRATIONS_CLIENTTOOL` | Invoke the is_connected operation. |
+| `postiz_list_integrations` | `INTEGRATIONS_CLIENTTOOL` | Invoke the postiz_list_integrations operation. |
+| `postiz_list_notifications` | `NOTIFICATIONS_CLIENTTOOL` | Invoke the postiz_list_notifications operation. |
+| `postiz_list_posts` | `POSTS_CLIENTTOOL` | Invoke the postiz_list_posts operation. |
+| `postiz_update_release_id` | `POSTS_CLIENTTOOL` | Invoke the update_release_id operation. |
+| `postiz_upload_file` | `UPLOADS_CLIENTTOOL` | Invoke the upload_file operation. |
+| `postiz_upload_from_url` | `UPLOADS_CLIENTTOOL` | Invoke the upload_from_url operation. |
+| `postiz_video_function` | `VIDEO_CLIENTTOOL` | Invoke the video_function operation. |
+
+</details>
+
+_6 action-routed tool(s) (default) · 20 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
+<!-- MCP-TOOLS-TABLE:END -->
+
+Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/usage.md](docs/usage.md).
 
 ### Dynamic Tool Selection & Visibility
 
@@ -90,79 +130,131 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 ### MCP Configuration Examples
 
-#### stdio Transport (Recommended for local IDEs e.g., Cursor, Claude Desktop)
-Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
+<!-- MCP-CONFIG-EXAMPLES:START -->
+
+> **Install the connector-focused `[mcp]` extra.** Examples use `postiz-agent[mcp]` to add
+> FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
+> still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
+> enables model orchestration.
+
+#### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
 
 ```json
 {
   "mcpServers": {
-    "postiz-agent": {
+    "postiz-mcp": {
       "command": "uvx",
       "args": [
         "--from",
-        "postiz-agent",
+        "postiz-agent[mcp]",
         "postiz-mcp"
       ],
       "env": {
-        "POSTIZ_SUBDOMAIN": "your_postiz_subdomain_here",
-        "POSTIZ_TOKEN": "your_postiz_token_here"
+        "MCP_TOOL_MODE": "intent",
+        "ANALYTICSTOOL": "True",
+        "INTEGRATIONSTOOL": "True",
+        "NOTIFICATIONSTOOL": "True",
+        "POSTSTOOL": "True",
+        "UPLOADSTOOL": "True",
+        "VIDEOTOOL": "True"
       }
     }
   }
 }
 ```
 
-#### Streamable-HTTP Transport (Recommended for production deployments)
-Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx` with explicit host and port definition:
+Runtime references require an alias-aware launcher such as GraphOS. Other
+launchers must omit those entries and inject the resolved values through their
+own runtime secret boundary.
+
+#### Streamable-HTTP Transport (networked / production)
 
 ```json
 {
   "mcpServers": {
-    "postiz-agent": {
+    "postiz-mcp": {
       "command": "uvx",
       "args": [
         "--from",
-        "postiz-agent",
-        "postiz-mcp"
+        "postiz-agent[mcp]",
+        "postiz-mcp",
+        "--transport",
+        "streamable-http",
+        "--port",
+        "8000"
       ],
       "env": {
         "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
+        "HOST": "127.0.0.1",
         "PORT": "8000",
-        "POSTIZ_SUBDOMAIN": "your_postiz_subdomain_here",
-        "POSTIZ_TOKEN": "your_postiz_token_here"
+        "MCP_TOOL_MODE": "intent",
+        "ANALYTICSTOOL": "True",
+        "INTEGRATIONSTOOL": "True",
+        "NOTIFICATIONSTOOL": "True",
+        "POSTSTOOL": "True",
+        "UPLOADSTOOL": "True",
+        "VIDEOTOOL": "True"
       }
     }
   }
 }
 ```
 
-Alternatively, connect to a pre-deployed remote or local Streamable-HTTP instance:
+Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
 
 ```json
 {
   "mcpServers": {
-    "postiz-agent": {
-      "url": "http://localhost:8000/postiz-agent/mcp"
+    "postiz-mcp": {
+      "url": "http://localhost:8000/postiz-mcp/mcp"
     }
   }
 }
 ```
 
-Deploying the Streamable-HTTP server via Docker:
+Run a reviewed container image as a least-privilege stdio child (no
+listener or published port):
 
 ```bash
-docker run -d \
-  --name postiz-agent-mcp \
-  -p 8000:8000 \
-  -e TRANSPORT=streamable-http \
-  -e PORT=8000 \
-  -e POSTIZ_SUBDOMAIN="your_value" \
-  -e POSTIZ_TOKEN="your_value" \
-  knucklessg1/postiz-agent:latest
+docker run -i --rm \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --pids-limit=256 \
+  --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
+  -e TRANSPORT=stdio \
+  -e MCP_TOOL_MODE=intent \
+  -e ANALYTICSTOOL=True \
+  -e INTEGRATIONSTOOL=True \
+  -e NOTIFICATIONSTOOL=True \
+  -e POSTSTOOL=True \
+  -e UPLOADSTOOL=True \
+  -e VIDEOTOOL=True \
+  registry.example.invalid/postiz-agent@sha256:<digest> postiz-mcp
 ```
 
----
+For containerized network HTTP, supply an authenticated TLS ingress (or
+direct server TLS), exact `MCP_ALLOWED_HOSTS`, and an exact trusted-proxy
+CIDR policy through the operator-owned deployment profile. The generator
+does not emit an unauthenticated non-loopback listener.
+
+_Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
+<!-- MCP-CONFIG-EXAMPLES:END -->
+
+<!-- BEGIN GENERATED: additional-deployment-options -->
+### Additional Deployment Options
+
+`postiz-agent` can run as a local stdio process or container, or behind a remote
+network boundary. The
+[Deployment guide](https://knuckles-team.github.io/postiz-agent/deployment/) carries
+the detailed transport contract.
+
+- **Local container** — launch a reviewed immutable image as a least-privilege
+  stdio child with no listener or published port.
+- **Remote URL** — connect through an operator-supplied authenticated HTTPS
+  ingress. Keep its URL, outbound identity references, trust profile, and exact
+  `MCP_ALLOWED_HOSTS` in `AgentConfig`.
+<!-- END GENERATED: additional-deployment-options -->
 
 ## Agent
 
@@ -173,7 +265,6 @@ To start the interactive command-line agent:
 
 ```bash
 # Set credentials
-export POSTIZ_SUBDOMAIN="your_value"
 export POSTIZ_TOKEN="your_value"
 
 # Run the agent server
@@ -188,7 +279,7 @@ version: '3.8'
 
 services:
   postiz-agent-mcp:
-    image: knucklessg1/postiz-agent:latest
+    image: example/postiz-agent:mcp
     container_name: postiz-agent-mcp
     hostname: postiz-agent-mcp
     restart: always
@@ -214,7 +305,7 @@ services:
         max-file: "3"
 
   postiz-agent-agent:
-    image: knucklessg1/postiz-agent:latest
+    image: example/postiz-agent@sha256:<digest>
     container_name: postiz-agent-agent
     hostname: postiz-agent-agent
     restart: always
@@ -248,7 +339,7 @@ services:
 
 ```
 
-Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](docs/agent.md).
+Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/deployment.md](docs/deployment.md).
 
 ---
 
@@ -272,6 +363,59 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 
 ## Environment Variables
 
+<!-- ENV-VARS-TABLE:START -->
+
+#### Package environment variables
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `HOST` | `0.0.0.0` |  |
+| `PORT` | `8000` |  |
+| `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
+| `ENABLE_OTEL` | `True` |  |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
+| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | `pk-...` |  |
+| `OTEL_EXPORTER_OTLP_SECRET_KEY` | `sk-...` |  |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
+| `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
+| `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
+| `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
+| `POSTIZ_TOKEN` | — |  |
+| `POSTIZ_URL` | Required |  |
+| `TLS_PROFILE` | — | Named `AgentConfig` transport-security profile; verification is mandatory. |
+| `TLS_PROFILES_REF` | — | Runtime secret reference for the TLS profile catalog. |
+| `AUTH_TYPE` | `token` |  |
+| `DEFAULT_AGENT_NAME` | `"Postiz Agent"` |  |
+| `INTEGRATIONSTOOL` | `True` |  |
+| `POSTSTOOL` | `True` |  |
+| `UPLOADSTOOL` | `True` |  |
+| `ANALYTICSTOOL` | `True` |  |
+| `NOTIFICATIONSTOOL` | `True` |  |
+| `VIDEOTOOL` | `True` |  |
+
+#### Inherited agent-utilities variables (apply to every connector)
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `MCP_TOOL_MODE` | `condensed` | Tool surface: `condensed` | `verbose` | `both` |
+| `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
+| `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
+| `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
+| `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP auth (`oidc-client-credentials` for fleet calls) |
+| `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
+| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
+| `DEBUG` | `False` | Verbose logging |
+| `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
+| `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
+| `PROVIDER` | `openai` | LLM provider for the agent |
+| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
+
+_23 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+<!-- ENV-VARS-TABLE:END -->
+
+
 The agent and MCP server can be configured using the following environment variables:
 
 | Variable | Description | Default / Type |
@@ -279,13 +423,17 @@ The agent and MCP server can be configured using the following environment varia
 | **`HOST`** | Host to bind the server to (Streamable-HTTP). | `0.0.0.0` |
 | **`PORT`** | Port to bind the server to. | `8000` |
 | **`TRANSPORT`** | MCP communication channel style. Options: `stdio`, `streamable-http`, `sse`. | `stdio` |
+| **`MCP_TOOL_MODE`** | Tool surface: `condensed`, `verbose`, or `both`. | `condensed` |
+| **`MCP_ENABLED_TOOLS`** / **`MCP_DISABLED_TOOLS`** | Comma-separated tool allow/deny list. | *Optional* |
+| **`MCP_ENABLED_TAGS`** / **`MCP_DISABLED_TAGS`** | Comma-separated tag allow/deny list. | *Optional* |
+| **`PYTHONUNBUFFERED`** | Unbuffered stdout (recommended in containers). | `1` |
 | **`DEFAULT_AGENT_NAME`** | Display name for the Pydantic AI Graph Agent. | `"Postiz Agent"` |
 | **`AGENT_DESCRIPTION`** | System description metadata for the Pydantic AI Graph Agent. | *Loaded from manifest* |
 | **`AGENT_SYSTEM_PROMPT`**| Custom prompt injected into the Pydantic AI Graph Agent core. | *Loaded from manifest* |
 | **`POSTIZ_TOKEN`** | API authentication token used for Postiz endpoints. | *Required* |
-| **`POSTIZ_URL`** | Base endpoint URL for the Postiz Public API. | `https://api.postiz.com/public/v1` |
-| **`POSTIZ_SUBDOMAIN`** | User account subdomain registered with Postiz. | *Optional* |
-| **`POSTIZ_AGENT_VERIFY`** | Whether to enforce HTTPS certificate verification. | `True` |
+| **`POSTIZ_URL`** | Base endpoint URL for the Postiz Public API. | Required |
+| **`TLS_PROFILE`** | Named `AgentConfig` transport-security profile; verification is mandatory. | — |
+| **`TLS_PROFILES_REF`** | Runtime secret reference for the TLS profile catalog. | — |
 | **`AUTH_TYPE`** | Authentication method. Option: `token`. | `token` |
 | **`ENABLE_OTEL`** | Whether to enable OpenTelemetry exporter logs. | `True` |
 | **`OTEL_EXPORTER_OTLP_ENDPOINT`** | Enterprise telemetry collection OTLP target URL. | *Optional* |
@@ -298,19 +446,66 @@ The agent and MCP server can be configured using the following environment varia
 | **`NOTIFICATIONSTOOL`** | Toggle to enable/disable the Notifications MCP tool group. | `True` |
 | **`VIDEOTOOL`** | Toggle to enable/disable the Video MCP tool group. | `True` |
 
+### Agent CLI (full `[agent]` runtime only)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MCP_URL` | URL of the MCP server the agent connects to. | `http://localhost:8000/mcp` |
+| `PROVIDER` | LLM provider (e.g. `openai`). | `openai` |
+| `MODEL_ID` | Model id (e.g. `gpt-4o`). | `gpt-4o` |
+| `ENABLE_WEB_UI` | Serve the AG-UI web interface. | `True` |
+
+See [`.env.example`](.env.example) for a copy-paste starting point.
+
 ---
 
 ## Installation
 
-Install the Python package locally:
+Pick the extra that matches what you want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `postiz-agent[mcp]` | Connector-focused MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | You only run the **MCP server** (smallest install / image) |
+| `postiz-agent[agent]` | Agent runtime (`agent-utilities[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | You run the **integrated agent** |
+| `postiz-agent[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
-# Using uv (highly recommended)
-uv pip install postiz-agent[all]
+# Connector-focused MCP server (includes the shared graph engine)
+uv pip install "postiz-agent[mcp]"
 
-# Using standard pip
-python -m pip install postiz-agent[all]
+# Agent runtime (adds model orchestration to the shared graph engine)
+uv pip install "postiz-agent[agent]"
+
+# Everything (development)
+uv pip install "postiz-agent[all]"      # or: python -m pip install "postiz-agent[all]"
 ```
+
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `example/postiz-agent:mcp` | `--target mcp` | `postiz-agent[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `postiz-mcp` |
+| `example/postiz-agent@sha256:<digest>` | `--target agent` (default) | `postiz-agent[agent]` — **agent runtime**, model orchestration + `epistemic-graph[full]` | `postiz-agent` |
+
+```bash
+docker build --target mcp   -t example/postiz-agent:mcp    docker/   # connector-focused MCP server
+docker build --target agent -t example/postiz-agent:agent-local docker/   # agent runtime
+```
+
+`docker/mcp.compose.yml` runs the connector-focused `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
+
+### Knowledge-graph database (`epistemic-graph`)
+
+Both `[mcp]` and `[agent]` carry the **epistemic-graph** engine through the required
+Agent Utilities core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+the server connector-focused; `[agent]` additionally enables model orchestration. Local
+deployments can use the bundled engine. For production or shared state, run
+**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+Deployment recipes (single-node + Raft HA), connection configuration, and architecture
+diagrams are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
 
 ---
 
@@ -335,10 +530,10 @@ the recommended reference for installation, deployment, and day-to-day operation
 
 ## Repository Owners
 
-<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=Knucklessg1&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
+<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
 
-![GitHub followers](https://img.shields.io/github/followers/Knucklessg1)
-![GitHub User's stars](https://img.shields.io/github/stars/Knucklessg1)
+![GitHub followers](https://img.shields.io/github/followers/example)
+![GitHub User's stars](https://img.shields.io/github/stars/example)
 
 ---
 
@@ -349,3 +544,42 @@ Contributions are welcome! Please ensure code quality by executing local checks 
 - Lint code using `ruff check .`
 - Validate type-safety with `mypy .`
 - Execute test suites using `pytest`
+
+
+<!-- BEGIN agent-utilities-deployment (generated; do not edit between markers) -->
+
+## Deploy with `agent-utilities-deployment`
+
+Provision this package with the consolidated **`agent-utilities-deployment`**
+workflow. It selects an installed-package, editable-source, or immutable-container
+path; records only runtime secret and TLS-profile references in `AgentConfig`; and
+runs doctor, registration, policy, observability, and rollback gates. Ask your agent
+to **"deploy `postiz-agent` with agent-utilities-deployment"**.
+
+| Install mode | Command |
+|------|---------|
+| Installed package | `uv tool install "postiz-agent[mcp]"`, then run `postiz-mcp` |
+| Editable source | `uv pip install -e ".[agent]"`, then run `postiz-mcp` |
+| Immutable container | deploy `registry.example.invalid/postiz-agent@sha256:<digest>` through the operator-selected orchestrator |
+
+The repository embeds no deployment profile, credential value, certificate path, or
+environment-specific endpoint. Supply those at runtime through `AgentConfig` and the
+configured secret provider.
+
+<!-- END agent-utilities-deployment -->
+
+<!-- GOVERNED-CAPABILITY:START -->
+## Governed capability contract
+
+This package ships a compact canonical skill surface with specialist procedures
+kept as referenced workflows. The current MCP tools, skill metadata,
+`connector_manifest.yml`, ontology, mappings, shapes, fixtures, migrations,
+tool-schema fingerprints, and certification metadata form one versioned
+capability contract. Validate them together; do not rely on stale tool names or
+historical per-task skill wrappers.
+
+Runtime endpoints, credentials, certificate trust, tenant identity, retention,
+and observability policy are deployment inputs and are never packaged values.
+See [Configuration, trust, and privacy](docs/configuration.md) before enabling a
+network transport, connector ingestion, GraphOS delegation, or trace export.
+<!-- GOVERNED-CAPABILITY:END -->

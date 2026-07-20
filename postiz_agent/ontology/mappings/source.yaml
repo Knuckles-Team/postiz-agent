@@ -1,0 +1,20 @@
+schema_version: '1'
+connector: postiz-agent
+ontology_source: social
+sync:
+- preset: postiz-posts
+  server: postiz-agent
+  tool: postiz_posts
+  action: postiz_list_posts
+  records_path: posts
+  id_field: id
+  title_field: content
+  text_field: content
+  updated_field: publishDate
+  doc_type: social_post
+  tool_schema_sha256: 048d1e66d493308c9a677baab9359ec0ec4e00da7351d25123e2547039dfbf49
+governance:
+  default_acl: quarantine
+  identity: opaque-reference
+  tenant: required-at-materialization
+  provenance: required-at-materialization

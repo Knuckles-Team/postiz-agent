@@ -1,13 +1,12 @@
 #!/usr/bin/python
 """
 Postiz Agent Server Entry point.
-CONCEPT:PA-2.0 - CLI Parsing, settings, and agent daemon routers setup.
+CONCEPT:PZ-OS.config.cli-parsing-settings-agent - CLI Parsing, settings, and agent daemon routers setup.
 """
 
 import logging
 import os
 import sys
-import warnings
 
 from agent_utilities import (
     build_system_prompt_from_workspace,
@@ -17,7 +16,7 @@ from agent_utilities import (
     load_identity,
 )
 
-__version__ = "0.29.0"
+__version__ = "1.0.1"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -44,9 +43,6 @@ DEFAULT_AGENT_SYSTEM_PROMPT = os.getenv(
 
 
 def agent_server():
-    warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
-    warnings.filterwarnings("ignore", category=DeprecationWarning, module="fastmcp")
-
     print(f"{DEFAULT_AGENT_NAME} v{__version__}", file=sys.stderr)
     parser = create_agent_parser()
     args = parser.parse_args()

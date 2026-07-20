@@ -3,6 +3,8 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp.action_dispatch import resolve_action
+from agent_utilities.mcp.concurrency import run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -32,18 +34,30 @@ def register_integrations_tools(mcp: FastMCP):
         try:
             kwargs = json.loads(params_json)
         except Exception as e:
-            return {"error": f"Invalid params_json: {e}"}
+            return {"error": "Operation failed"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = (
+            "postiz_list_integrations",
+            "postiz_get_integration_url",
+            "postiz_delete_channel",
+            "postiz_check_connection",
+            "postiz_find_slot",
+        )
+        resolved = resolve_action(action, valid_actions, service="postiz-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "postiz_list_integrations":
-            return client.postiz_list_integrations(**kwargs)
+            return await run_blocking(client.postiz_list_integrations, **kwargs)
         if action == "postiz_get_integration_url":
-            return client.postiz_get_integration_url(**kwargs)
+            return await run_blocking(client.postiz_get_integration_url, **kwargs)
         if action == "postiz_delete_channel":
-            return client.postiz_delete_channel(**kwargs)
+            return await run_blocking(client.postiz_delete_channel, **kwargs)
         if action == "postiz_check_connection":
-            return client.postiz_check_connection(**kwargs)
+            return await run_blocking(client.postiz_check_connection, **kwargs)
         if action == "postiz_find_slot":
-            return client.postiz_find_slot(**kwargs)
+            return await run_blocking(client.postiz_find_slot, **kwargs)
         raise ValueError(f"Unknown action: {action}")

@@ -1,4 +1,4 @@
-from agent_utilities.api_utilities import require_auth
+from agent_utilities.core.decorators import require_auth
 
 from postiz_agent.api.api_client_base import BaseApiClient
 from postiz_agent.postiz_models import (
@@ -11,7 +11,7 @@ from postiz_agent.postiz_models import (
 
 class VideoClient(BaseApiClient):
     @require_auth
-    def generate_video(
+    def postiz_generate_video(
         self, request: PostizVideoGenerationRequest
     ) -> list[PostizVideoGenerationResponseItem]:
         # In case request is dict, parse it
@@ -28,7 +28,7 @@ class VideoClient(BaseApiClient):
         return []
 
     @require_auth
-    def video_function(
+    def postiz_video_function(
         self, request: PostizVideoFunctionRequest
     ) -> PostizVideoFunctionResponse:
         # In case request is dict, parse it
@@ -40,7 +40,3 @@ class VideoClient(BaseApiClient):
         )
         response.raise_for_status()
         return PostizVideoFunctionResponse(**response.json())
-
-    # MCP action-routed aliases
-    postiz_generate_video = generate_video
-    postiz_video_function = video_function

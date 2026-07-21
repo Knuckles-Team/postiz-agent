@@ -1,6 +1,6 @@
 {
   "project": "postiz-agent",
-  "path": "/home/apps/workspace/agent-packages/agents/postiz-agent",
+  "path": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent",
   "domain_results": [
     {
       "domain": "Project Analysis",
@@ -26,7 +26,7 @@
         {
           "criterion": "externalized_prompts",
           "points": 0,
-          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent",
           "reasoning": "No prompts/ directory found. Prompts may be hardcoded in source."
         },
         {
@@ -44,25 +44,25 @@
         {
           "criterion": "agents_md",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/AGENTS.md (3921 bytes)",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/AGENTS.md (3921 bytes)",
           "reasoning": "AGENTS.md exists with comprehensive content"
         },
         {
           "criterion": "pre_commit_hooks",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.pre-commit-config.yaml",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/.pre-commit-config.yaml",
           "reasoning": "Pre-commit configuration found for automated code quality checks"
         },
         {
           "criterion": "gitignore",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.gitignore",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/.gitignore",
           "reasoning": ".gitignore exists to prevent committing build artifacts and secrets"
         },
         {
           "criterion": "env_template",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.env.example",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/.env.example",
           "reasoning": "Environment template exists for onboarding and secret management"
         },
         {
@@ -94,7 +94,7 @@
         {
           "criterion": "dependency_freshness",
           "points": 94,
-          "evidence": "source=/home/apps/workspace/agent-packages/agents/postiz-agent/pyproject.toml total=5 major=0 minor=2 patch=0 not_installed=2",
+          "evidence": "source=${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/pyproject.toml total=5 major=0 minor=2 patch=0 not_installed=2",
           "reasoning": "Audited 5 deps (3 installed, 2 constraint-only). 0 major, 2 minor, 0 patch updates."
         }
       ],
@@ -183,7 +183,7 @@
           "length": 159,
           "complexity": 33,
           "nesting_depth": 2,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
         },
         {
           "name": "test_mcp_server_tools_exception_handling",
@@ -191,7 +191,7 @@
           "length": 137,
           "complexity": 21,
           "nesting_depth": 1,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
         },
         {
           "name": "main",
@@ -199,7 +199,7 @@
           "length": 99,
           "complexity": 19,
           "nesting_depth": 4,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
         },
         {
           "name": "parse_mcp_server",
@@ -207,7 +207,7 @@
           "length": 41,
           "complexity": 14,
           "nesting_depth": 5,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
         },
         {
           "name": "__getattr__",
@@ -215,7 +215,7 @@
           "length": 26,
           "complexity": 12,
           "nesting_depth": 3,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/__init__.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/__init__.py"
         }
       ],
       "top_long": [
@@ -225,7 +225,7 @@
           "length": 159,
           "complexity": 33,
           "nesting_depth": 2,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
         },
         {
           "name": "test_mcp_server_tools_exception_handling",
@@ -233,7 +233,7 @@
           "length": 137,
           "complexity": 21,
           "nesting_depth": 1,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
         },
         {
           "name": "main",
@@ -241,7 +241,7 @@
           "length": 99,
           "complexity": 19,
           "nesting_depth": 4,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
         },
         {
           "name": "test_agent_server_debug_mode",
@@ -249,7 +249,7 @@
           "length": 52,
           "complexity": 1,
           "nesting_depth": 1,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py"
         },
         {
           "name": "parse_mcp_server",
@@ -257,7 +257,7 @@
           "length": 41,
           "complexity": 14,
           "nesting_depth": 5,
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py"
         }
       ],
       "structural_issues": [],
@@ -316,7 +316,7 @@
       "tests": [
         {
           "name": "test_concept_parity",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_concept_parity.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_concept_parity.py",
           "line": 58,
           "length": 30,
           "intent": "unit",
@@ -326,7 +326,7 @@
         },
         {
           "name": "test_mcp_instance_creation",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_init.py",
           "line": 6,
           "length": 5,
           "intent": "unit",
@@ -336,7 +336,7 @@
         },
         {
           "name": "test_import_postiz_agent",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_init.py",
           "line": 13,
           "length": 5,
           "intent": "unit",
@@ -346,7 +346,7 @@
         },
         {
           "name": "test_server_startup",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_startup.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_startup.py",
           "line": 1,
           "length": 12,
           "intent": "unit",
@@ -356,7 +356,7 @@
         },
         {
           "name": "test_init_module_lazy_attributes",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 33,
           "length": 28,
           "intent": "unit",
@@ -366,7 +366,7 @@
         },
         {
           "name": "test_init_lazy_import_failure",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 63,
           "length": 21,
           "intent": "unit",
@@ -376,7 +376,7 @@
         },
         {
           "name": "test_main_invocation",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 88,
           "length": 4,
           "intent": "unit",
@@ -386,7 +386,7 @@
         },
         {
           "name": "test_agent_server_debug_mode",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 96,
           "length": 52,
           "intent": "unit",
@@ -396,7 +396,7 @@
         },
         {
           "name": "test_auth_singleton_and_exception_handling",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 152,
           "length": 28,
           "intent": "unit",
@@ -406,7 +406,7 @@
         },
         {
           "name": "test_api_client_url_normalization",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 184,
           "length": 12,
           "intent": "unit",
@@ -416,7 +416,7 @@
         },
         {
           "name": "test_api_client_unauthorized_handling",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 198,
           "length": 8,
           "intent": "unit",
@@ -426,7 +426,7 @@
         },
         {
           "name": "test_api_client_endpoints",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 208,
           "length": 159,
           "intent": "unit",
@@ -436,7 +436,7 @@
         },
         {
           "name": "test_mcp_server_custom_route",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 372,
           "length": 17,
           "intent": "unit",
@@ -448,7 +448,7 @@
         },
         {
           "name": "test_mcp_server_tools_exception_handling",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 392,
           "length": 137,
           "intent": "unit",
@@ -460,7 +460,7 @@
         },
         {
           "name": "test_mcp_server_startup_transports",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 531,
           "length": 32,
           "intent": "unit",
@@ -470,7 +470,7 @@
         },
         {
           "name": "test_requests_dependency_warning_import_failure",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 565,
           "length": 12,
           "intent": "unit",
@@ -480,7 +480,7 @@
         },
         {
           "name": "test_init_missing_optional_keys",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 579,
           "length": 5,
           "intent": "unit",
@@ -490,7 +490,7 @@
         },
         {
           "name": "test_agent_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 586,
           "length": 32,
           "intent": "unit",
@@ -500,7 +500,7 @@
         },
         {
           "name": "test_api_client_upload_file_removes_content_type",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 620,
           "length": 17,
           "intent": "unit",
@@ -510,7 +510,7 @@
         },
         {
           "name": "test_mcp_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 639,
           "length": 17,
           "intent": "unit",
@@ -785,7 +785,7 @@
             "detail": "1 modules exceed 500 lines (god modules)",
             "items": [
               {
-                "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+                "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
                 "lines": 655
               }
             ]
@@ -936,223 +936,223 @@
       "tests_missing_markers": [
         {
           "test_name": "test_concept_parity",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_concept_parity.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_concept_parity.py",
           "line": 58
         },
         {
           "test_name": "test_mcp_instance_creation",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_init.py",
           "line": 6
         },
         {
           "test_name": "test_import_postiz_agent",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_init.py",
           "line": 13
         },
         {
           "test_name": "test_server_startup",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_startup.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_startup.py",
           "line": 1
         },
         {
           "test_name": "test_init_module_lazy_attributes",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 33
         },
         {
           "test_name": "test_init_lazy_import_failure",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 63
         },
         {
           "test_name": "test_main_invocation",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 88
         },
         {
           "test_name": "test_agent_server_debug_mode",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 96
         },
         {
           "test_name": "test_auth_singleton_and_exception_handling",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 152
         },
         {
           "test_name": "test_api_client_url_normalization",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 184
         },
         {
           "test_name": "test_api_client_unauthorized_handling",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 198
         },
         {
           "test_name": "test_api_client_endpoints",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 208
         },
         {
           "test_name": "test_mcp_server_custom_route",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 372
         },
         {
           "test_name": "test_mcp_server_tools_exception_handling",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 392
         },
         {
           "test_name": "test_mcp_server_startup_transports",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 531
         },
         {
           "test_name": "test_requests_dependency_warning_import_failure",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 565
         },
         {
           "test_name": "test_init_missing_optional_keys",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 579
         },
         {
           "test_name": "test_agent_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 586
         },
         {
           "test_name": "test_api_client_upload_file_removes_content_type",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 620
         },
         {
           "test_name": "test_mcp_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/tests/test_coverage_gap_fillers.py",
           "line": 639
         }
       ],
       "functions_missing_docstrings": [
         {
           "function": "parse_api_client",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
           "line": 33,
           "length": 26
         },
         {
           "function": "parse_mcp_server",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
           "line": 94,
           "length": 41
         },
         {
           "function": "verify_agent",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
           "line": 137,
           "length": 38
         },
         {
           "function": "main",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/scripts/verify_api_integration.py",
           "line": 177,
           "length": 99
         },
         {
           "function": "register_integrations_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 41,
           "length": 37
         },
         {
           "function": "register_posts_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 80,
           "length": 39
         },
         {
           "function": "register_uploads_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 121,
           "length": 31
         },
         {
           "function": "register_analytics_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 154,
           "length": 31
         },
         {
           "function": "register_notifications_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 187,
           "length": 29
         },
         {
           "function": "register_video_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 218,
           "length": 31
         },
         {
           "function": "get_mcp_instance",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 251,
           "length": 35
         },
         {
           "function": "mcp_server",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 288,
           "length": 16
         },
         {
           "function": "postiz_integrations",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 43,
           "length": 35
         },
         {
           "function": "postiz_posts",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 82,
           "length": 37
         },
         {
           "function": "postiz_uploads",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 123,
           "length": 29
         },
         {
           "function": "postiz_analytics",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 156,
           "length": 29
         },
         {
           "function": "postiz_notifications",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 189,
           "length": 27
         },
         {
           "function": "postiz_video",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/mcp_server.py",
           "line": 220,
           "length": 29
         },
         {
           "function": "get_client",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/auth.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/auth.py",
           "line": 13,
           "length": 26
         },
         {
           "function": "agent_server",
-          "file": "/home/apps/workspace/agent-packages/agents/postiz-agent/postiz_agent/agent_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/postiz_agent/agent_server.py",
           "line": 41,
           "length": 34
         }
@@ -1436,7 +1436,7 @@
         {
           "criterion": "bumpversion_exists",
           "points": 20,
-          "evidence": "/home/apps/workspace/agent-packages/agents/postiz-agent/.bumpversion.cfg",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/postiz-agent/.bumpversion.cfg",
           "reasoning": ".bumpversion.cfg found"
         },
         {

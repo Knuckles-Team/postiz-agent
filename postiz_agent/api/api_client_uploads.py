@@ -1,6 +1,6 @@
 import os
 
-from agent_utilities.api_utilities import require_auth
+from agent_utilities.core.decorators import require_auth
 
 from postiz_agent.api.api_client_base import BaseApiClient
 from postiz_agent.postiz_models import PostizUploadResponse
@@ -8,7 +8,7 @@ from postiz_agent.postiz_models import PostizUploadResponse
 
 class UploadsClient(BaseApiClient):
     @require_auth
-    def upload_file(self, file_path: str) -> PostizUploadResponse:
+    def postiz_upload_file(self, file_path: str) -> PostizUploadResponse:
         url = f"{self.base_url}/upload"
 
         with open(file_path, "rb") as f:
@@ -22,13 +22,9 @@ class UploadsClient(BaseApiClient):
         return PostizUploadResponse(**response.json())
 
     @require_auth
-    def upload_from_url(self, url: str) -> PostizUploadResponse:
+    def postiz_upload_from_url(self, url: str) -> PostizUploadResponse:
         response = self.session.post(
             f"{self.base_url}/upload-from-url", json={"url": url}
         )
         response.raise_for_status()
         return PostizUploadResponse(**response.json())
-
-    # MCP action-routed aliases
-    postiz_upload_file = upload_file
-    postiz_upload_from_url = upload_from_url

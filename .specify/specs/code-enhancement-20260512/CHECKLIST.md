@@ -22,7 +22,7 @@
 - [ ] **FR-019**: keepachangelog not installed — pip install 'universal-skills[code-enhancer]'
 - [ ] **FR-020**: Partial env var documentation: 39% coverage
 - [ ] **FR-021**: Undocumented env vars: ALLOWED_CLIENT_REDIRECT_URIS, AUTH_TYPE, EUNOMIA_POLICY_FILE, EUNOMIA_REMOTE_URL, EUNOMIA_TYPE, OAUTH_BASE_URL, OAUTH_UPSTREAM_AUTH_ENDPOINT, OAUTH_UPSTREAM_CLIENT_ID, OAUTH_UPSTREAM_CLIENT_SECRET, OAUTH_UPSTREAM_TOKEN_ENDPOINT
-- [ ] **FR-022**: 9 Python env vars not in .env.example: ANALYTICSTOOL, DEFAULT_AGENT_NAME, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, POSTIZ_AGENT_VERIFY
+- [ ] **FR-022**: 9 Python env vars not in .env.example: ANALYTICSTOOL, DEFAULT_AGENT_NAME, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, TLS_PROFILE
 
 ## User Stories / Acceptance Criteria
 - [ ] As a **developer**, I want to **address Project Analysis findings (grade: C, score: 74)**, so that **improve project project analysis from C to at least B (80+)**.

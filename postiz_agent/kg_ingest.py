@@ -5,17 +5,10 @@ media-downloader's blob ingestion: the postiz-agent connector natively pushes it
 into the ONE epistemic-graph knowledge graph as **typed OWL nodes** (``:SocialPost``,
 ``:SocialChannel``, ``:DailyEngagement``, ``:AggregatedEngagement`` …) + links.
 
-The write path is the shared fleet primitive
-``agent_utilities.knowledge_graph.memory.native_ingest`` when it is importable; when it
-is not (the primitive is not yet in the installed ``agent_utilities``), a **self-contained
-txn fallback** over the lightweight engine client (``GraphComputeEngine()._client`` +
-``txn``) is used instead — the same fast client the blob ``MediaStore`` uses, NOT the heavy
-in-process ingestion engine.
-
-Everything is dependency-/engine-guarded: with no agent-utilities KG stack or no reachable
-engine, every entry point **no-ops** (returns ``None``), so the connector keeps working with
-zero KG infrastructure. Nodes carry the shared provenance (``source``/``domain``) and match
-the classes federated by ``postiz_agent.ontology`` (``http://knuckles.team/kg/social``).
+The write path is the required shared fleet transaction primitive
+``agent_utilities.knowledge_graph.memory.native_ingest``. Engine failures are explicit and
+partial writes are never acknowledged. Nodes carry shared provenance
+(``source``/``domain``) and match the classes federated by ``postiz_agent.ontology``.
 """
 
 from __future__ import annotations
@@ -23,74 +16,17 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from agent_utilities.knowledge_graph.memory.native_ingest import (
+    ingest_documents as _native_ingest_documents,
+)
+from agent_utilities.knowledge_graph.memory.native_ingest import (
+    ingest_entities as _native_ingest_entities,
+)
+
 logger = logging.getLogger("postiz_agent.kg")
 
 _SOURCE = "postiz-agent"
 _DOMAIN = "social"
-_DEFAULT_GRAPH = "__commons__"
-
-
-# --------------------------------------------------------------------------- #
-# Write path — prefer the shared primitive, else a self-contained txn fallback #
-# --------------------------------------------------------------------------- #
-def _client() -> tuple[Any | None, str]:
-    """Return ``(engine_client, graph_name)`` or ``(None, "")`` when unavailable."""
-    try:
-        from agent_utilities.knowledge_graph.core.graph_compute import (
-            GraphComputeEngine,
-        )
-    except Exception as e:  # noqa: BLE001 — KG stack absent
-        logger.debug("KG ingest unavailable (import): %s", e)
-        return None, ""
-    try:
-        engine = GraphComputeEngine()
-        client = getattr(engine, "_client", None)
-        if client is None:
-            return None, ""
-        return client, (getattr(engine, "graph_name", None) or _DEFAULT_GRAPH)
-    except Exception as e:  # noqa: BLE001 — engine unreachable
-        logger.debug("KG ingest: engine unreachable: %s", e)
-        return None, ""
-
-
-def _fallback_write(
-    entities: list[dict[str, Any]],
-    relationships: list[dict[str, Any]] | None,
-    *,
-    client: Any,
-    graph: str,
-) -> dict[str, int] | None:
-    """Self-contained txn writer (used when the shared primitive is absent)."""
-    entities = [e for e in (entities or []) if e.get("id")]
-    if not entities:
-        return None
-    try:
-        txn = client.txn.begin(graph=graph)
-        for ent in entities:
-            props = {k: v for k, v in ent.items() if k != "id" and v is not None}
-            props.setdefault("source", _SOURCE)
-            props.setdefault("domain", _DOMAIN)
-            client.txn.add_node(txn, ent["id"], props)
-        committed = client.txn.commit(txn)
-    except Exception as e:  # noqa: BLE001 — engine/txn failure is non-fatal
-        logger.warning("KG ingest: txn failed: %s", e)
-        return None
-    if not committed:
-        logger.warning("KG ingest: txn not committed (conflict)")
-        return None
-
-    edges = 0
-    for rel in relationships or []:
-        try:
-            client.edges.add(
-                rel["source"], rel["target"], {"type": rel.get("type", "RELATED")}
-            )
-            edges += 1
-        except Exception as e:  # noqa: BLE001 — pure edge link, best-effort
-            logger.debug("KG ingest: edge skipped: %s", e)
-
-    logger.info("KG ingest: wrote %d nodes, %d edges", len(entities), edges)
-    return {"nodes": len(entities), "edges": edges}
 
 
 def ingest_entities(
@@ -101,33 +37,18 @@ def ingest_entities(
     domain: str = _DOMAIN,
     client: Any | None = None,
     graph: str | None = None,
-) -> dict[str, int] | None:
+) -> dict[str, int]:
     """Write typed OWL nodes (+ edges) into epistemic-graph.
 
-    ``entities``: ``[{"id":..., "type":<owl:Class>, ...props}]``.
-    ``relationships``: ``[{"source":id, "target":id, "type":<link>}]``.
-    Returns ``{"nodes":n, "edges":m}`` or ``None`` (no engine / failure; never raises).
-    ``client``/``graph`` may be injected (tests); otherwise resolved on demand.
+    Nodes use ``node_type`` and relationships use ``relationship``.
     """
-    if not entities:
-        return None
-    # Prefer the shared fleet primitive when it is importable.
-    if client is None:
-        try:
-            from agent_utilities.knowledge_graph.memory.native_ingest import (
-                ingest_entities as _shared,
-            )
-
-            return _shared(
-                entities, relationships, source=source, domain=domain, graph=graph
-            )
-        except Exception as e:  # noqa: BLE001 — primitive absent → fallback
-            logger.debug("KG ingest: shared primitive unavailable: %s", e)
-        client, graph = _client()
-    if client is None:
-        return None
-    return _fallback_write(
-        entities, relationships, client=client, graph=graph or _DEFAULT_GRAPH
+    return _native_ingest_entities(
+        entities,
+        relationships,
+        source=source,
+        domain=domain,
+        client=client,
+        graph=graph,
     )
 
 
@@ -138,34 +59,15 @@ def ingest_documents(
     domain: str = _DOMAIN,
     client: Any | None = None,
     graph: str | None = None,
-) -> dict[str, int] | None:
+) -> dict[str, int]:
     """Write text records as ``:Document`` nodes (semantic-search fodder)."""
-    if not documents:
-        return None
-    if client is None:
-        try:
-            from agent_utilities.knowledge_graph.memory.native_ingest import (
-                ingest_documents as _shared,
-            )
-
-            return _shared(documents, source=source, domain=domain, graph=graph)
-        except Exception as e:  # noqa: BLE001 — primitive absent → fallback
-            logger.debug("KG ingest: shared doc primitive unavailable: %s", e)
-        client, graph = _client()
-    if client is None:
-        return None
-    nodes: list[dict[str, Any]] = []
-    for doc in documents:
-        did = doc.get("id")
-        text = doc.get("text") or doc.get("content")
-        if not did or not text:
-            continue
-        node = {k: v for k, v in doc.items() if k != "content" and v is not None}
-        node["id"] = did
-        node["type"] = "Document"
-        node["text"] = text
-        nodes.append(node)
-    return _fallback_write(nodes, None, client=client, graph=graph or _DEFAULT_GRAPH)
+    return _native_ingest_documents(
+        documents,
+        source=source,
+        domain=domain,
+        client=client,
+        graph=graph,
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -179,7 +81,7 @@ def _channel_entity(integ: dict[str, Any]) -> dict[str, Any] | None:
     provider = integ.get("providerIdentifier") or integ.get("identifier")
     return {
         "id": f"social:channel:{cid}",
-        "type": "SocialChannel",
+        "node_type": "SocialChannel",
         "name": integ.get("name"),
         "providerIdentifier": provider,
         "platform": provider,
@@ -211,7 +113,7 @@ def ingest_posts(
         entities.append(
             {
                 "id": node_id,
-                "type": "SocialPost",
+                "node_type": "SocialPost",
                 "name": (post.get("content") or "")[:120] or None,
                 "text": post.get("content"),
                 "postState": post.get("state"),
@@ -227,7 +129,7 @@ def ingest_posts(
                 entities.append(ch)
                 seen_channels.add(ch["id"])
             relationships.append(
-                {"source": node_id, "target": ch["id"], "type": "publishedOn"}
+                {"source": node_id, "target": ch["id"], "relationship": "publishedOn"}
             )
         for media in post.get("image") or post.get("media") or []:
             mid = media.get("id") if isinstance(media, dict) else None
@@ -236,7 +138,7 @@ def ingest_posts(
                     {
                         "source": node_id,
                         "target": f"social:media:{mid}",
-                        "type": "hasMedia",
+                        "relationship": "hasMedia",
                     }
                 )
     return ingest_entities(entities, relationships, client=client, graph=graph)
@@ -297,7 +199,7 @@ def ingest_analytics(
             entities.append(
                 {
                     "id": daily_id,
-                    "type": "DailyEngagement",
+                    "node_type": "DailyEngagement",
                     "metricLabel": label,
                     "engagementDate": date,
                     "engagementTotal": total,
@@ -305,16 +207,24 @@ def ingest_analytics(
                 }
             )
             relationships.append(
-                {"source": daily_id, "target": channel_id, "type": "engagementOf"}
+                {
+                    "source": daily_id,
+                    "target": channel_id,
+                    "relationship": "engagementOf",
+                }
             )
             relationships.append(
-                {"source": agg_id, "target": daily_id, "type": "aggregatesDaily"}
+                {
+                    "source": agg_id,
+                    "target": daily_id,
+                    "relationship": "aggregatesDaily",
+                }
             )
         if points:
             entities.append(
                 {
                     "id": agg_id,
-                    "type": "AggregatedEngagement",
+                    "node_type": "AggregatedEngagement",
                     "metricLabel": label,
                     "engagementTotal": agg_total,
                     "percentageChange": series.get("percentageChange"),
@@ -322,6 +232,6 @@ def ingest_analytics(
                 }
             )
             relationships.append(
-                {"source": agg_id, "target": channel_id, "type": "engagementOf"}
+                {"source": agg_id, "target": channel_id, "relationship": "engagementOf"}
             )
     return ingest_entities(entities, relationships, client=client, graph=graph)

@@ -42,8 +42,8 @@
 - **FR-025**: 2 tests have no assertions
 - **FR-026**: 2 tests exceed 100 lines — likely doing too much per test
 - **FR-027**: Partial env var documentation: 32% coverage
-- **FR-028**: Undocumented env vars: ANALYTICSTOOL, AUTH_TYPE, DEFAULT_AGENT_NAME, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, OTEL_EXPORTER_OTLP_ENDPOINT, POSTIZ_AGENT_VERIFY, POSTIZ_URL
-- **FR-029**: 3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, POSTIZ_AGENT_VERIFY, POSTIZ_URL
+- **FR-028**: Undocumented env vars: ANALYTICSTOOL, AUTH_TYPE, DEFAULT_AGENT_NAME, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, OTEL_EXPORTER_OTLP_ENDPOINT, TLS_PROFILE, POSTIZ_URL
+- **FR-029**: 3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, TLS_PROFILE, POSTIZ_URL
 
 ## Success Criteria
 

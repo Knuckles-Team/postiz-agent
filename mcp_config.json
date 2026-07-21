@@ -7,13 +7,12 @@
         "postiz-mcp"
       ],
       "env": {
-        "MCP_TOOL_MODE": "condensed",
+        "MCP_TOOL_MODE": "intent",
         "ANALYTICSTOOL": "True",
+        "INGESTTOOL": "True",
         "INTEGRATIONSTOOL": "True",
         "NOTIFICATIONSTOOL": "True",
-        "POSTIZ_AGENT_VERIFY": "True",
-        "POSTIZ_TOKEN": "your_postiz_token_here",
-        "POSTIZ_URL": "https://api.postiz.com/public/v1",
+        "POSTIZ_KG_INGEST": "1",
         "POSTSTOOL": "True",
         "UPLOADSTOOL": "True",
         "VIDEOTOOL": "True"

@@ -3,7 +3,7 @@
 CONCEPT:AU-KG.ingest.list-durable-media. Postiz posts carry image/video attachments
 (and the ``/upload`` endpoint mints media assets). When a live epistemic-graph engine is
 reachable, the raw bytes of such an asset are stored as a content-addressed **blob** with a
-``:MediaAsset`` graph node (carrying its Postiz metadata) in ONE cross-modal ACID commit,
+``:AssetOccurrence`` graph node (carrying its Postiz metadata) in ONE cross-modal ACID commit,
 via the agent-utilities ``MediaStore``. This makes the raw bytes — not just a URL — durable,
 deduped, and queryable inside the knowledge graph, and linkable to its ``:SocialPost`` via
 ``:hasMedia``.
@@ -35,14 +35,14 @@ def _media_store() -> Any | None:
         if store is not None:
             return store
     except Exception as e:  # noqa: BLE001 — primitive absent → direct build
-        logger.debug("KG media ingest: shared primitive unavailable: %s", e)
+        logger.debug("Operation failed: error_type=%s", type(e).__name__)
     try:
         from agent_utilities.knowledge_graph.core.graph_compute import (
             GraphComputeEngine,
         )
         from agent_utilities.knowledge_graph.memory.media_store import MediaStore
     except Exception as e:  # noqa: BLE001 — agent-utilities KG stack absent
-        logger.debug("KG media ingest unavailable (import): %s", e)
+        logger.debug("Operation failed: error_type=%s", type(e).__name__)
         return None
     try:
         engine = GraphComputeEngine()
@@ -51,7 +51,7 @@ def _media_store() -> Any | None:
             return None
         return MediaStore(engine)
     except Exception as e:  # noqa: BLE001 — no reachable engine
-        logger.debug("KG media ingest: engine unreachable: %s", e)
+        logger.debug("Operation failed: error_type=%s", type(e).__name__)
         return None
 
 
@@ -74,7 +74,7 @@ def ingest_media_bytes(
     source: str = _SOURCE,
     media_store: Any | None = None,
 ) -> dict[str, Any] | None:
-    """Store raw media bytes as a blob + ``:MediaAsset`` in the knowledge graph.
+    """Store raw media bytes as a blob + ``:AssetOccurrence`` in the knowledge graph.
 
     Returns ``{asset_id, digest, size_bytes, media_type}`` on success, or ``None``
     when there is no engine, no bytes, or the store failed (never raises).
@@ -100,13 +100,12 @@ def ingest_media_bytes(
             extra=extra or {},
         )
     except Exception as e:  # noqa: BLE001 — engine/store failure is non-fatal
-        logger.warning("KG media ingest: store_media failed: %s", e)
+        logger.warning("Operation failed: error_type=%s", type(e).__name__)
         return None
     if stored is None:
         return None
     logger.info(
-        "KG media ingest: stored %s (%s bytes) as asset %s",
-        name,
+        "KG media ingest: stored %s bytes as asset %s",
         len(data),
         getattr(stored, "asset_id", "?"),
     )
@@ -126,14 +125,14 @@ def ingest_media_file(
     source: str = _SOURCE,
     media_store: Any | None = None,
 ) -> dict[str, Any] | None:
-    """Read a local media file and store its bytes as a blob + ``:MediaAsset``."""
+    """Read a local media file and store its bytes as a blob + ``:AssetOccurrence``."""
     if not file_path or not os.path.exists(file_path):
         return None
     try:
         with open(file_path, "rb") as fh:
             data = fh.read()
     except OSError as e:
-        logger.warning("KG media ingest: cannot read %s: %s", file_path, e)
+        logger.warning("Operation failed: error_type=%s", type(e).__name__)
         return None
     mime = mimetypes.guess_type(file_path)[0] or "application/octet-stream"
     return ingest_media_bytes(
@@ -155,27 +154,36 @@ def ingest_media_url(
     source: str = _SOURCE,
     media_store: Any | None = None,
 ) -> dict[str, Any] | None:
-    """Fetch a Postiz media URL and store its bytes as a blob + ``:MediaAsset``.
+    """Fetch a Postiz media URL and store its bytes as a blob + ``:AssetOccurrence``.
 
     ``session`` may be an authenticated ``requests.Session`` (e.g. the API client's);
-    otherwise a bare ``requests.get`` is used. No-ops (returns ``None``) if the fetch
-    fails or ``requests`` is absent.
+    otherwise a short-lived session is configured from the Postiz TLS profile.
+    No-ops (returns ``None``) if the fetch fails or ``requests`` is absent.
     """
     if not url:
         return None
+    owned_profile = None
     try:
         if session is not None:
             resp = session.get(url)
         else:
             import requests
+            from agent_utilities.core.transport_security import (
+                resolve_configured_tls_profile,
+            )
 
-            resp = requests.get(url, timeout=30)
+            owned_profile = resolve_configured_tls_profile("postiz")
+            with owned_profile.configure_requests_session(requests.Session()) as client:
+                resp = client.get(url, timeout=30)
         resp.raise_for_status()
         data = resp.content
         mime = resp.headers.get("Content-Type") or mimetypes.guess_type(url)[0]
     except Exception as e:  # noqa: BLE001 — network/fetch failure is non-fatal
-        logger.warning("KG media ingest: fetch %s failed: %s", url, e)
+        logger.warning("Operation failed: error_type=%s", type(e).__name__)
         return None
+    finally:
+        if owned_profile is not None:
+            owned_profile.cleanup()
     meta = dict(extra or {})
     meta.setdefault("source_url", url)
     return ingest_media_bytes(

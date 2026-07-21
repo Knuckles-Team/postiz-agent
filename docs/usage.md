@@ -37,7 +37,6 @@ from postiz_agent.api_client import PostizApi
 api = PostizApi(
     base_url="https://api.postiz.com/public/v1",
     token="your_postiz_token",
-    verify=True,
 )
 
 # Reads
@@ -53,11 +52,12 @@ Build a client straight from the environment:
 
 ```python
 from postiz_agent.auth import get_client
-api = get_client()        # reads POSTIZ_URL / POSTIZ_TOKEN / POSTIZ_AGENT_VERIFY
+api = get_client()        # reads POSTIZ_URL / POSTIZ_TOKEN and AgentConfig TLS policy
 ```
 
-The client reads `POSTIZ_URL`, `POSTIZ_TOKEN`, and the TLS-verify flag from the
-environment and remains a singleton for the process lifetime.
+The client reads `POSTIZ_URL` and `POSTIZ_TOKEN`; its mandatory verified TLS
+policy is resolved from `AgentConfig`. It remains a singleton for the process
+lifetime.
 
 ## As a CLI
 

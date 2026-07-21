@@ -199,9 +199,9 @@ one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
 
 :hasMedia a owl:ObjectProperty ;
     rdfs:label "has media" ;
-    rdfs:comment "Links a SocialPost to a MediaAsset blob (image/video) attached to it." ;
+    rdfs:comment "Links a SocialPost to an AssetOccurrence blob (image/video) attached to it." ;
     rdfs:domain :SocialPost ;
-    rdfs:range :MediaAsset .
+    rdfs:range :AssetOccurrence .
 
 :providerIdentifier a owl:DatatypeProperty ;
     rdfs:label "provider identifier" ;

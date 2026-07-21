@@ -20,13 +20,13 @@ Redis. The following stack runs one Postiz instance with its data services:
 # docker/postiz-platform.compose.yml
 services:
   postiz:
-    image: ghcr.io/gitroomhq/postiz-app:latest
+    image: ghcr.io/gitroomhq/postiz-app@sha256:<digest>
     container_name: postiz
     restart: unless-stopped
     environment:
-      MAIN_URL: "http://postiz.arpa"            # your local DNS or IP
-      FRONTEND_URL: "http://postiz.arpa"
-      NEXT_PUBLIC_BACKEND_URL: "http://postiz.arpa/api"
+      MAIN_URL: "http://postiz.example.invalid"            # your local DNS or IP
+      FRONTEND_URL: "http://postiz.example.invalid"
+      NEXT_PUBLIC_BACKEND_URL: "http://postiz.example.invalid/api"
       JWT_SECRET: "${POSTIZ_JWT_SECRET}"   # provide a unique random string via the environment
       DATABASE_URL: "postgresql://postiz-user:postiz-password@postiz-postgres:5432/postiz-db-local"
       REDIS_URL: "redis://postiz-redis:6379"
@@ -61,7 +61,7 @@ services:
       retries: 3
 
   postiz-redis:
-    image: redis:latest
+    image: redis@sha256:<digest>
     container_name: postiz-redis
     restart: unless-stopped
     volumes:
@@ -91,9 +91,10 @@ instance.
 ## Connect postiz-agent
 
 ```bash
-export POSTIZ_URL=http://postiz.arpa/public/v1     # instance API base
-export POSTIZ_TOKEN=your_postiz_token               # token from the Postiz UI
-export POSTIZ_AGENT_VERIFY=False                    # if using a self-signed cert
+export POSTIZ_URL=http://postiz.example.invalid/public/v1     # instance API base
+export POSTIZ_TOKEN=<runtime-secret>                 # token from the Postiz UI
+export TLS_PROFILE=private-pki
+export TLS_PROFILES_REF=secret://runtime/tls-profiles
 
 postiz-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 ```
@@ -107,7 +108,7 @@ connector reaches Postiz by container name:
 # docker/stack.compose.yml
 services:
   postiz:
-    image: ghcr.io/gitroomhq/postiz-app:latest
+    image: ghcr.io/gitroomhq/postiz-app@sha256:<digest>
     ports: ["5000:5000"]
     environment:
       DATABASE_URL: "postgresql://postiz-user:postiz-password@postiz-postgres:5432/postiz-db-local"
@@ -123,14 +124,14 @@ services:
       POSTGRES_DB: postiz-db-local
 
   postiz-redis:
-    image: redis:latest
+    image: redis@sha256:<digest>
 
   postiz-agent-mcp:
-    image: knucklessg1/postiz-agent:latest
+    image: example/postiz-agent@sha256:<digest>
     depends_on: [postiz]
     environment:
       - POSTIZ_URL=http://postiz:5000/public/v1
-      - POSTIZ_TOKEN=your_postiz_token
+      - POSTIZ_TOKEN=${POSTIZ_TOKEN:?required}
       - TRANSPORT=streamable-http
       - HOST=0.0.0.0
       - PORT=8000

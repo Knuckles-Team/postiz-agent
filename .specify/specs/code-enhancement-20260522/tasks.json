@@ -353,7 +353,7 @@
   {
     "id": "T028",
     "title": "[Environment Variables] Undocumented env vars: ANALYTICSTOOL, AUTH_TYPE, DEFAULT_AGENT_NAME, EUNOMIA_POL",
-    "description": "Undocumented env vars: ANALYTICSTOOL, AUTH_TYPE, DEFAULT_AGENT_NAME, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, OTEL_EXPORTER_OTLP_ENDPOINT, POSTIZ_AGENT_VERIFY, POSTIZ_URL",
+    "description": "Undocumented env vars: ANALYTICSTOOL, AUTH_TYPE, DEFAULT_AGENT_NAME, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, OTEL_EXPORTER_OTLP_ENDPOINT, TLS_PROFILE, POSTIZ_URL",
     "domain": "Environment Variables",
     "priority": "P2-Medium",
     "effort": "Medium",
@@ -365,8 +365,8 @@
   },
   {
     "id": "T029",
-    "title": "[Environment Variables] 3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, POSTIZ_AGENT_VERIFY, ",
-    "description": "3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, POSTIZ_AGENT_VERIFY, POSTIZ_URL",
+    "title": "[Environment Variables] 3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, TLS_PROFILE, ",
+    "description": "3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, TLS_PROFILE, POSTIZ_URL",
     "domain": "Environment Variables",
     "priority": "P2-Medium",
     "effort": "Medium",

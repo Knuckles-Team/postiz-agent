@@ -1,0 +1,4 @@
+interface:
+  display_name: "Postiz Agent Operations"
+  short_description: "Help with Postiz Agent Operations tasks"
+  default_prompt: "Use $postiz-agent-operations to complete a governed provider workflow."

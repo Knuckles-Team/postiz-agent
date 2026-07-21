@@ -148,7 +148,7 @@
     },
     {
       "id": "FR-022",
-      "description": "9 Python env vars not in .env.example: ANALYTICSTOOL, DEFAULT_AGENT_NAME, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, POSTIZ_AGENT_VERIFY",
+      "description": "9 Python env vars not in .env.example: ANALYTICSTOOL, DEFAULT_AGENT_NAME, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, TLS_PROFILE",
       "testable": true
     }
   ],

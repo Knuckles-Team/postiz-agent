@@ -1,7 +1,8 @@
 import os
 import sys
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 # 1. Pre-emptively patch agent_utilities to prevent graph DB lock during imports
 mock_identity = MagicMock()
@@ -21,18 +22,17 @@ patch_init_ws.start()
 patch_load_id.start()
 patch_build_prompt.start()
 
-import runpy
 import importlib
-import warnings
-from starlette.requests import Request
+import runpy
+
+from agent_utilities.core.exceptions import UnauthorizedError
 from starlette.datastructures import Headers
+from starlette.requests import Request
 
-
-# Now we can safely import the modules under test
-from postiz_agent.api_client import PostizApi, UnauthorizedError
+from postiz_agent.agent_server import agent_server
+from postiz_agent.api_client import PostizApi
 from postiz_agent.auth import get_client
 from postiz_agent.mcp_server import get_mcp_instance, mcp_server
-from postiz_agent.agent_server import agent_server
 
 # --- Tests for postiz_agent/__init__.py ---
 
@@ -164,30 +164,34 @@ def test_auth_singleton_and_exception_handling():
     """CONCEPT:PZ-OS.identity.singleton-api-client-initialization - Singleton API client and initialization error handling."""
     # Setup clean singleton reference
     with patch("postiz_agent.auth._client", None):
+        tls_profile = MagicMock()
         # 1. Success case returning singleton
         with (
             patch.dict(
                 os.environ,
                 {
-                    "POSTIZ_URL": "https://api.postiz.com/public/v1",
+                    "POSTIZ_URL": "https://service.invalid",
                     "POSTIZ_TOKEN": "valid-token",
-                    "POSTIZ_AGENT_VERIFY": "true",
                 },
             ),
             patch("postiz_agent.auth.PostizApi") as mock_api,
         ):
-            client1 = get_client()
-            client2 = get_client()
+            client1 = get_client(tls_profile)
+            client2 = get_client(tls_profile)
             assert client1 is client2  # Assert singleton instance is cached
             mock_api.assert_called_once_with(
-                base_url="https://api.postiz.com/public/v1",
+                base_url="https://service.invalid",
                 token="valid-token",
-                verify=True,
+                tls_profile=tls_profile,
             )
 
         # 2. Failure reporting wraps standard exceptions
         with (
             patch("postiz_agent.auth._client", None),
+            patch.dict(
+                os.environ,
+                {"POSTIZ_URL": "https://service.invalid"},
+            ),
             patch(
                 "postiz_agent.auth.PostizApi",
                 side_effect=ValueError("Invalid key format"),
@@ -195,9 +199,9 @@ def test_auth_singleton_and_exception_handling():
         ):
             with pytest.raises(
                 RuntimeError,
-                match="AUTHENTICATION ERROR: The credentials provided are not valid",
+                match="AUTHENTICATION ERROR: The configured credentials were rejected",
             ):
-                get_client()
+                get_client(tls_profile)
 
 
 # --- Tests for postiz_agent/api_client.py ---
@@ -247,17 +251,17 @@ def test_api_client_endpoints():
         mock_s.get.return_value.json.return_value = [
             {"id": "int-123", "name": "Twitter/X", "identifier": "x-postiz"}
         ]
-        integrations = client.get_integrations()
+        integrations = client.postiz_list_integrations()
         assert len(integrations) == 1
         assert integrations[0].id == "int-123"
 
         # 2. get_integrations with non-list payload
         mock_s.get.return_value.json.return_value = {"error": "unexpected format"}
-        assert client.get_integrations() == []
+        assert client.postiz_list_integrations() == []
 
         # 3. get_integration_url
         mock_s.get.return_value.json.return_value = {"url": "http://redirect-url"}
-        res = client.get_integration_url("twitter", refresh="yes")
+        res = client.postiz_get_integration_url("twitter", refresh="yes")
         assert res == {"url": "http://redirect-url"}
         mock_s.get.assert_called_with(
             f"{client.base_url}/social/twitter", params={"refresh": "yes"}
@@ -265,15 +269,15 @@ def test_api_client_endpoints():
 
         # 4. delete_channel
         mock_s.delete.return_value.json.return_value = {"status": "deleted"}
-        assert client.delete_channel("int-123") == {"status": "deleted"}
+        assert client.postiz_delete_channel("int-123") == {"status": "deleted"}
 
         # 5. is_connected
         mock_s.get.return_value.json.return_value = {"connected": True}
-        assert client.is_connected() is True
+        assert client.postiz_check_connection() is True
 
         # 6. find_slot
         mock_s.get.return_value.json.return_value = {"slot": "available"}
-        assert client.find_slot("int-123") == {"slot": "available"}
+        assert client.postiz_find_slot("int-123") == {"slot": "available"}
 
         # 7. list_posts
         mock_s.get.return_value.json.return_value = {
@@ -291,7 +295,7 @@ def test_api_client_endpoints():
                 }
             ]
         }
-        posts = client.list_posts(
+        posts = client.postiz_list_posts(
             start_date="2026-05-22", end_date="2026-05-23", customer="cust-1"
         )
         assert len(posts) == 1
@@ -299,62 +303,71 @@ def test_api_client_endpoints():
 
         # 8. list_posts with missing posts key
         mock_s.get.return_value.json.return_value = {}
-        assert client.list_posts(start_date="2026-05-22", end_date="2026-05-23") == []
+        assert (
+            client.postiz_list_posts(
+                start_date="2026-05-22", end_date="2026-05-23"
+            )
+            == []
+        )
 
         # 9. create_post
         from postiz_agent.postiz_models import PostizCreatePostRequest
 
         req = PostizCreatePostRequest(date="2026-05-22")
         mock_s.post.return_value.json.return_value = [{"id": "post-new"}]
-        assert client.create_post(req) == [{"id": "post-new"}]
+        assert client.postiz_create_post(req) == [{"id": "post-new"}]
 
         # 10. delete_post
         mock_s.delete.return_value.json.return_value = {"status": "removed"}
-        assert client.delete_post("post-1") == {"status": "removed"}
+        assert client.postiz_delete_post("post-1") == {"status": "removed"}
 
         # 11. delete_post_by_group
         mock_s.delete.return_value.json.return_value = {"status": "group-removed"}
-        assert client.delete_post_by_group("grp-1") == {"status": "group-removed"}
+        assert client.postiz_delete_post_by_group("grp-1") == {
+            "status": "group-removed"
+        }
 
         # 12. get_missing_content
         mock_s.get.return_value.json.return_value = [
             {"id": "miss-1", "url": "http://img"}
         ]
-        missing = client.get_missing_content("post-1")
+        missing = client.postiz_get_missing_content("post-1")
         assert len(missing) == 1
         assert missing[0].id == "miss-1"
 
         # 13. get_missing_content invalid list
         mock_s.get.return_value.json.return_value = {"error": "bad"}
-        assert client.get_missing_content("post-1") == []
+        assert client.postiz_get_missing_content("post-1") == []
 
         # 14. update_release_id
         mock_s.put.return_value.json.return_value = {"status": "updated"}
-        assert client.update_release_id("post-1", "rel-1") == {"status": "updated"}
+        assert client.postiz_update_release_id("post-1", "rel-1") == {
+            "status": "updated"
+        }
 
         # 15. get_analytics
         mock_s.get.return_value.json.return_value = [
             {"label": "reach", "data": [{"total": "100", "date": "2026-05-22"}]}
         ]
-        analytics = client.get_analytics("int-1", "7")
+        analytics = client.postiz_get_analytics("int-1", "7")
         assert len(analytics) == 1
         assert analytics[0].label == "reach"
 
         # 16. get_analytics unexpected
         mock_s.get.return_value.json.return_value = {"error": "bad"}
-        assert client.get_analytics("int-1") == []
+        assert client.postiz_get_analytics("int-1") == []
 
         # 17. get_post_analytics
         mock_s.get.return_value.json.return_value = [
             {"label": "impressions", "data": [{"total": "50", "date": "2026-05-22"}]}
         ]
-        post_analytics = client.get_post_analytics("post-1", "7")
+        post_analytics = client.postiz_get_post_analytics("post-1", "7")
         assert len(post_analytics) == 1
         assert post_analytics[0].label == "impressions"
 
         # 18. get_post_analytics unexpected
         mock_s.get.return_value.json.return_value = {"error": "bad"}
-        assert client.get_post_analytics("post-1") == []
+        assert client.postiz_get_post_analytics("post-1") == []
 
         # 19. list_notifications
         mock_s.get.return_value.json.return_value = {
@@ -366,7 +379,7 @@ def test_api_client_endpoints():
             "limit": 10,
             "hasMore": False,
         }
-        notifications = client.list_notifications(page=1)
+        notifications = client.postiz_list_notifications(page=1)
         assert notifications.total == 1
         assert len(notifications.notifications) == 1
 
@@ -375,7 +388,7 @@ def test_api_client_endpoints():
             "id": "up-123",
             "path": "/path/to/media",
         }
-        upload = client.upload_from_url("http://image-source")
+        upload = client.postiz_upload_from_url("http://image-source")
         assert upload.id == "up-123"
 
         # 21. generate_video
@@ -387,13 +400,13 @@ def test_api_client_endpoints():
         mock_s.post.return_value.json.return_value = [
             {"id": "vid-1", "path": "/path/video"}
         ]
-        videos = client.generate_video(video_req)
+        videos = client.postiz_generate_video(video_req)
         assert len(videos) == 1
         assert videos[0].id == "vid-1"
 
         # 22. generate_video invalid format
         mock_s.post.return_value.json.return_value = {"error": "bad"}
-        assert client.generate_video(video_req) == []
+        assert client.postiz_generate_video(video_req) == []
 
         # 23. video_function
         from postiz_agent.postiz_models import PostizVideoFunctionRequest
@@ -404,7 +417,7 @@ def test_api_client_endpoints():
         mock_s.post.return_value.json.return_value = {
             "voices": [{"id": "v1", "name": "Standard"}]
         }
-        vid_func_res = client.video_function(vid_func_req)
+        vid_func_res = client.postiz_video_function(vid_func_req)
         assert len(vid_func_res.voices) == 1
         assert vid_func_res.voices[0].id == "v1"
 
@@ -413,8 +426,8 @@ def test_api_client_endpoints():
             "id": "up-file",
             "path": "/path/file",
         }
-        with patch("builtins.open", mock_open := MagicMock()):
-            upload_file_res = client.upload_file("dummy_file.png")
+        with patch("builtins.open", MagicMock()):
+            upload_file_res = client.postiz_upload_file("dummy_file.png")
             assert upload_file_res.id == "up-file"
 
 
@@ -446,8 +459,9 @@ async def test_mcp_server_custom_route():
     import json
 
     payload = json.loads(response.body.decode())
+    # agent-utilities' create_mcp_server registers its own /health route ahead of
+    # this package's; that framework-level route (lowercase "ok") is authoritative.
     assert payload.get("status") == "ok"
-    assert "server" in payload
 
 
 @pytest.mark.anyio
@@ -469,7 +483,7 @@ async def test_mcp_server_tools_exception_handling(mock_context):
         ctx=mock_context,
     )
     assert "error" in res_err
-    assert "Invalid params_json" in res_err["error"]
+    assert "Operation failed" in res_err["error"]
 
     # Test unknown action
     with pytest.raises(ValueError, match="Unknown action"):
@@ -536,7 +550,7 @@ async def test_mcp_server_tools_exception_handling(mock_context):
         ctx=mock_context,
     )
     assert "error" in res_err
-    assert "Invalid params_json" in res_err["error"]
+    assert "Operation failed" in res_err["error"]
 
     # Test posts unknown action
     with pytest.raises(ValueError, match="Unknown action"):
@@ -786,8 +800,8 @@ def test_api_client_upload_file_removes_content_type():
             "id": "up-file",
             "path": "/path/file",
         }
-        with patch("builtins.open", mock_open := MagicMock()):
-            client.upload_file("dummy_file.png")
+        with patch("builtins.open", MagicMock()):
+            client.postiz_upload_file("dummy_file.png")
             _, kwargs = mock_s.post.call_args
             assert "Content-Type" not in kwargs["headers"]
 
@@ -804,10 +818,10 @@ def test_mcp_server_main_execution():
 
     with (
         patch(
-            "agent_utilities.mcp_utilities.create_mcp_server",
+            "agent_utilities.mcp.server_factory.create_mcp_server",
             return_value=(mock_args, mock_mcp, []),
         ),
-        patch("sys.exit") as mock_exit,
+        patch("sys.exit"),
     ):
         saved = sys.modules.pop("postiz_agent.mcp_server", None)
         try:

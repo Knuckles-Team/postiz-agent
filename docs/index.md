@@ -52,8 +52,8 @@ postiz-mcp                       # stdio MCP server (default transport)
 Connect it to a Postiz instance:
 
 ```bash
-export POSTIZ_URL=https://api.postiz.com/public/v1
-export POSTIZ_TOKEN=your_postiz_token
+export POSTIZ_URL=<configured-endpoint>
+export POSTIZ_TOKEN=<runtime-secret>
 postiz-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 ```
 

@@ -1,12 +1,22 @@
 """Native epistemic-graph typed-node ingestion — Wire-First coverage.
 
 Exercises the real ``ingest_entities`` / ``ingest_posts`` / ``ingest_integrations`` /
-``ingest_analytics`` seam with a fake engine client (no engine required), asserting the
-txn add_node/commit + edge calls and the Postiz record → typed-node mappings.
+``ingest_analytics`` seam with a fake ChangeEnvelope-capable engine client (no engine
+required), asserting the committed node/edge properties and the Postiz record →
+typed-node mappings.
 CONCEPT:AU-KG.ingest.enterprise-source-extractor.
 """
 
 from __future__ import annotations
+
+from typing import Any
+
+import msgpack
+import pytest
+from agent_utilities.knowledge_graph.core.session import GraphSession, use_session
+from agent_utilities.knowledge_graph.memory.native_ingest import NativeIngestError
+from agent_utilities.models.company_brain import ActorType
+from agent_utilities.security.brain_context import ActorContext, use_actor
 
 from postiz_agent.kg_ingest import (
     ingest_analytics,
@@ -16,55 +26,111 @@ from postiz_agent.kg_ingest import (
 )
 
 
-class _FakeTxn:
-    def __init__(self):
-        self.nodes = {}
-        self.committed = False
+@pytest.fixture(autouse=True)
+def _governed_session():
+    """Ambient verified GraphSession every native-ingest call now requires."""
+    actor = ActorContext(
+        actor_id="subject:opaque:synthetic",
+        actor_type=ActorType.AUTOMATED_SERVICE,
+        roles=(),
+        tenant_id="tenant:opaque:synthetic",
+        authenticated=True,
+    )
+    session = GraphSession(
+        actor=actor,
+        tenant=actor.tenant_id,
+        scopes=frozenset({"kg:write"}),
+        graph="graph:opaque:synthetic",
+        policy_version="policy:opaque:synthetic",
+        audience="epistemic-graph",
+    )
+    with use_actor(actor), use_session(session):
+        yield
 
-    def begin(self, graph=None):
-        self.graph = graph
-        return "txn-1"
 
-    def add_node(self, txn, node_id, props):
-        self.nodes[node_id] = props
+class _FakeNodes:
+    def __init__(self) -> None:
+        self.values: dict[str, dict[str, Any]] = {}
 
-    def commit(self, txn):
-        self.committed = True
-        return True
+    def properties(self, node_id: str) -> dict[str, Any] | None:
+        return self.values.get(node_id)
+
+    def list(self) -> list[tuple[str, dict[str, Any]]]:
+        return list(self.values.items())
 
 
-class _FakeEdges:
-    def __init__(self):
-        self.edges = []
+class _FakeChanges:
+    def __init__(self, nodes: _FakeNodes) -> None:
+        self.nodes = nodes
+        self.edges: list[tuple[str, str, dict[str, Any]]] = []
+        self.applied: list[dict[str, Any]] = []
+        self.records: dict[str, dict[str, Any]] = {}
+        self.versions: dict[str, dict[str, Any]] = {}
 
-    def add(self, src, dst, props):
-        self.edges.append((src, dst, props))
+    def get(self, envelope_id: str) -> dict[str, Any] | None:
+        return self.records.get(envelope_id)
+
+    def content_version(self, object_id: str) -> dict[str, Any] | None:
+        return self.versions.get(object_id)
+
+    def cursor(self, _source: str, _partition: str = "") -> None:
+        return None
+
+    def apply(self, envelope: dict[str, Any]) -> dict[str, Any]:
+        self.applied.append(envelope)
+        mutation = envelope["mutation"]
+        for operation in mutation["operations"]:
+            method = operation["method"]
+            params = method["params"]
+            properties = msgpack.unpackb(params["properties_msgpack"], raw=False)
+            if method["method"] == "AddNode":
+                self.nodes.values[params["node_id"]] = properties
+            elif method["method"] == "AddEdge":
+                self.edges.append(
+                    (params["source_id"], params["target_id"], properties)
+                )
+        version = envelope["content_version"]
+        self.versions[version["object_id"]] = version
+        self.records[envelope["envelope_id"]] = envelope
+        return {
+            "batch_id": mutation["batch_id"],
+            "replayed": False,
+            "projection_pending": False,
+        }
+
+
+class _FakeRdf:
+    def validate_shacl(self, _shapes: str, _data_graph: str) -> dict[str, Any]:
+        return {"conforms": True, "results": []}
 
 
 class _FakeClient:
-    def __init__(self):
-        self.txn = _FakeTxn()
-        self.edges = _FakeEdges()
+    def __init__(self) -> None:
+        self.nodes = _FakeNodes()
+        self.changes = _FakeChanges(self.nodes)
+        self.rdf = _FakeRdf()
+
+    @staticmethod
+    def supports(operation: str) -> bool:
+        return operation == "ApplyChangeEnvelope"
 
 
 def test_ingest_entities_writes_nodes_and_edges():
     c = _FakeClient()
     res = ingest_entities(
         [
-            {"id": "a", "type": "SocialPost", "name": "p"},
-            {"id": "b", "type": "SocialChannel"},
+            {"id": "a", "node_type": "SocialPost", "name": "p"},
+            {"id": "b", "node_type": "SocialChannel"},
         ],
-        [{"source": "a", "target": "b", "type": "publishedOn"}],
+        [{"source": "a", "target": "b", "relationship": "publishedOn"}],
         client=c,
-        graph="__commons__",
     )
     assert res == {"nodes": 2, "edges": 1}
-    assert c.txn.committed is True
-    assert set(c.txn.nodes) == {"a", "b"}
+    assert set(c.nodes.values) == {"a", "b"}
     # provenance is stamped
-    assert c.txn.nodes["a"]["source"] == "postiz-agent"
-    assert c.txn.nodes["a"]["domain"] == "social"
-    assert c.edges.edges == [("a", "b", {"type": "publishedOn"})]
+    assert c.nodes.values["a"]["source"] == "postiz-agent"
+    assert c.nodes.values["a"]["domain"] == "social"
+    assert c.changes.edges == [("a", "b", {"relationship": "publishedOn"})]
 
 
 def test_ingest_posts_maps_post_channel_and_media():
@@ -86,23 +152,26 @@ def test_ingest_posts_maps_post_channel_and_media():
             }
         ],
         client=c,
-        graph="__commons__",
     )
     assert res == {"nodes": 2, "edges": 2}
-    post = c.txn.nodes["social:post:p1"]
-    assert post["type"] == "SocialPost"
+    post = c.nodes.values["social:post:p1"]
+    assert post["node_type"] == "SocialPost"
     assert post["text"] == "hello world"
     assert post["postState"] == "PUBLISHED"
     assert post["externalToolId"] == "p1"
-    ch = c.txn.nodes["social:channel:ch7"]
-    assert ch["type"] == "SocialChannel"
+    ch = c.nodes.values["social:channel:ch7"]
+    assert ch["node_type"] == "SocialChannel"
     assert ch["providerIdentifier"] == "x"
     assert (
         "social:post:p1",
         "social:channel:ch7",
-        {"type": "publishedOn"},
-    ) in c.edges.edges
-    assert ("social:post:p1", "social:media:m9", {"type": "hasMedia"}) in c.edges.edges
+        {"relationship": "publishedOn"},
+    ) in c.changes.edges
+    assert (
+        "social:post:p1",
+        "social:media:m9",
+        {"relationship": "hasMedia"},
+    ) in c.changes.edges
 
 
 def test_ingest_integrations_maps_channels():
@@ -110,11 +179,10 @@ def test_ingest_integrations_maps_channels():
     res = ingest_integrations(
         [{"id": "ch1", "name": "LI", "identifier": "linkedin", "disabled": False}],
         client=c,
-        graph="__commons__",
     )
     assert res == {"nodes": 1, "edges": 0}
-    ch = c.txn.nodes["social:channel:ch1"]
-    assert ch["type"] == "SocialChannel"
+    ch = c.nodes.values["social:channel:ch1"]
+    assert ch["node_type"] == "SocialChannel"
     assert ch["providerIdentifier"] == "linkedin"
     assert ch["externalToolId"] == "ch1"
 
@@ -134,41 +202,36 @@ def test_ingest_analytics_maps_timeseries_and_aggregate():
             }
         ],
         client=c,
-        graph="__commons__",
     )
     # 2 daily + 1 aggregate = 3 nodes
+    assert res is not None
     assert res["nodes"] == 3
-    daily = c.txn.nodes["social:daily:ch7:impressions:2026-07-01"]
-    assert daily["type"] == "DailyEngagement"
+    daily = c.nodes.values["social:daily:ch7:impressions:2026-07-01"]
+    assert daily["node_type"] == "DailyEngagement"
     assert daily["engagementTotal"] == 100
     assert daily["engagementDate"] == "2026-07-01"
-    agg = c.txn.nodes["social:agg:ch7:impressions"]
-    assert agg["type"] == "AggregatedEngagement"
+    agg = c.nodes.values["social:agg:ch7:impressions"]
+    assert agg["node_type"] == "AggregatedEngagement"
     assert agg["engagementTotal"] == 250
     assert agg["percentageChange"] == 12.5
     # daily->channel engagementOf, agg->daily aggregatesDaily, agg->channel engagementOf
     assert (
         "social:daily:ch7:impressions:2026-07-01",
         "social:channel:ch7",
-        {"type": "engagementOf"},
-    ) in c.edges.edges
+        {"relationship": "engagementOf"},
+    ) in c.changes.edges
     assert (
         "social:agg:ch7:impressions",
         "social:daily:ch7:impressions:2026-07-01",
-        {"type": "aggregatesDaily"},
-    ) in c.edges.edges
+        {"relationship": "aggregatesDaily"},
+    ) in c.changes.edges
 
 
-def test_ingest_noops_without_engine():
-    # No injected client + no reachable engine -> clean no-op.
-    assert ingest_entities([{"id": "a", "type": "SocialPost"}]) is None
+def test_retired_structural_alias_is_rejected():
+    with pytest.raises(NativeIngestError, match="canonical node_type"):
+        ingest_entities([{"id": "a", "type": "SocialPost"}], client=_FakeClient())
 
 
-def test_ingest_empty_is_noop():
-    assert ingest_entities([], client=_FakeClient()) is None
-    assert ingest_posts([], client=_FakeClient()) is None
-    assert ingest_integrations([], client=_FakeClient()) is None
-    assert ingest_analytics("ch7", [], client=_FakeClient()) is None
-    assert (
-        ingest_analytics("", [{"label": "x", "data": []}], client=_FakeClient()) is None
-    )
+def test_empty_native_ingest_is_rejected():
+    with pytest.raises(NativeIngestError, match="at least one entity"):
+        ingest_entities([], client=_FakeClient())

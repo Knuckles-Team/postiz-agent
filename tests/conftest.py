@@ -1,6 +1,8 @@
+from unittest.mock import MagicMock
+
 import pytest
-from unittest.mock import MagicMock, patch
 from mcp.server.fastmcp import Context
+
 from postiz_agent.api_client import PostizApi
 
 
@@ -18,7 +20,6 @@ def mock_api_client():
     client = MagicMock(spec=PostizApi)
     client.base_url = "https://api.postiz.com/public/v1"
     client.token = "test-token"
-    client.verify = True
     return client
 
 

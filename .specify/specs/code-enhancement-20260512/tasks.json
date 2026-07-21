@@ -275,7 +275,7 @@
   {
     "id": "T022",
     "title": "[Environment Variables] 9 Python env vars not in .env.example: ANALYTICSTOOL, DEFAULT_AGENT_NAME, INTEGR",
-    "description": "9 Python env vars not in .env.example: ANALYTICSTOOL, DEFAULT_AGENT_NAME, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, POSTIZ_AGENT_VERIFY",
+    "description": "9 Python env vars not in .env.example: ANALYTICSTOOL, DEFAULT_AGENT_NAME, INTEGRATIONSTOOL, NOTIFICATIONSTOOL, TLS_PROFILE",
     "domain": "Environment Variables",
     "priority": "P2-Medium",
     "effort": "Medium",

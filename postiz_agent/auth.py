@@ -1,43 +1,40 @@
 #!/usr/bin/python
 """
 Postiz Agent Authentication Context.
-CONCEPT:PZ-OS.identity.singleton-api-client-initialization - Singleton API client initialization, environment validations, and credentials fallback.
+CONCEPT:PZ-OS.identity.singleton-api-client-initialization - Singleton API client initialization and environment validation.
 """
 
-import urllib3
 from agent_utilities.core.config import setting
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
 from postiz_agent.api_client import PostizApi
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _client = None
 
 
-def get_client():
+def get_client(tls_profile: ResolvedTLSProfile | None = None):
     """Get or create a singleton API client instance."""
     global _client
     if _client is None:
-        base_url = setting("POSTIZ_URL", "https://api.postiz.com/public/v1")
+        base_url = setting("POSTIZ_URL", "")
         token = setting("POSTIZ_TOKEN", "")
-        verify_env = (
-            setting("POSTIZ_SSL_VERIFY", "")
-            or setting("POSTIZ_AGENT_VERIFY", "")
-            or "True"
-        )
-        verify = verify_env.lower() in ("true", "1", "yes")
+        if not base_url:
+            raise RuntimeError("POSTIZ_URL is required")
 
         try:
             _client = PostizApi(
                 base_url=base_url,
                 token=token,
-                verify=verify,
+                tls_profile=tls_profile or resolve_configured_tls_profile("postiz"),
             )
         except Exception as e:
             raise RuntimeError(
-                f"AUTHENTICATION ERROR: The credentials provided are not valid for '{base_url}'. "
+                "AUTHENTICATION ERROR: The configured credentials were rejected. "
                 f"Please check your POSTIZ_TOKEN and POSTIZ_URL environment variables. "
-                f"Error details: {str(e)}"
+                f"Error details: {type(e).__name__}"
             ) from e
 
     return _client

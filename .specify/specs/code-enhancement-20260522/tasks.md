@@ -59,5 +59,5 @@ Skipped informational: 6
   - Priority: P2-Medium | Effort: Medium
 - [ ] [P] **T028** [Environment Variables] Undocumented env vars: ANALYTICSTOOL, AUTH_TYPE, DEFAULT_AGENT_NAME, EUNOMIA_POL
   - Priority: P2-Medium | Effort: Medium
-- [ ] [P] **T029** [Environment Variables] 3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, POSTIZ_AGENT_VERIFY,
+- [ ] [P] **T029** [Environment Variables] 3 Python env vars not in .env.example: DEFAULT_AGENT_NAME, TLS_PROFILE,
   - Priority: P2-Medium | Effort: Medium

@@ -43,8 +43,8 @@
 - **FR-026**: No @pytest.mark.parametrize usage — consider data-driven tests
 - **FR-027**: 2 tests have no assertions
 - **FR-028**: 2 tests exceed 100 lines — likely doing too much per test
-- **FR-029**: Undocumented env vars: POSTIZ_SSL_VERIFY
-- **FR-030**: 1 Python env vars not in .env.example: POSTIZ_SSL_VERIFY
+- **FR-029**: Undocumented env vars: TLS_PROFILES_REF
+- **FR-030**: 1 Python env vars not in .env.example: TLS_PROFILES_REF
 - **FR-031**: Analysis error: No module named 'agent_utilities.knowledge_graph'
 
 ## Success Criteria

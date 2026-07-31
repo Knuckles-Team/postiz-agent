@@ -3,7 +3,7 @@ connector: postiz-agent
 ontology_source: social
 sync:
 - preset: postiz-posts
-  server: postiz-agent
+  server: postiz-mcp
   tool: postiz_posts
   action: postiz_list_posts
   records_path: posts

@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from mcp.server.fastmcp import Context
+from fastmcp import Context
 
 from postiz_agent.api_client import PostizApi
 

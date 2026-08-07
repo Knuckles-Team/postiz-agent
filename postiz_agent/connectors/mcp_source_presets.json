@@ -1,7 +1,7 @@
 {
   "_comment": "Tier-1 mcp_tool source presets for postiz-agent (AU-KG.ingest.mcp-tool-connector). Syncs scheduled/published Postiz posts into the KG as social-post documents via the postiz-agent MCP server. Contributed presets win over the central MCP_TOOL_PRESETS. Extend with integration / analytics presets as needed.",
   "postiz-posts": {
-    "server": "postiz-agent",
+    "server": "postiz-mcp",
     "tool": "postiz_posts",
     "action": "postiz_list_posts",
     "records_path": "posts",

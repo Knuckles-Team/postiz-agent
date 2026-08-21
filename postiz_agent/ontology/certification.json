@@ -1,8 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "a2a.json": "41a1c559bd29243c70504ece5279f349169121542314190bfcd71711395829ae",
-    "connector_manifest.yml": "5b0c0fdee85130e659ac7ea95d78dcbd87cc873206ffecc954876cb52a2c0751",
+    "connector_manifest.yml": "a4e46b5abfc0e843ebeefda6df05a3c782559d8eade2e2f325b59d9ef12d6bbe",
     "postiz_agent/connectors/mcp_source_presets.json": "2411a49b48f9e90e57379e735101fa67ceb258c1897288206fad2147e82a911b",
     "postiz_agent/connectors/tool_schema_fingerprints.json": "1ca8fc54e8576cc4f9dd1a49bfe87dbec75e9b2a71815883fdf3d275754fe18d",
     "postiz_agent/ontology/fixtures/records.json": "4f1bccc8e13cf25763fa0c4238a9892881bc10a73ddca02bfd93563134f61717",
@@ -19,19 +18,19 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.1.0,<3",
+    "agent_utilities": ">=2.4.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.23.0,<3"
+    "epistemic_graph": ">=2.26.0,<3"
   },
   "connector": "postiz-agent",
   "kind": "ConnectorSourceAttestation",
   "live_certified": false,
   "mode": "offline-source",
   "schema_version": "2",
-  "signature": "sM6PeEgtvUdKFsTzqhex17WhWtfDv8la8W3i1CuFnWF-mt5wMWJmFnkqWXWCguBorELPjQK_a228LSw3cRJwBA",
-  "signature_algorithm": "ed25519",
-  "signer": "ontology-manifest-generator",
-  "signing_public_key": "QkigdPNpcUU7x7NcSkwCsUXIQpaFncMQbYSoiSgI2SY",
+  "signature": null,
+  "signature_algorithm": "none",
+  "signer": "UNSIGNED-PREVIEW",
+  "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-07-31T04:00:00Z"
+  "validated_at": "2026-08-21T04:30:39Z"
 }

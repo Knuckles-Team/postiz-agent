@@ -1,7 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "connector_manifest.yml": "a4e46b5abfc0e843ebeefda6df05a3c782559d8eade2e2f325b59d9ef12d6bbe",
+    "connector_manifest.yml": "a46024492ecd6404ea7d4e35c2f9ae45d04dd14f86e88f2319b0ee6e1e464f67",
     "postiz_agent/connectors/mcp_source_presets.json": "2411a49b48f9e90e57379e735101fa67ceb258c1897288206fad2147e82a911b",
     "postiz_agent/connectors/tool_schema_fingerprints.json": "1ca8fc54e8576cc4f9dd1a49bfe87dbec75e9b2a71815883fdf3d275754fe18d",
     "postiz_agent/ontology/fixtures/records.json": "4f1bccc8e13cf25763fa0c4238a9892881bc10a73ddca02bfd93563134f61717",
@@ -18,9 +18,9 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.4.0,<3",
+    "agent_utilities": ">=2.5.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.26.0,<3"
+    "epistemic_graph": ">=2.27.0,<3"
   },
   "connector": "postiz-agent",
   "kind": "ConnectorSourceAttestation",
@@ -32,5 +32,5 @@
   "signer": "UNSIGNED-PREVIEW",
   "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-08-21T04:30:39Z"
+  "validated_at": "2026-08-26T13:42:55Z"
 }

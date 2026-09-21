@@ -389,8 +389,8 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 | `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
 | `POSTIZ_TOKEN` | secret-injected |  |
 | `POSTIZ_URL` | — |  |
-| `TLS_PROFILE` | `private-pki` | TLS verification is mandatory (no boolean bypass). Select a named runtime profile from AgentConfig if your Postiz instance uses a private/internal CA. |
-| `TLS_PROFILES_REF` | `secret://runtime/tls-profiles` |  |
+| `POSTIZ_TLS_PROFILE` | `private-pki` | TLS verification is mandatory (no boolean bypass). Select a named runtime profile from AgentConfig if your Postiz instance uses a private/internal CA. |
+| `POSTIZ_TLS_PROFILE_REF` | `secret://runtime/tls-profiles` |  |
 | `AUTH_TYPE` | `token` |  |
 | `DEFAULT_AGENT_NAME` | `"Postiz Agent"` |  |
 | `POSTIZ_KG_INGEST` | `1` | default-on best-effort ingestion of posts/integrations/analytics |
@@ -401,6 +401,8 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 | `NOTIFICATIONSTOOL` | `True` |  |
 | `VIDEOTOOL` | `True` |  |
 | `INGESTTOOL` | `True` |  |
+| `POSTIZ_AGENT_MCP_IMAGE` | `registry.example.invalid/postiz-agent-mcp@sha256:<digest>` |  |
+| `POSTIZ_AGENT_AGENT_IMAGE` | `registry.example.invalid/postiz-agent@sha256:<digest>` |  |
 
 #### Inherited agent-utilities variables (apply to every connector)
 
@@ -419,11 +421,11 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 | `DEBUG` | `False` | Verbose logging |
 | `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
 | `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
-| `PROVIDER` | `openai` | LLM provider for the agent |
-| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `PROVIDER` | — | Operator-configured LLM provider for the agent |
+| `MODEL_ID` | — | Operator-configured model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_25 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_27 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 

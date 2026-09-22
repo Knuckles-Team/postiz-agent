@@ -6,7 +6,7 @@ Postiz MCP Server Entry point.
 
 import logging
 import sys
-from typing import Any
+from typing import Any, Literal
 
 from agent_utilities.core.config import load_config
 from agent_utilities.mcp.action_dispatch import resolve_action
@@ -83,7 +83,14 @@ def register_integrations_tools(mcp: FastMCP):
 def register_posts_tools(mcp: FastMCP):
     @mcp.tool(tags={"posts"})
     async def postiz_posts(
-        action: str = Field(
+        action: Literal[
+            "postiz_create_post",
+            "postiz_delete_post",
+            "postiz_delete_post_by_group",
+            "postiz_get_missing_content",
+            "postiz_list_posts",
+            "postiz_update_release_id",
+        ] = Field(
             description="Action to perform. Must be one of: 'postiz_list_posts', 'postiz_create_post', 'postiz_delete_post', 'postiz_delete_post_by_group', 'postiz_get_missing_content', 'postiz_update_release_id'"
         ),
         params_json: str = Field(

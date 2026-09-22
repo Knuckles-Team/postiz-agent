@@ -315,7 +315,7 @@ sync:
   updated_field: publishDate
   pagination: null
   doc_type: social_post
-  tool_schema_sha256: 048d1e66d493308c9a677baab9359ec0ec4e00da7351d25123e2547039dfbf49
+  tool_schema_sha256: 649160002b234e24dc0eb4fffb9f61c5813ce00f5c4f52ae7fc878cfc121213d
   raw:
     server: postiz-mcp
     tool: postiz_posts

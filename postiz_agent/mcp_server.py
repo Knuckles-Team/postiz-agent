@@ -81,7 +81,18 @@ def register_integrations_tools(mcp: FastMCP):
 
 
 def register_posts_tools(mcp: FastMCP):
-    @mcp.tool(tags={"posts"})
+    @mcp.tool(
+        tags={"posts"},
+        annotations={
+            "readOnlyHint": False,
+            "destructiveHint": True,
+            "idempotentHint": False,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def postiz_posts(
         action: Literal[
             "postiz_create_post",

@@ -4,11 +4,9 @@ Postiz Agent Authentication Context.
 CONCEPT:PZ-OS.identity.singleton-api-client-initialization - Singleton API client initialization and environment validation.
 """
 
-from agent_utilities.core.config import setting
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.config import setting
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
 from postiz_agent.api_client import PostizApi
 
@@ -28,7 +26,7 @@ def get_client(tls_profile: ResolvedTLSProfile | None = None):
             _client = PostizApi(
                 base_url=base_url,
                 token=token,
-                tls_profile=tls_profile or resolve_configured_tls_profile("postiz"),
+                tls_profile=tls_profile or resolve_tls_profile("postiz"),
             )
         except Exception as e:
             raise RuntimeError(

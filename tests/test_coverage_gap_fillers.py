@@ -25,7 +25,7 @@ patch_build_prompt.start()
 import importlib
 import runpy
 
-from agent_utilities.core.exceptions import UnauthorizedError
+from agent_connector_sdk.exceptions import UnauthorizedError
 from starlette.datastructures import Headers
 from starlette.requests import Request
 
@@ -818,7 +818,7 @@ def test_mcp_server_main_execution():
 
     with (
         patch(
-            "agent_utilities.mcp.server_factory.create_mcp_server",
+            "agent_connector_sdk.mcp.server.create_mcp_server",
             return_value=(mock_args, mock_mcp, []),
         ),
         patch("sys.exit"),

@@ -168,11 +168,9 @@ def ingest_media_url(
             resp = session.get(url)
         else:
             import requests
-            from agent_utilities.core.transport_security import (
-                resolve_configured_tls_profile,
-            )
+            from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
-            owned_profile = resolve_configured_tls_profile("postiz")
+            owned_profile = resolve_tls_profile("postiz")
             with owned_profile.configure_requests_session(requests.Session()) as client:
                 resp = client.get(url, timeout=30)
         resp.raise_for_status()

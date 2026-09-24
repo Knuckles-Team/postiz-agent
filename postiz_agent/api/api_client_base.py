@@ -1,9 +1,7 @@
 import requests
-from agent_utilities.core.exceptions import UnauthorizedError
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.exceptions import UnauthorizedError
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
 
 class BaseApiClient:
@@ -21,7 +19,7 @@ class BaseApiClient:
             self.base_url = f"{self.base_url}/public/v1"
 
         self.token = token
-        self.tls_profile = tls_profile or resolve_configured_tls_profile("postiz")
+        self.tls_profile = tls_profile or resolve_tls_profile("postiz")
         self.session = self.tls_profile.configure_requests_session(requests.Session())
         self.session.headers.update(
             {"Authorization": self.token, "Content-Type": "application/json"}

@@ -1,35 +1,14 @@
+import importlib
 import os
+import runpy
 import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
-
-# 1. Pre-emptively patch agent_utilities to prevent graph DB lock during imports
-mock_identity = MagicMock()
-mock_identity.get.side_effect = lambda k, d=None: (
-    "Postiz Agent"
-    if k == "name"
-    else ("AI agent for Postiz Agent operations." if k == "description" else d)
-)
-
-patch_init_ws = patch("agent_utilities.initialize_workspace")
-patch_load_id = patch("agent_utilities.load_identity", return_value=mock_identity)
-patch_build_prompt = patch(
-    "agent_utilities.build_system_prompt_from_workspace", return_value="mocked prompt"
-)
-
-patch_init_ws.start()
-patch_load_id.start()
-patch_build_prompt.start()
-
-import importlib
-import runpy
-
 from agent_connector_sdk.exceptions import UnauthorizedError
 from starlette.datastructures import Headers
 from starlette.requests import Request
 
-from postiz_agent.agent_server import agent_server
 from postiz_agent.api_client import PostizApi
 from postiz_agent.auth import get_client
 from postiz_agent.mcp_server import get_mcp_instance, mcp_server
@@ -47,7 +26,8 @@ def test_init_module_lazy_attributes(clean_loaded_modules):
     assert hasattr(postiz_agent, "_AGENT_AVAILABLE")
 
     assert postiz_agent._MCP_AVAILABLE is True
-    assert postiz_agent._AGENT_AVAILABLE is True
+    # agent_server was retired fleet-wide: no such optional module exists anymore.
+    assert postiz_agent._AGENT_AVAILABLE is False
 
     # Access lazy attributes from optional modules to trigger getattr delegation (covers line 69 of __init__.py)
     assert postiz_agent.register_posts_tools is not None
@@ -93,68 +73,13 @@ def test_init_lazy_import_failure():
 
 
 def test_main_invocation():
-    """CONCEPT:PZ-OS.config.cli-parsing-settings-agent - Verify entrypoint calls agent server."""
-    with patch("postiz_agent.agent_server.agent_server") as mock_server:
+    """CONCEPT:PZ-OS.config.cli-parsing-settings-agent - Verify entrypoint runs the MCP server.
+
+    agent_server was retired fleet-wide; __main__.py now runs the MCP server directly.
+    """
+    with patch("postiz_agent.mcp_server.mcp_server") as mock_server:
         runpy.run_module("postiz_agent", run_name="__main__")
         mock_server.assert_called_once()
-
-
-# --- Tests for postiz_agent/agent_server.py ---
-
-
-def test_agent_server_debug_mode():
-    """CONCEPT:PZ-OS.config.cli-parsing-settings-agent - Verify server boots with debug options enabled."""
-    mock_args = MagicMock()
-    mock_args.debug = True
-    mock_args.mcp_url = "http://mcp"
-    mock_args.mcp_config = "custom_config.json"
-    mock_args.host = "localhost"
-    mock_args.port = 8000
-    mock_args.provider = "openai"
-    mock_args.model_id = "gpt-4"
-    mock_args.base_url = "http://base"
-    mock_args.api_key = "test-key"
-    mock_args.custom_skills_directory = "custom_skills"
-    mock_args.web = True
-    mock_args.otel = True
-    mock_args.otel_endpoint = "http://otel"
-    mock_args.otel_headers = "header=val"
-    mock_args.otel_public_key = "pub"
-    mock_args.otel_secret_key = "sec"
-    mock_args.otel_protocol = "grpc"
-
-    with (
-        patch("postiz_agent.agent_server.create_agent_server") as mock_create_server,
-        patch("postiz_agent.agent_server.create_agent_parser") as mock_parser,
-        patch("sys.argv", ["agent_server.py"]),
-    ):
-        mock_parser.return_value.parse_args.return_value = mock_args
-
-        # Execute agent server CLI runner
-        agent_server()
-
-        # Assert server is instantiated with correct options
-        mock_create_server.assert_called_once_with(
-            mcp_url="http://mcp",
-            mcp_config="custom_config.json",
-            host="localhost",
-            port=8000,
-            provider="openai",
-            model_id="gpt-4",
-            router_model="gpt-4",
-            agent_model="gpt-4",
-            base_url="http://base",
-            api_key="test-key",
-            custom_skills_directory="custom_skills",
-            enable_web_ui=True,
-            enable_otel=True,
-            otel_endpoint="http://otel",
-            otel_headers="header=val",
-            otel_public_key="pub",
-            otel_secret_key="sec",
-            otel_protocol="grpc",
-            debug=True,
-        )
 
 
 # --- Tests for postiz_agent/auth.py ---
@@ -746,41 +671,6 @@ def test_init_missing_optional_keys():
     with patch.dict(postiz_agent.OPTIONAL_MODULES, {}, clear=True):
         assert postiz_agent.__getattr__("_MCP_AVAILABLE") is False
         assert postiz_agent.__getattr__("_AGENT_AVAILABLE") is False
-
-
-def test_agent_server_main_execution():
-    """CONCEPT:PZ-OS.config.cli-parsing-settings-agent - Verify CLI daemon entrypoint execution."""
-    with (
-        patch("agent_utilities.create_agent_server") as mock_create_server,
-        patch("agent_utilities.create_agent_parser") as mock_parser,
-        patch("sys.argv", ["agent_server.py"]),
-    ):
-        mock_args = MagicMock()
-        mock_args.debug = False
-        mock_args.mcp_url = "http://mcp"
-        mock_args.mcp_config = "custom_config.json"
-        mock_args.host = "localhost"
-        mock_args.port = 8000
-        mock_args.provider = "openai"
-        mock_args.model_id = "gpt-4"
-        mock_args.base_url = "http://base"
-        mock_args.api_key = "test-key"
-        mock_args.custom_skills_directory = "custom_skills"
-        mock_args.web = True
-        mock_args.otel = True
-        mock_args.otel_endpoint = "http://otel"
-        mock_args.otel_headers = "header=val"
-        mock_args.otel_public_key = "pub"
-        mock_args.otel_secret_key = "sec"
-        mock_args.otel_protocol = "grpc"
-        mock_parser.return_value.parse_args.return_value = mock_args
-
-        # Clean local cache so runpy executes cleanly
-        if "postiz_agent.agent_server" in sys.modules:
-            del sys.modules["postiz_agent.agent_server"]
-
-        runpy.run_module("postiz_agent.agent_server", run_name="__main__")
-        mock_create_server.assert_called_once()
 
 
 def test_api_client_upload_file_removes_content_type():

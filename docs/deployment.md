@@ -158,64 +158,6 @@ docker compose -f docker/mcp.compose.yml up -d
 docker compose -f docker/mcp.compose.yml logs -f
 ```
 
-## A2A agent server
-
-`postiz-agent` also ships an A2A agent server (console script `postiz-agent`) that
-wraps the MCP tool surface in a Pydantic-AI agent and serves it over the
-agent-to-agent protocol on **port 9004**. It connects back to the MCP server via
-`MCP_URL`.
-
-```bash
-postiz-agent --provider openai --model-id gpt-4o --api-key sk-...
-```
-
-The repo ships [`docker/agent.compose.yml`](https://github.com/Knuckles-Team/postiz-agent/blob/main/docker/agent.compose.yml),
-which runs the MCP server and the agent server together and wires the agent to the
-MCP server by container name:
-
-```yaml
-services:
-  postiz-agent-mcp:
-    image: example/postiz-agent@sha256:<digest>
-    container_name: postiz-agent-mcp
-    hostname: postiz-agent-mcp
-    restart: always
-    env_file:
-      - ../.env
-    environment:
-      - PYTHONUNBUFFERED=1
-      - HOST=0.0.0.0
-      - PORT=8000
-      - TRANSPORT=streamable-http
-    ports:
-      - "8000:8000"
-
-  postiz-agent-agent:
-    image: example/postiz-agent@sha256:<digest>
-    container_name: postiz-agent-agent
-    hostname: postiz-agent-agent
-    restart: always
-    depends_on:
-      - postiz-agent-mcp
-    env_file:
-      - ../.env
-    command: [ "postiz-agent" ]
-    environment:
-      - PYTHONUNBUFFERED=1
-      - HOST=0.0.0.0
-      - PORT=9004
-      - MCP_URL=http://postiz-agent-mcp:8000/mcp
-      - PROVIDER=${PROVIDER:-openai}
-      - MODEL_ID=${MODEL_ID:-gpt-4o}
-      - ENABLE_WEB_UI=True
-    ports:
-      - "9004:9004"
-```
-
-```bash
-docker compose -f docker/agent.compose.yml up -d
-```
-
 ## Behind a Caddy reverse proxy
 
 Expose the HTTP server on a hostname with automatic TLS. Add to your `Caddyfile`:

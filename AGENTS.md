@@ -9,7 +9,6 @@
 - Key principles: Functional patterns, Pydantic for data validation, asynchronous tool execution.
 - Architecture:
     - `mcp_server.py`: Main MCP server entry point and tool registration.
-    - `agent_server.py`: Pydantic AI agent definition and logic.
     - `skills/`: Directory containing modular agent skills (if applicable).
 
 ### Architecture Diagram
@@ -52,12 +51,9 @@ pre-commit run --all-files
 # Execution Commands
 # Run MCP Server
 postiz-mcp
-# Run Agent
-postiz-agent
 
 ## Project Structure Quick Reference
 - MCP Entry Point → `mcp_server.py`
-- Agent Entry Point → `agent_server.py`
 - Source Code → postiz_agent/
 - Skills → `skills/` (if exists)
 
@@ -78,7 +74,6 @@ postiz-agent
 ├── debug.Dockerfile
 ├── postiz_agent
 │   ├── __init__.py
-│   ├── agent_server.py
 │   ├── auth.py
 │   └── mcp_server.py
 ├── pyproject.toml
@@ -122,7 +117,7 @@ async def my_tool(param: str) -> str:
 - Use `agent-utilities` base classes.
 
 **Ask first:**
-- Major refactors of `mcp_server.py` or `agent_server.py`.
+- Major refactors of `mcp_server.py`.
 - Deleting or renaming public tool functions.
 
 **Never do:**

@@ -1,13 +1,13 @@
 # Installation
 
 `postiz-agent` is a standard Python package and a prebuilt container image. Choose
-the path that matches how you intend to run it.
+the path that matches how the operator intend to run it.
 
 ## Requirements
 
 - **Python 3.11 – 3.14**.
 - A reachable **Postiz instance** and an API token — use the managed service at
-  [postiz.com](https://postiz.com/) or deploy your own (see
+  [postiz.com](https://postiz.com/) or deploy the operator's own (see
   [Backing Platform](platform.md)).
 
 ## From PyPI (recommended)

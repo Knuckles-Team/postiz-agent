@@ -1,7 +1,7 @@
 # Usage — API / CLI / MCP
 
 `postiz-agent` exposes the same capability three ways: as **MCP tools** an agent
-calls, as a **Python API** (`PostizApi`) you import, and through its **console
+calls, as a **Python API** (`PostizApi`) the operator import, and through its **console
 scripts**. The connector's role and architecture are covered in
 [Overview](overview.md).
 
@@ -55,7 +55,7 @@ from postiz_agent.auth import get_client
 api = get_client()        # reads POSTIZ_URL / POSTIZ_TOKEN and AgentConfig TLS policy
 ```
 
-The client reads `POSTIZ_URL` and `POSTIZ_TOKEN`; its mandatory verified TLS
+The client reads `POSTIZ_URL` and `POSTIZ_TOKEN`; its mandatory checked TLS
 policy is resolved from `AgentConfig`. It remains a singleton for the process
 lifetime.
 

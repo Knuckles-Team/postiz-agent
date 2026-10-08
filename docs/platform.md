@@ -1,6 +1,6 @@
 # Backing Platform — Postiz
 
-`postiz-agent` is a **client** of a [Postiz](https://postiz.com/) instance. You can
+`postiz-agent` is a **client** of a [Postiz](https://postiz.com/) instance. The operator can
 point it at the managed service, or deploy a self-hosted instance with the recipe
 below to serve as the target of `POSTIZ_URL`. For production topologies, follow the
 upstream [Postiz documentation](https://docs.postiz.com/).
@@ -143,4 +143,4 @@ docker compose -f docker/stack.compose.yml up -d
 ```
 
 Once the instance is reachable, the [MCP tools and `PostizApi`](usage.md) operate
-against your channels, posts, uploads, and analytics.
+against the operator's channels, posts, uploads, and analytics.

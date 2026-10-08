@@ -27,13 +27,13 @@ deterministic MCP tools and a Pydantic-AI agent server. It provides:
   capability to other agents over the agent-to-agent protocol.
 
 Every domain remains inactive when its tool toggle is disabled, so the deployed
-surface is exactly what you configure.
+surface is exactly what the operator configure.
 
 ## Explore the documentation
 
 <div class="grid cards" markdown>
 
-- :material-rocket-launch: **[Installation](installation.md)** — pip, source, extras, and the prebuilt Docker image.
+- :material-rocket-start: **[Installation](installation.md)** — pip, source, extras, and the prebuilt Docker image.
 - :material-server-network: **[Deployment](deployment.md)** — run the MCP and agent servers, Docker Compose, Caddy + Technitium.
 - :material-console: **[Usage](usage.md)** — the MCP tools, the `PostizApi` client, and the CLI.
 - :material-database-cog: **[Backing Platform](platform.md)** — deploy a self-hosted Postiz instance with Docker.

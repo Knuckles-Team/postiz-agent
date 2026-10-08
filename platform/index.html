@@ -811,7 +811,7 @@
 
 
 <h1 id="backing-platform-postiz">Backing Platform — Postiz<a class="headerlink" href="#backing-platform-postiz" title="Permanent link">&para;</a></h1>
-<p><code>postiz-agent</code> is a <strong>client</strong> of a <a href="https://postiz.com/">Postiz</a> instance. You can
+<p><code>postiz-agent</code> is a <strong>client</strong> of a <a href="https://postiz.com/">Postiz</a> instance. The operator can
 point it at the managed service, or deploy a self-hosted instance with the recipe
 below to serve as the target of <code>POSTIZ_URL</code>. For production topologies, follow the
 upstream <a href="https://docs.postiz.com/">Postiz documentation</a>.</p>
@@ -938,7 +938,7 @@ connector reaches Postiz by container name:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker/stack.compose.yml<span class="w"> </span>up<span class="w"> </span>-d
 </span></code></pre></div>
 <p>Once the instance is reachable, the <a href="../usage/">MCP tools and <code>PostizApi</code></a> operate
-against your channels, posts, uploads, and analytics.</p>
+against the operator's channels, posts, uploads, and analytics.</p>
 
 
 

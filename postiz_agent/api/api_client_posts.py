@@ -1,7 +1,7 @@
 import logging
 import os
 
-from agent_utilities.core.decorators import require_auth
+from agent_connector_sdk.exceptions import require_auth
 
 from postiz_agent.api.api_client_base import BaseApiClient
 from postiz_agent.postiz_models import (
@@ -42,9 +42,9 @@ class PostsClient(BaseApiClient):
         # off or no engine reachable). CONCEPT:AU-KG.ingest.enterprise-source-extractor.
         if posts and _kg_ingest_enabled():
             try:
-                from postiz_agent.kg_ingest import ingest_posts
+                from postiz_agent.kg_ingest import ingest_posts_blocking
 
-                ingest_posts(posts)
+                ingest_posts_blocking(posts)
             except Exception as e:  # noqa: BLE001 — ingestion never breaks a fetch
                 logger.debug("KG ingest: skipped (%s)", type(e).__name__)
         return [PostizPost(**p) for p in posts]

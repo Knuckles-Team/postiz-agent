@@ -5,10 +5,10 @@ media-downloader's blob ingestion: the postiz-agent connector natively pushes it
 into the ONE epistemic-graph knowledge graph as **typed OWL nodes** (``:SocialPost``,
 ``:SocialChannel``, ``:DailyEngagement``, ``:AggregatedEngagement`` …) + links.
 
-The write path is the required shared fleet transaction primitive
-``agent_utilities.knowledge_graph.memory.native_ingest``. Engine failures are explicit and
-partial writes are never acknowledged. Nodes carry shared provenance
-(``source``/``domain``) and match the classes federated by ``postiz_agent.ontology``.
+The write path is the ``agent_connector_sdk.ingest`` knowledge-ingest facade. Engine
+failures are explicit (``IngestError``) and partial writes are never acknowledged.
+Nodes carry provenance via the connector's ``IngestBinding`` and match the classes
+federated by ``postiz_agent.ontology``.
 """
 
 from __future__ import annotations
@@ -16,58 +16,60 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_utilities.knowledge_graph.memory.native_ingest import (
-    ingest_documents as _native_ingest_documents,
-)
-from agent_utilities.knowledge_graph.memory.native_ingest import (
-    ingest_entities as _native_ingest_entities,
+from agent_connector_sdk.ingest import (
+    ChangeSet,
+    Entity,
+    IngestBinding,
+    IngestError,
+    IngestUnavailableError,
+    KnowledgeIngest,
+    Relationship,
+    current_ingest,
 )
 
 logger = logging.getLogger("postiz_agent.kg")
 
 _SOURCE = "postiz-agent"
 _DOMAIN = "social"
+_BINDING = IngestBinding(connector=_SOURCE, stream=_DOMAIN)
 
 
-def ingest_entities(
+def _to_entity(record: dict[str, Any]) -> Entity:
+    return Entity(
+        id=record.get("id"),
+        node_type=record.get("node_type"),
+        properties={k: v for k, v in record.items() if k not in ("id", "node_type")},
+    )
+
+
+def _to_relationship(record: dict[str, Any]) -> Relationship:
+    properties = {
+        k: v for k, v in record.items() if k not in ("source", "target", "relationship")
+    }
+    return Relationship(
+        source=record["source"],
+        target=record["target"],
+        relationship=record["relationship"],
+        properties=properties or None,
+    )
+
+
+async def ingest_entities(
     entities: list[dict[str, Any]],
     relationships: list[dict[str, Any]] | None = None,
     *,
-    source: str = _SOURCE,
-    domain: str = _DOMAIN,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
-    """Write typed OWL nodes (+ edges) into epistemic-graph.
-
-    Nodes use ``node_type`` and relationships use ``relationship``.
-    """
-    return _native_ingest_entities(
-        entities,
-        relationships,
-        source=source,
-        domain=domain,
-        client=client,
-        graph=graph,
+    """Write typed OWL nodes (+ edges) into epistemic-graph in one change set."""
+    if not entities:
+        raise IngestError("ingest_entities needs at least one entity")
+    change_set = ChangeSet(
+        entities=tuple(_to_entity(e) for e in entities),
+        relationships=tuple(_to_relationship(r) for r in relationships or ()),
     )
-
-
-def ingest_documents(
-    documents: list[dict[str, Any]],
-    *,
-    source: str = _SOURCE,
-    domain: str = _DOMAIN,
-    client: Any | None = None,
-    graph: str | None = None,
-) -> dict[str, int]:
-    """Write text records as ``:Document`` nodes (semantic-search fodder)."""
-    return _native_ingest_documents(
-        documents,
-        source=source,
-        domain=domain,
-        client=client,
-        graph=graph,
-    )
+    service = ingest or current_ingest()
+    receipt = await service.submit(_BINDING, change_set)
+    return {"nodes": receipt.affected_count, "edges": receipt.relationship_count}
 
 
 # --------------------------------------------------------------------------- #
@@ -90,13 +92,10 @@ def _channel_entity(integ: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
-def ingest_posts(
+def _posts_to_records(
     posts: list[dict[str, Any]],
-    *,
-    client: Any | None = None,
-    graph: str | None = None,
-) -> dict[str, int] | None:
-    """Map Postiz post records → ``:SocialPost`` (+ ``:SocialChannel``) nodes and ingest.
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Map Postiz post records → ``:SocialPost`` (+ ``:SocialChannel``) node/edge dicts.
 
     Each post also becomes semantic-search fodder: the ``content`` is stamped as the
     node ``text``. ``:publishedOn`` links the post to the channel it targets, and
@@ -141,30 +140,74 @@ def ingest_posts(
                         "relationship": "hasMedia",
                     }
                 )
-    return ingest_entities(entities, relationships, client=client, graph=graph)
+    return entities, relationships
 
 
-def ingest_integrations(
+async def ingest_posts(
+    posts: list[dict[str, Any]],
+    *,
+    ingest: KnowledgeIngest | None = None,
+) -> dict[str, int]:
+    """Map Postiz post records → ``:SocialPost`` (+ ``:SocialChannel``) nodes and ingest."""
+    entities, relationships = _posts_to_records(posts)
+    return await ingest_entities(entities, relationships, ingest=ingest)
+
+
+def ingest_posts_blocking(
+    posts: list[dict[str, Any]],
+    *,
+    ingest: KnowledgeIngest | None = None,
+) -> dict[str, int] | None:
+    """Synchronous, best-effort twin of :func:`ingest_posts`.
+
+    For the one call site that fires ingestion as a side effect of a synchronous API
+    client fetch (:meth:`PostsClient.postiz_list_posts`, run on its own worker thread via
+    ``run_blocking`` — never the engine's own event loop thread). Uses
+    ``KnowledgeIngest.submit_blocking`` instead of ``await submit`` because that caller
+    cannot await. Returns ``None`` (never raises) when there is no entity to write or no
+    engine reachable.
+    """
+    entities, relationships = _posts_to_records(posts)
+    if not entities:
+        return None
+    change_set = ChangeSet(
+        entities=tuple(_to_entity(e) for e in entities),
+        relationships=tuple(_to_relationship(r) for r in relationships),
+    )
+    service = ingest
+    if service is None:
+        try:
+            service = current_ingest()
+        except IngestUnavailableError as e:
+            logger.debug("Operation failed: error_type=%s", type(e).__name__)
+            return None
+    try:
+        receipt = service.submit_blocking(_BINDING, change_set)
+    except IngestError as e:  # noqa: BLE001 — engine/transport failure is non-fatal here
+        logger.warning("Operation failed: error_type=%s", type(e).__name__)
+        return None
+    return {"nodes": receipt.affected_count, "edges": receipt.relationship_count}
+
+
+async def ingest_integrations(
     integrations: list[dict[str, Any]],
     *,
-    client: Any | None = None,
-    graph: str | None = None,
-) -> dict[str, int] | None:
+    ingest: KnowledgeIngest | None = None,
+) -> dict[str, int]:
     """Map Postiz integration records → ``:SocialChannel`` nodes and ingest."""
     entities: list[dict[str, Any]] = []
     for integ in integrations or []:
         ch = _channel_entity(integ)
         if ch:
             entities.append(ch)
-    return ingest_entities(entities, client=client, graph=graph)
+    return await ingest_entities(entities, ingest=ingest)
 
 
-def ingest_analytics(
+async def ingest_analytics(
     integration_id: str,
     analytics: list[dict[str, Any]],
     *,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int] | None:
     """Map Postiz analytics series → time-series ``:DailyEngagement`` + ``:AggregatedEngagement``.
 
@@ -234,4 +277,4 @@ def ingest_analytics(
             relationships.append(
                 {"source": agg_id, "target": channel_id, "relationship": "engagementOf"}
             )
-    return ingest_entities(entities, relationships, client=client, graph=graph)
+    return await ingest_entities(entities, relationships, ingest=ingest)

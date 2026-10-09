@@ -8,11 +8,11 @@ import logging
 import sys
 from typing import Any
 
-from agent_utilities.core.config import load_config
-from agent_utilities.mcp.action_dispatch import resolve_action
-from agent_utilities.mcp.concurrency import run_blocking
-from agent_utilities.mcp.server_factory import create_mcp_server
-from agent_utilities.mcp.verbose_tools import register_tool_surface
+from agent_connector_sdk.config import load_config
+from agent_connector_sdk.mcp.action_dispatch import resolve_action
+from agent_connector_sdk.mcp.concurrency import run_blocking
+from agent_connector_sdk.mcp.server import create_mcp_server
+from agent_connector_sdk.mcp.tool_surface import register_tool_surface
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from fastmcp.utilities.logging import get_logger
@@ -320,7 +320,7 @@ def register_ingest_tools(mcp: FastMCP):
             for r in (records or [])
             if r is not None
         ]
-        result = ingest_posts(posts)
+        result = await ingest_posts(posts)
         return {"listed": len(posts), "ingested": result}
 
     @mcp.tool(tags={"ingest"})
@@ -341,7 +341,7 @@ def register_ingest_tools(mcp: FastMCP):
             for r in (records or [])
             if r is not None
         ]
-        result = ingest_integrations(integs)
+        result = await ingest_integrations(integs)
         return {"listed": len(integs), "ingested": result}
 
     @mcp.tool(tags={"ingest"})
@@ -377,7 +377,7 @@ def register_ingest_tools(mcp: FastMCP):
             for r in (records or [])
             if r is not None
         ]
-        result = ingest_analytics(integration_id, series)
+        result = await ingest_analytics(integration_id, series)
         return {"listed": len(series), "ingested": result}
 
 

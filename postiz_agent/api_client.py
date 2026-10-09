@@ -3,7 +3,7 @@ Postiz Agent REST API client aggregator.
 CONCEPT:PZ-OS.config.unified-interface-integrations-posts - Unified interface for integrations, posts, uploads, video, notifications, and analytics clients.
 """
 
-from agent_utilities.core.transport_security import ResolvedTLSProfile
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
 
 from postiz_agent.api.api_client_analytics import AnalyticsClient
 from postiz_agent.api.api_client_integrations import IntegrationsClient

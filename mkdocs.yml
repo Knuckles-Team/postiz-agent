@@ -1,5 +1,5 @@
 site_name: "postiz-agent"
-site_description: "Postiz Public API client, MCP Server, and A2A agent — schedule and govern social-media publishing for the agent-utilities ecosystem."
+site_description: "Postiz Public API client, MCP Server, and A2A agent — schedule and govern social-media publishing for the agent-connector-sdk ecosystem."
 site_url: "https://knuckles-team.github.io/postiz-agent/"
 repo_name: "Knuckles-Team/postiz-agent"
 repo_url: "https://github.com/Knuckles-Team/postiz-agent"

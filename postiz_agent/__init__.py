@@ -13,7 +13,6 @@ __all__: list[str] = []
 CORE_MODULES: list[str] = ["postiz_agent.api_client"]
 
 OPTIONAL_MODULES = {
-    "postiz_agent.agent_server": "agent",
     "postiz_agent.mcp_server": "mcp",
 }
 
@@ -53,11 +52,6 @@ def __getattr__(name: str) -> Any:
         mcp_key = next((k for k in OPTIONAL_MODULES if "mcp_server" in k), None)
         if mcp_key:
             return _import_module_safely(mcp_key) is not None
-        return False
-    if name == "_AGENT_AVAILABLE":
-        agent_key = next((k for k in OPTIONAL_MODULES if "agent_server" in k), None)
-        if agent_key:
-            return _import_module_safely(agent_key) is not None
         return False
 
     # Check optional modules

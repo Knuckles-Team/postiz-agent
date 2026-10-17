@@ -63,7 +63,6 @@ Store the real remote URL, outbound identity reference, and TLS-profile referenc
 <!-- END GENERATED: deployment-options -->
 
 This page covers running `postiz-agent` as a long-lived service: the transports, a
-Docker Compose stack, the optional A2A agent server, putting it behind a Caddy
 reverse proxy, and giving it a DNS name with Technitium. To provision the **Postiz
 instance** it connects to, see [Backing Platform](platform.md).
 
@@ -160,7 +159,6 @@ docker compose -f docker/mcp.compose.yml logs -f
 
 ## A2A agent server
 
-`postiz-agent` also ships an A2A agent server (console script `postiz-agent`) that
 wraps the MCP tool surface in a Pydantic-AI agent and serves it over the
 agent-to-agent protocol on **port 9004**. It connects back to the MCP server via
 `MCP_URL`.
@@ -169,7 +167,6 @@ agent-to-agent protocol on **port 9004**. It connects back to the MCP server via
 postiz-agent --provider openai --model-id gpt-4o --api-key sk-...
 ```
 
-The repo ships [`docker/agent.compose.yml`](https://github.com/Knuckles-Team/postiz-agent/blob/main/docker/agent.compose.yml),
 which runs the MCP server and the agent server together and wires the agent to the
 MCP server by container name:
 
@@ -190,7 +187,6 @@ services:
     ports:
       - "8000:8000"
 
-  postiz-agent-agent:
     image: example/postiz-agent@sha256:<digest>
     container_name: postiz-agent-agent
     hostname: postiz-agent-agent
@@ -213,7 +209,6 @@ services:
 ```
 
 ```bash
-docker compose -f docker/agent.compose.yml up -d
 ```
 
 ## Behind a Caddy reverse proxy

@@ -306,8 +306,8 @@ schema_mappings:
 sync:
 - preset: postiz-posts
   server: postiz-mcp
-  tool: postiz_posts
-  action: postiz_list_posts
+  tool: postiz_list_posts
+  action: null
   records_path: posts
   id_field: id
   title_field: content
@@ -315,11 +315,11 @@ sync:
   updated_field: publishDate
   pagination: null
   doc_type: social_post
-  tool_schema_sha256: 048d1e66d493308c9a677baab9359ec0ec4e00da7351d25123e2547039dfbf49
+  tool_schema_sha256: c70d17f69e5f666e522b00be26d756116c3082eda29926720723836d734ac3bc
   raw:
     server: postiz-mcp
-    tool: postiz_posts
-    action: postiz_list_posts
+    tool: postiz_list_posts
+    params_style: args
     records_path: posts
     id_field: id
     title_field: content

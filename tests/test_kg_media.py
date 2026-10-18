@@ -22,9 +22,9 @@ from postiz_agent.kg_media import (
 
 class _FakeTransport:
     def __init__(self) -> None:
-        self.requests = []
+        self.requests: list[object] = []
 
-    async def source_status(self, connector, stream):
+    async def source_status(self, connector, stream):  # noqa: V107
         return SimpleNamespace(accepted_checkpoint=None)
 
     async def submit(self, request):

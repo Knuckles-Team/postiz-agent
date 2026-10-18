@@ -1,6 +1,6 @@
 # postiz-agent
 
-Postiz Public API **client, MCP Server, and A2A agent** for the agent-utilities
+Postiz Public API **client, MCP Server, and A2A agent** for the agent-connector-sdk
 ecosystem — schedule, publish, and govern social-media content across every
 connected channel from a single typed tool surface.
 
@@ -23,7 +23,6 @@ deterministic MCP tools and a Pydantic-AI agent server. It provides:
   surfaces into one client.
 - **Action-routed MCP tools** across six domains (integrations, posts, uploads,
   video, notifications, analytics), each gated by an environment toggle.
-- **An A2A agent server** (`postiz-agent` console script) that exposes the same
   capability to other agents over the agent-to-agent protocol.
 
 Every domain remains inactive when its tool toggle is disabled, so the deployed

@@ -1,6 +1,6 @@
 """Action-discovery contract tests for the postiz-agent MCP tools.
 
-Each action-routed tool wires the shared ``agent_utilities`` ``resolve_action``
+Each action-routed tool wires the shared ``agent_connector_sdk`` ``resolve_action``
 helper so callers get ``list_actions`` discovery and ``did-you-mean`` errors.
 """
 

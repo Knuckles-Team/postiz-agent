@@ -7,7 +7,6 @@
         "postiz-mcp"
       ],
       "env": {
-        "MCP_TOOL_MODE": "intent",
         "ANALYTICSTOOL": "True",
         "INGESTTOOL": "True",
         "INTEGRATIONSTOOL": "True",

@@ -24,7 +24,7 @@ Connect via the `mcp-client` skill against the **`postiz-agent`** MCP server.
 
 | Variable | Required | Notes |
 |----------|----------|-------|
-| `POSTIZ_URL` | ✅ | Base URL; `/public/v1` is appended if missing |
+| `POSTIZ_URL` | ✅ | Base URL; `/api/public/v1` is appended if missing (bare hosts get `/api/public/v1`) |
 | `POSTIZ_API_KEY` | ✅ | Sent as the `Authorization` header |
 | `POSTIZ_KG_INGEST` | optional | `0`/`false` opts out of default-on KG ingestion of listed posts |
 

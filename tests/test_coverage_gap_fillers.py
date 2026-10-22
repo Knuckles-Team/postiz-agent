@@ -89,13 +89,19 @@ def test_api_client_url_normalization():
     with patch("requests.Session") as mock_session:
         mock_session.return_value.get.return_value.status_code = 200
         client = PostizApi(base_url="https://api.test.com", token="key")
-        assert client.base_url == "https://api.test.com/public/v1"
+        assert client.base_url == "https://api.test.com/api/public/v1"
 
     # Retain existing public/v1 format
     with patch("requests.Session") as mock_session:
         mock_session.return_value.get.return_value.status_code = 200
         client = PostizApi(base_url="https://api.test.com/public/v1/", token="key")
         assert client.base_url == "https://api.test.com/public/v1"
+
+    # Retain an explicit /api/public/v1 base
+    with patch("requests.Session") as mock_session:
+        mock_session.return_value.get.return_value.status_code = 200
+        client = PostizApi(base_url="https://x.test/api/public/v1/", token="key")
+        assert client.base_url == "https://x.test/api/public/v1"
 
 
 def test_api_client_unauthorized_handling():

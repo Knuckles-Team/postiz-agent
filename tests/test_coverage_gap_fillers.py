@@ -83,6 +83,7 @@ def test_auth_singleton_and_exception_handling():
 # --- Tests for postiz_agent/api_client.py ---
 
 
+@pytest.mark.spec("CONN-POSTIZ-AGENT-R001")
 def test_api_client_url_normalization():
     """CONCEPT:PZ-OS.config.unified-interface-integrations-posts - URL normalization paths with custom base URL."""
     # Append path if not present

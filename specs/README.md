@@ -12,4 +12,4 @@ Read the existing specs first. Extend the spec that owns the behavior. Create a 
 
 ## Local specifications
 
-This repository has no local spec yet.
+- [`CONN-POSTIZ-AGENT`](postiz-agent/spec.md) — Postiz connector: API base path and workflow-engine prerequisite.

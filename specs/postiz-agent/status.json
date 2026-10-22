@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "spec_id": "CONN-POSTIZ-AGENT",
+  "owner_repo": "postiz-agent",
+  "delivery_state": "SPECIFIED",
+  "requirement_ids": [
+    "CONN-POSTIZ-AGENT-R001",
+    "CONN-POSTIZ-AGENT-R002"
+  ],
+  "requirements": [
+    {
+      "id": "CONN-POSTIZ-AGENT-R001",
+      "title": "API base path",
+      "delivery_state": "SPECIFIED",
+      "landed_in": [],
+      "verified_by": [
+        "tests/test_coverage_gap_fillers.py:86"
+      ]
+    },
+    {
+      "id": "CONN-POSTIZ-AGENT-R002",
+      "title": "Workflow engine prerequisite",
+      "delivery_state": "SPECIFIED",
+      "landed_in": [],
+      "verified_by": []
+    }
+  ]
+}

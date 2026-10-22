@@ -91,7 +91,7 @@ instance.
 ## Connect postiz-agent
 
 ```bash
-export POSTIZ_URL=http://postiz.example.invalid/public/v1     # instance API base
+export POSTIZ_URL=http://postiz.example.invalid/api/public/v1     # instance API base
 export POSTIZ_TOKEN=<runtime-secret>                 # token from the Postiz UI
 export TLS_PROFILE=private-pki
 export TLS_PROFILES_REF=secret://runtime/tls-profiles
@@ -130,7 +130,7 @@ services:
     image: example/postiz-agent@sha256:<digest>
     depends_on: [postiz]
     environment:
-      - POSTIZ_URL=http://postiz:5000/public/v1
+      - POSTIZ_URL=http://postiz:5000/api/public/v1
       - POSTIZ_TOKEN=${POSTIZ_TOKEN:?required}
       - TRANSPORT=streamable-http
       - HOST=0.0.0.0

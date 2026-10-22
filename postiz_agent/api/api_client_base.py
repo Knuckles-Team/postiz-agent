@@ -12,11 +12,10 @@ class BaseApiClient:
         tls_profile: ResolvedTLSProfile | None = None,
     ):
         self.base_url = base_url.rstrip("/")
-        if (
-            not self.base_url.endswith("/public/v1")
-            and "/public/v1" not in self.base_url
-        ):
-            self.base_url = f"{self.base_url}/public/v1"
+        # Self-hosted Postiz serves the public API under /api/public/v1 (the
+        # bare /public/v1 path answers with a 307); keep an explicit base path.
+        if "/public/v1" not in self.base_url:
+            self.base_url = f"{self.base_url}/api/public/v1"
 
         self.token = token
         self.tls_profile = tls_profile or resolve_tls_profile("postiz")

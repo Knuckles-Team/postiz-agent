@@ -1,8 +1,0 @@
-{
-  "algorithm": "agent-connector-sdk:mcp-tool-contract-compat:v2",
-  "connector": "postiz-mcp",
-  "schema_version": "1",
-  "tools": {
-    "postiz_list_posts": "c70d17f69e5f666e522b00be26d756116c3082eda29926720723836d734ac3bc"
-  }
-}

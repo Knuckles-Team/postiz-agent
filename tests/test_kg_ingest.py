@@ -58,7 +58,7 @@ def _edge(transport: _FakeTransport, source: str, target: str, relationship: str
         if (
             rel.source.record_id == source
             and rel.target.record_id == target
-            and rel.relation_reference.endswith(f"/relations/{relationship}")
+            and rel.relation_reference.endswith(f"/{relationship}")
         ):
             return True
     return False

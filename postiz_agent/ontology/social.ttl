@@ -131,8 +131,8 @@ Supports both time-series engagement observations (one node per day for
 trend analysis) AND aggregated snapshots (lifetime totals) with explicit
 relationships between them.
 
-Standards alignment: schema:SocialMediaPosting, schema:BroadcastEvent.""" ;
-    owl:imports <http://knuckles.team/kg> .
+Standards alignment: schema:SocialMediaPosting, schema:BroadcastEvent.""" .
+
 
 :AggregatedEngagement a owl:Class ;
     rdfs:label "Aggregated Engagement" ;

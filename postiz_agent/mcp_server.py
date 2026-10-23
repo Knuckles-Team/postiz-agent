@@ -23,7 +23,7 @@ from starlette.responses import JSONResponse
 from postiz_agent.api_client import PostizApi
 from postiz_agent.auth import get_client
 
-__version__ = "2.3.2"
+__version__ = "2.3.3"
 
 logger = get_logger(name="postiz-agent")
 logger.setLevel(logging.INFO)

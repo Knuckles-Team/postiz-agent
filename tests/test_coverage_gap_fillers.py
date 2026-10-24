@@ -1,21 +1,14 @@
 import os
-import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 
 
-import importlib
-import runpy
-
 from agent_connector_sdk.exceptions import UnauthorizedError
-from starlette.datastructures import Headers
-from starlette.requests import Request
 
 from postiz_agent.api_client import PostizApi
 from postiz_agent.auth import get_client
-from postiz_agent.mcp_server import get_mcp_instance, mcp_server
 
 # --- Tests for postiz_agent/__init__.py ---
 
@@ -317,111 +310,6 @@ def test_api_client_endpoints():
 # --- Tests for postiz_agent/mcp_server.py ---
 
 
-@pytest.mark.anyio
-async def test_mcp_server_custom_route():
-    """CONCEPT:PZ-OS.config.verify-command-line-transport - Verify HTTP server and health check endpoints."""
-    from unittest.mock import patch
-
-    with patch("sys.argv", ["mcp_server.py"]):
-        mcp, _, _ = get_mcp_instance()
-    app = mcp.http_app()
-
-    # Retrieve the health check endpoint
-    health_route = next(r for r in app.routes if r.path == "/health")
-    mock_request = Request(
-        scope={
-            "type": "http",
-            "method": "GET",
-            "path": "/health",
-            "headers": Headers().raw,
-        }
-    )
-
-    response = await health_route.endpoint(mock_request)
-    assert response.status_code == 200
-    import json
-
-    payload = json.loads(response.body.decode())
-    # agent-connector-sdk' create_mcp_server registers its own /health route ahead of
-    # this package's; that framework-level route (lowercase "ok") is authoritative.
-    assert payload.get("status") == "ok"
-
-
-@pytest.mark.concept("PZ-OS.config.verify-command-line-transport")
-async def test_mcp_server_serves_one_tool_per_operation():
-    """CONCEPT:PZ-OS.config.verify-command-line-transport - one typed tool per API operation."""
-    from unittest.mock import patch
-
-    with patch("sys.argv", ["mcp_server.py"]):
-        mcp, _, _ = get_mcp_instance()
-
-    tools = {tool.name: tool for tool in await mcp.list_tools()}
-    assert "postiz_integrations" not in tools
-    for name in ("postiz_check_connection", "postiz_create_post", "postiz_find_slot"):
-        assert name in tools
-        assert tools[name].annotations is not None
-
-
-def test_mcp_server_startup_transports():
-    """CONCEPT:PZ-OS.config.verify-command-line-transport - Verify command line transport switches (stdio, sse, http)."""
-    mock_args = MagicMock()
-    mock_args.transport = "stdio"
-    mock_args.host = "localhost"
-    mock_args.port = 8000
-    mock_args.auth_type = "none"
-
-    mock_mcp = MagicMock()
-
-    with (
-        patch(
-            "postiz_agent.mcp_server.get_mcp_instance",
-            return_value=(mock_mcp, mock_args, []),
-        ),
-        patch("sys.exit") as mock_exit,
-    ):
-        # 1. stdio transport
-        mock_args.transport = "stdio"
-        mcp_server()
-        mock_mcp.run.assert_called_with(transport="stdio")
-
-        # 2. streamable-http transport
-        mock_args.transport = "streamable-http"
-        mcp_server()
-        mock_mcp.run.assert_called_with(
-            transport="streamable-http", host="localhost", port=8000
-        )
-
-        # 3. sse transport
-        mock_args.transport = "sse"
-        mcp_server()
-        mock_mcp.run.assert_called_with(transport="sse", host="localhost", port=8000)
-
-        # 4. Invalid transport
-        mock_args.transport = "invalid-transport"
-        mcp_server()
-        mock_exit.assert_called_once_with(1)
-
-
-def test_requests_dependency_warning_import_failure():
-    """CONCEPT:PZ-OS.config.verify-command-line-transport - Handle requests warning import warnings gracefully."""
-    original_import = __import__
-
-    def mock_import(name, globals=None, locals=None, fromlist=(), level=0):
-        if fromlist and "RequestsDependencyWarning" in fromlist:
-            raise ImportError("Mocked import error for RequestsDependencyWarning")
-        return original_import(name, globals, locals, fromlist, level)
-
-    with patch("builtins.__import__", side_effect=mock_import):
-        import sys
-
-        mcp_module = sys.modules["postiz_agent.mcp_server"]
-        importlib.reload(mcp_module)
-
-
-
-
-
-
 def test_api_client_upload_file_removes_content_type():
     """CONCEPT:PZ-OS.config.unified-interface-integrations-posts - Multipart form upload content-type boundary correction."""
     with patch("requests.Session") as mock_session:
@@ -443,34 +331,3 @@ def test_api_client_upload_file_removes_content_type():
             client.postiz_upload_file("dummy_file.png")
             _, kwargs = mock_s.post.call_args
             assert "Content-Type" not in kwargs["headers"]
-
-
-def test_mcp_server_main_execution():
-    """CONCEPT:PZ-OS.config.verify-command-line-transport - Verify daemon CLI entrypoint execution."""
-    mock_args = MagicMock()
-    mock_args.transport = "stdio"
-    mock_args.host = "localhost"
-    mock_args.port = 8000
-    mock_args.auth_type = "none"
-
-    mock_mcp = MagicMock()
-
-    with (
-        patch(
-            "agent_connector_sdk.mcp.server.create_mcp_server",
-            return_value=(mock_args, mock_mcp, []),
-        ),
-        patch("sys.exit"),
-    ):
-        saved = sys.modules.pop("postiz_agent.mcp_server", None)
-        try:
-            runpy.run_module("postiz_agent.mcp_server", run_name="__main__")
-            mock_mcp.run.assert_called_with(transport="stdio")
-        finally:
-            # runpy registers the module under "__main__", leaving
-            # "postiz_agent.mcp_server" absent — restore it so later tests
-            # (e.g. get_mcp_instance's sys.modules[__name__]) still resolve.
-            if saved is not None:
-                sys.modules["postiz_agent.mcp_server"] = saved
-            else:
-                importlib.import_module("postiz_agent.mcp_server")

@@ -7,9 +7,6 @@ Served live as ``connector://resources``. Regenerate by editing the declarations
 from __future__ import annotations
 
 from agent_connector_sdk.ingest.live_declaration import source_meta
-from agent_connector_sdk.ingest.sources import IngestSourceDeclaration, IngestSourceSpec
-
-CONNECTOR = "postiz-mcp"
 
 SOURCES = (
     source_meta(
@@ -29,215 +26,68 @@ SOURCES = (
     ),
 )
 
+SCHEMA_VERSION = 2
+
+FIELD_SETS = {
+    "fields_1": {
+        "channelDisabled": "xsd:boolean",
+        "comments": "xsd:integer",
+        "concurrentViewers": "xsd:integer",
+        "engagementDate": "xsd:date",
+        "engagementTotal": "xsd:integer",
+        "impressions": "xsd:integer",
+        "likes": "xsd:integer",
+        "metricLabel": "xsd:string",
+        "peakViewers": "xsd:integer",
+        "platform": "xsd:string",
+        "postState": "xsd:string",
+        "providerIdentifier": "xsd:string",
+        "publishDate": "xsd:dateTime",
+        "reach": "xsd:integer",
+        "releaseURL": "xsd:anyURI",
+        "shares": "xsd:integer",
+    },
+}
+
 SCHEMA_MAPPINGS = {
     "AggregatedEngagement": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "EngagementMetric",
     },
     "AudienceMetric": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Observation",
     },
     "BroadcastSession": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Event",
     },
     "ContentCalendar": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Phase",
     },
     "ContentDraft": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "SocialPost",
     },
     "DailyEngagement": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "EngagementMetric",
     },
     "EngagementMetric": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Observation",
     },
     "SocialChannel": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "System",
     },
     "SocialPost": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "CreativeWork",
     },
     "StreamHighlight": {
-        "fields": {
-            "channelDisabled": "xsd:boolean",
-            "comments": "xsd:integer",
-            "concurrentViewers": "xsd:integer",
-            "engagementDate": "xsd:date",
-            "engagementTotal": "xsd:integer",
-            "impressions": "xsd:integer",
-            "likes": "xsd:integer",
-            "metricLabel": "xsd:string",
-            "peakViewers": "xsd:integer",
-            "platform": "xsd:string",
-            "postState": "xsd:string",
-            "providerIdentifier": "xsd:string",
-            "publishDate": "xsd:dateTime",
-            "reach": "xsd:integer",
-            "releaseURL": "xsd:anyURI",
-            "shares": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "CreativeWork",
     },
 }
@@ -294,22 +144,3 @@ RESOURCES = (
         "name": "StreamHighlight",
     },
 )
-
-
-def declaration() -> IngestSourceDeclaration:
-    """The declaration the server assembles from this module."""
-    specs = []
-    for item in SOURCES:
-        for entry in item["connector_sources"]:
-            body = {k: v for k, v in entry.items() if k not in ("tool", "mapping")}
-            specs.append(
-                IngestSourceSpec.model_validate({**body, "tools": (entry["tool"],)})
-            )
-    return IngestSourceDeclaration.model_validate(
-        {
-            "connector": CONNECTOR,
-            "sources": specs,
-            "schema_mappings": SCHEMA_MAPPINGS,
-            "resources": RESOURCES,
-        }
-    )

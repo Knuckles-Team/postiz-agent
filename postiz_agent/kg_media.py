@@ -22,6 +22,7 @@ import mimetypes
 import os
 from typing import Any
 
+from agent_connector_sdk.connector_identity import connector_name
 from agent_connector_sdk.ingest import (
     ChangeSet,
     IngestBinding,
@@ -34,7 +35,7 @@ from agent_connector_sdk.ingest import (
 
 logger = logging.getLogger("postiz_agent.kg_media")
 
-_SOURCE = "postiz-agent"
+_SOURCE = connector_name("postiz_agent")
 _DOMAIN = "social"
 _BINDING = IngestBinding(connector=_SOURCE, stream=_DOMAIN)
 
@@ -75,7 +76,9 @@ async def ingest_media_bytes(
             logger.debug("Operation failed: error_type=%s", type(e).__name__)
             return None
 
-    mime = mime_type or (mimetypes.guess_type(name or "")[0] or "application/octet-stream")
+    mime = mime_type or (
+        mimetypes.guess_type(name or "")[0] or "application/octet-stream"
+    )
     media_type = _media_type_for(mime)
     properties = dict(extra or {})
     properties["media_type"] = media_type

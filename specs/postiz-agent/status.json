@@ -14,7 +14,7 @@
       "delivery_state": "SPECIFIED",
       "landed_in": [],
       "verified_by": [
-        "tests/test_coverage_gap_fillers.py:86"
+        "tests/test_coverage_gap_fillers.py:79"
       ]
     },
     {

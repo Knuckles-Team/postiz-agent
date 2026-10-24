@@ -1,6 +1,6 @@
 from fastmcp import FastMCP
 
-from postiz_agent.mcp_server import get_mcp_instance
+from agent_connector_sdk.connector import build_server
 
 
 def test_mcp_instance_creation():
@@ -8,13 +8,6 @@ def test_mcp_instance_creation():
     from unittest.mock import patch
 
     with patch("sys.argv", ["mcp_server.py"]):
-        mcp, args, middlewares = get_mcp_instance()
+        _, mcp = build_server("postiz_agent", command_args=[])
     assert isinstance(mcp, FastMCP)
     assert "postiz" in mcp.name
-
-
-def test_import_postiz_agent():
-    """Test that the package can be imported."""
-    import postiz_agent
-
-    assert postiz_agent.__version__ is not None

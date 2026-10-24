@@ -75,7 +75,7 @@ async def test_ingest_media_bytes_stores_and_maps_type(ingest):
     assert res["media_type"] == "image"
     assert res["size_bytes"] == 8
     record = transport.requests[0].records[0]
-    assert record.payload["source"] == "postiz-agent"
+    assert record.payload["source"] == "postiz-mcp"
     assert record.payload["mime_type"] == "image/png"
     assert record.payload["name"] == "banner.png"
     assert record.payload["post_id"] == "p1"

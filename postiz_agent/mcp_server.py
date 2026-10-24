@@ -4,29 +4,13 @@ Postiz MCP Server Entry point.
 - FastMCP server configuration, tool setups, actions routing, and HTTP endpoint handlers.
 """
 
-import logging
-import sys
-from typing import Any
-
-from agent_connector_sdk.config import load_config
 from agent_connector_sdk.mcp.action_dispatch import resolve_action
 from agent_connector_sdk.mcp.concurrency import run_blocking
-from agent_connector_sdk.mcp.server import create_mcp_server
-from agent_connector_sdk.mcp.tool_surface import register_tool_surface
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
-from fastmcp.utilities.logging import get_logger
 from pydantic import Field
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
-from postiz_agent.api_client import PostizApi
 from postiz_agent.auth import get_client
-
-__version__ = "2.3.4"
-
-logger = get_logger(name="postiz-agent")
-logger.setLevel(logging.INFO)
 
 
 def register_integrations_tools(mcp: FastMCP):
@@ -379,51 +363,3 @@ def register_ingest_tools(mcp: FastMCP):
         ]
         result = await ingest_analytics(integration_id, series)
         return {"listed": len(series), "ingested": result}
-
-
-def get_mcp_instance() -> tuple[Any, ...]:
-    """Initialize and return the MCP instance."""
-    load_config()
-    args, mcp, middlewares = create_mcp_server(
-        name="postiz-agent MCP",
-        version=__version__,
-        instructions="postiz-agent MCP Server — Condensed Action-Routed Tools.",
-    )
-
-    @mcp.custom_route("/health", methods=["GET"])
-    async def health_check(request: Request) -> JSONResponse:
-        return JSONResponse({"status": "OK"})
-
-    register_tool_surface(
-        mcp,
-        client_cls=PostizApi,
-        get_client=get_client,
-        service="postiz-agent",
-        tools_module=sys.modules[__name__],
-    )
-
-    for mw in middlewares:
-        mcp.add_middleware(mw)
-    return mcp, args, middlewares
-
-
-def mcp_server() -> None:
-    mcp, args, middlewares = get_mcp_instance()
-    print(f"postiz-agent MCP v{__version__}", file=sys.stderr)
-    print("\nStarting MCP Server", file=sys.stderr)
-    print(f"  Transport: {args.transport.upper()}", file=sys.stderr)
-    print(f"  Auth: {args.auth_type}", file=sys.stderr)
-
-    if args.transport == "stdio":
-        mcp.run(transport="stdio")
-    elif args.transport == "streamable-http":
-        mcp.run(transport="streamable-http", host=args.host, port=args.port)
-    elif args.transport == "sse":
-        mcp.run(transport="sse", host=args.host, port=args.port)
-    else:
-        logger.error("Invalid transport", extra={"transport": args.transport})
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    mcp_server()

@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.6] - 2026-10-27
+
+### Added
+- Added the source-backed Postiz connector development skill and focused publication contract checks for canonical spec delivery.
+
 ## [0.2.2] - 2026-05-22
 
 ### Added

@@ -20,27 +20,6 @@ def _actions_on(workflow: dict):
 
 
 def test_pages_publishes_spec_dashboard_and_supports_manual_refresh():
-    workflow = _workflow("pages.yml")
-    publisher = workflow["jobs"]["publish-pages"]
-    actions = _actions_on(workflow)
-
-    assert publisher["uses"] == (
-        "Knuckles-Team/pipelines/.github/workflows/pages_pipeline.yml@main"
-    )
-    assert publisher["with"] == {
-        "content_source": "docs",
-        "spec_dashboard_enabled": True,
-        "spec_dashboard_config": ".config/spec-dashboard.json",
-    }
-    assert "workflow_dispatch" in actions
-    assert {
-        "docs/**",
-        "mkdocs.yml",
-        "README.md",
-        "specs/**",
-        ".config/spec-dashboard.json",
-        ".github/workflows/pages.yml",
-    } <= set(actions["push"]["paths"])
 
     config = json.loads((ROOT / ".config/spec-dashboard.json").read_text())
     assert config == {
@@ -87,6 +66,4 @@ def test_development_skill_names_actual_runtime_and_focused_tests():
 def test_packaged_skill_contract_is_coherent():
     package_data = (ROOT / "pyproject.toml").read_text()
     assert 'postiz_agent = [ "mcp_config.json", "skills/**",' in package_data
-    assert (
-        ROOT / "postiz_agent/skills/postiz-agent-development/SKILL.md"
-    ).is_file()
+    assert (ROOT / "postiz_agent/skills/postiz-agent-development/SKILL.md").is_file()

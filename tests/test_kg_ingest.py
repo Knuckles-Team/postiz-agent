@@ -27,7 +27,9 @@ class _FakeTransport:
         self.requests: list[Any] = []
 
     async def source_status(self, connector: str, stream: str) -> Any:  # noqa: V107
-        return SimpleNamespace(connector=connector, stream=stream, accepted_checkpoint=None)
+        return SimpleNamespace(
+            connector=connector, stream=stream, accepted_checkpoint=None
+        )
 
     async def submit(self, request: Any) -> Any:
         self.requests.append(request)
@@ -53,7 +55,9 @@ def _node(transport: _FakeTransport, record_id: str) -> dict[str, Any]:
     raise AssertionError(f"no record {record_id!r} was submitted")
 
 
-def _edge(transport: _FakeTransport, source: str, target: str, relationship: str) -> bool:
+def _edge(
+    transport: _FakeTransport, source: str, target: str, relationship: str
+) -> bool:
     for rel in transport.requests[-1].relationships:
         if (
             rel.source.record_id == source

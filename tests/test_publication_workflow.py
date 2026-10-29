@@ -21,7 +21,6 @@ def _actions_on(workflow: dict):
 
 def test_pages_publishes_spec_dashboard_and_supports_manual_refresh():
 
-
     config = json.loads((ROOT / ".config/spec-dashboard.json").read_text())
     assert config == {
         "version": 1,
@@ -67,6 +66,4 @@ def test_development_skill_names_actual_runtime_and_focused_tests():
 def test_packaged_skill_contract_is_coherent():
     package_data = (ROOT / "pyproject.toml").read_text()
     assert 'postiz_agent = [ "mcp_config.json", "skills/**",' in package_data
-    assert (
-        ROOT / "postiz_agent/skills/postiz-agent-development/SKILL.md"
-    ).is_file()
+    assert (ROOT / "postiz_agent/skills/postiz-agent-development/SKILL.md").is_file()

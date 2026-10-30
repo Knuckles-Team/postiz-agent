@@ -1,6 +1,6 @@
 # postiz-agent
 
-Postiz Public API **client, MCP Server, and A2A agent** for the agent-connector-sdk
+Postiz Public API **client, MCP Server, and A2A agent** for the scion-sdk
 ecosystem — schedule, publish, and govern social-media content across every
 connected channel from a single typed tool surface.
 

@@ -23,7 +23,7 @@ capability:
 
 | Extra | Install | Pulls in |
 |---|---|---|
-| *(base)* | `pip install postiz-agent` | FastMCP MCP-server runtime (`agent-connector-sdk`) |
+| *(base)* | `pip install postiz-agent` | FastMCP MCP-server runtime (`scion-sdk`) |
 | `all` | `pip install "postiz-agent[all]"` | MCP server, agent server, and Logfire tracing |
 | `test` | `pip install "postiz-agent[test]"` | `pytest`, `pytest-asyncio`, `pytest-cov`, `pytest-xdist` |
 

@@ -11,7 +11,7 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 import pytest
-from agent_connector_sdk.ingest import KnowledgeIngest
+from scion_sdk.ingest import KnowledgeIngest
 
 from postiz_agent.kg_media import (
     ingest_media_bytes,
@@ -115,7 +115,7 @@ async def test_ingest_media_url_fetches_via_session(ingest):
     assert record.payload["mime_type"] == "image/jpeg"
     assert record.payload["name"] == "pic.jpg"
     # the privacy guard treats a "source_url"-named property as a location field and
-    # redacts its value before it ever leaves the process (agent_connector_sdk.privacy)
+    # redacts its value before it ever leaves the process (scion_sdk.privacy)
     assert record.payload["source_url"] == "[REDACTED_LOCATION]"
 
 

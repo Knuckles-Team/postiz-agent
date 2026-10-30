@@ -4,7 +4,7 @@ Data-only subpackage: it carries ``social.ttl`` (the ``owl:Ontology``
 ``http://knuckles.team/kg/social`` module — social media, content creation and
 audience engagement bridging Postiz, Owncast and social network analytics, with
 both time-series engagement observations and aggregated snapshots) which the
-agent-connector-sdk hub federates in via the ``agent_connector_sdk.ontology_providers``
+scion-sdk hub federates in via the ``scion_sdk.ontology_providers``
 entry-point. It holds no business logic and no heavy imports so the hub can
 resolve it cheaply.
 """

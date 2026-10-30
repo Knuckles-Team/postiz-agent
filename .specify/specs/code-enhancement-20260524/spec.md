@@ -15,7 +15,7 @@
 
 ## Functional Requirements
 
-- **FR-001**: Minor update: agent-connector-sdk 0.2.40 (installed) -> 0.16.0
+- **FR-001**: Minor update: scion-sdk 0.2.40 (installed) -> 0.16.0
 - **FR-002**: Minor update: pytest-xdist 3.6.0 (constraint — not installed) -> 3.8.0
 - **FR-003**: 1 functions exceed 200 lines (actionable refactoring targets): test_mcp_server_tools_exception_handling (215L)
 - **FR-004**: Test suite lacks intent diversity (only one type)
@@ -45,7 +45,7 @@
 - **FR-028**: 2 tests exceed 100 lines — likely doing too much per test
 - **FR-029**: Undocumented env vars: TLS_PROFILES_REF
 - **FR-030**: 1 Python env vars not in .env.example: TLS_PROFILES_REF
-- **FR-031**: Analysis error: No module named 'agent_connector_sdk.knowledge_graph'
+- **FR-031**: Analysis error: No module named 'scion_sdk.knowledge_graph'
 
 ## Success Criteria
 

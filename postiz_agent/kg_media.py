@@ -4,7 +4,7 @@ CONCEPT:AU-KG.ingest.list-durable-media. Postiz posts carry image/video attachme
 (and the ``/upload`` endpoint mints media assets). When a live epistemic-graph engine is
 reachable, the raw bytes of such an asset are stored as a content-addressed **blob** with a
 ``:MediaAsset`` graph node (carrying its Postiz metadata), via the SDK's knowledge-ingest
-facade (:mod:`agent_connector_sdk.ingest`) — the same ``ChangeSet.media`` path every
+facade (:mod:`scion_sdk.ingest`) — the same ``ChangeSet.media`` path every
 connector's blob ingestion goes through. This makes the raw bytes — not just a URL —
 durable, deduped, and queryable inside the knowledge graph, and linkable to its
 ``:SocialPost`` via ``:hasMedia``.
@@ -22,8 +22,8 @@ import mimetypes
 import os
 from typing import Any
 
-from agent_connector_sdk.connector_identity import connector_name
-from agent_connector_sdk.ingest import (
+from scion_sdk.connector_identity import connector_name
+from scion_sdk.ingest import (
     ChangeSet,
     IngestBinding,
     IngestError,
@@ -165,7 +165,7 @@ async def ingest_media_url(
             resp = session.get(url)
         else:
             import requests
-            from agent_connector_sdk.tls.resolve import resolve_tls_profile
+            from scion_sdk.tls.resolve import resolve_tls_profile
 
             owned_profile = resolve_tls_profile("postiz")
             with owned_profile.configure_requests_session(requests.Session()) as client:

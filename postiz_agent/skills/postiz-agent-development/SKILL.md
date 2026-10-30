@@ -10,7 +10,7 @@ license: MIT
 tags: [postiz, social, development, connector, test, gates]
 tier: repository
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 
@@ -19,7 +19,7 @@ metadata:
 This repository owns the Postiz public API client, authentication boundary,
 action-routed MCP tools, provider mappings, social ontology, knowledge-graph
 ingestion, and packaged connector content. Shared connector contracts and
-transports belong to `agent-connector-sdk`; admission, serving, and durable graph
+transports belong to `scion-sdk`; admission, serving, and durable graph
 state belong to their owning repositories. Read `AGENTS.md` before changing code.
 Keep credentials, private endpoints, tenant data, and raw social records out of
 source, logs, fixtures, and packaged skill content.

@@ -11,7 +11,7 @@ description: >-
 license: MIT
 tags: [postiz, social, integrations, channels, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Postiz Channel Management

@@ -5,7 +5,7 @@ import pytest
 
 
 
-from agent_connector_sdk.exceptions import UnauthorizedError
+from scion_sdk.exceptions import UnauthorizedError
 
 from postiz_agent.api_client import PostizApi
 from postiz_agent.auth import get_client

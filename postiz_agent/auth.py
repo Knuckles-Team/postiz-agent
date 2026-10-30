@@ -4,9 +4,9 @@ Postiz Agent Authentication Context.
 CONCEPT:PZ-OS.identity.singleton-api-client-initialization - Singleton API client initialization and environment validation.
 """
 
-from agent_connector_sdk.config import setting
-from agent_connector_sdk.tls.profile import ResolvedTLSProfile
-from agent_connector_sdk.tls.resolve import resolve_tls_profile
+from scion_sdk.config import setting
+from scion_sdk.tls.profile import ResolvedTLSProfile
+from scion_sdk.tls.resolve import resolve_tls_profile
 
 from postiz_agent.api_client import PostizApi
 

@@ -5,7 +5,7 @@ media-downloader's blob ingestion: the postiz-agent connector natively pushes it
 into the ONE epistemic-graph knowledge graph as **typed OWL nodes** (``:SocialPost``,
 ``:SocialChannel``, ``:DailyEngagement``, ``:AggregatedEngagement`` …) + links.
 
-The write path is the ``agent_connector_sdk.ingest`` knowledge-ingest facade. Engine
+The write path is the ``scion_sdk.ingest`` knowledge-ingest facade. Engine
 failures are explicit (``IngestError``) and partial writes are never acknowledged.
 Nodes carry provenance via the connector's ``IngestBinding`` and match the classes
 federated by ``postiz_agent.ontology``.
@@ -16,8 +16,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_connector_sdk.connector_identity import connector_name
-from agent_connector_sdk.ingest import (
+from scion_sdk.connector_identity import connector_name
+from scion_sdk.ingest import (
     ChangeSet,
     Entity,
     IngestBinding,

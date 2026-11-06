@@ -45,7 +45,7 @@ def test_development_skill_names_actual_runtime_and_focused_tests():
         "postiz_agent/mcp_server.py",
         "postiz_agent/kg_ingest.py",
         "tests/test_publication_workflow.py",
-        "tests/test_action_discovery.py",
+        "tests/test_tool_surface.py",
         "tests/test_coverage_gap_fillers.py",
         "tests/test_kg_ingest.py",
         "tests/test_kg_media.py",

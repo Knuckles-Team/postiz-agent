@@ -7,24 +7,26 @@ scripts**. The connector's role and architecture are covered in
 
 ## As an MCP server
 
-Once [deployed](deployment.md), the server registers action-routed tools across six
-domains. Each domain registers only when its toggle is enabled (all default `True`):
+Once [deployed](deployment.md), the server serves one typed tool per Postiz public
+API operation (37 operations), plus three knowledge-graph ingest tools:
 
-| Tool | Toggle | Representative actions |
-|---|---|---|
-| `postiz_integrations` | `INTEGRATIONSTOOL` | list integrations, get integration URL, check connection, find a posting slot |
-| `postiz_posts` | `POSTSTOOL` | list posts, create / schedule a post, fetch missing content |
-| `postiz_uploads` | `UPLOADSTOOL` | upload media for use in posts |
-| `postiz_video` | `VIDEOTOOL` | manage video assets |
-| `postiz_notifications` | `NOTIFICATIONSTOOL` | list notifications |
-| `postiz_analytics` | `ANALYTICSTOOL` | channel analytics, per-post analytics |
+| Area | Tools |
+|---|---|
+| Channels | `postiz_list_integrations`, `postiz_get_integration_settings`, `postiz_get_integration_url`, `postiz_check_connection`, `postiz_get_me`, `postiz_list_groups`, `postiz_trigger_integration_tool`, `postiz_delete_channel` |
+| Posts and calendar | `postiz_list_posts`, `postiz_create_post`, `postiz_change_post_status`, `postiz_update_post_settings`, `postiz_delete_post`, `postiz_delete_post_by_group`, `postiz_find_slot`, `postiz_get_missing_content`, `postiz_update_release_id` |
+| Media | `postiz_upload_file_content`, `postiz_upload_from_url`, `postiz_upload_file`, `postiz_list_media`, `postiz_generate_video`, `postiz_video_function`, `postiz_start_clipping`, `postiz_list_clippings`, `postiz_get_clipping` |
+| Preview and review | `postiz_get_post_preview`, `postiz_list_post_comments`, `postiz_create_post_comment` |
+| Analytics | `postiz_get_analytics`, `postiz_get_post_analytics`, `postiz_list_notifications` |
+| Diagnostics (super-admin key) | `postiz_list_users`, `postiz_get_post_timeline`, `postiz_get_account_overview`, `postiz_get_channel_health`, `postiz_get_org_activity`, `postiz_reset_credits` |
+| Knowledge graph | `postiz_ingest_posts`, `postiz_ingest_integrations`, `postiz_ingest_analytics` |
 
-Each tool takes an `action` and a `params_json` payload. Example agent prompts that
-map onto these tools:
+The server also serves the `social_media_manager` prompt, the packaged skills
+(including `postiz-campaign-post-from-asset`) and the ontology (`social.ttl`,
+`pack.ttl`). Example agent prompts:
 
-- *"List the social channels connected to my Postiz account"* → `postiz_integrations`
-- *"Schedule this post to LinkedIn next Tuesday at 9am"* → `postiz_posts`
-- *"How did last week's posts perform on each channel?"* → `postiz_analytics`
+- *"List the social channels connected to my Postiz account"* → `postiz_list_integrations`
+- *"Draft this image for X next Tuesday at 9am"* → `postiz_upload_file_content`, `postiz_create_post`
+- *"How did last week's posts perform?"* → `postiz_get_post_analytics`
 
 ## As a Python API
 

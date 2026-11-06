@@ -17,7 +17,7 @@ metadata:
 # postiz-agent development
 
 This repository owns the Postiz public API client, authentication boundary,
-action-routed MCP tools, provider mappings, social ontology, knowledge-graph
+one typed MCP tool per Postiz API operation, provider mappings, social ontology, knowledge-graph
 ingestion, and packaged connector content. Shared connector contracts and
 transports belong to `scion-sdk`; admission, serving, and durable graph
 state belong to their owning repositories. Read `AGENTS.md` before changing code.
@@ -32,10 +32,11 @@ spec row in the commit trailer.
 - Find the owning row first with `git grep -n "<term>" -- specs` and extend the
   existing spec before adding requirement text.
 - Reuse the one SDK `Connector`, the existing Postiz API client, auth/settings
-  boundary, and action-routed tool modules. Do not create a second MCP,
+  boundary, and the SDK tool surface (one typed tool per client method; a new
+  operation is a new documented client method). Do not create a second MCP,
   authentication, graph-ingest, or safety plane.
 - Preserve `POSTIZ_URL`/`POSTIZ_TOKEN` validation, SDK TLS profile resolution,
-  `/api/public/v1` URL normalization, action allowlists, upload behavior, and the
+  `/api/public/v1` URL normalization, upload behavior, and the
   existing best-effort `POSTIZ_KG_INGEST` ingestion path. Provider calls remain
   mocked in local tests.
 - Bind every delivered requirement to a focused test. Generated
@@ -60,14 +61,14 @@ For focused feedback, use tests that exercise the actual connector paths:
 /var/tmp/arbora-delivery/scale/run-narrow-test-slot.sh \
   uv run --locked --extra test pytest -q \
     tests/test_publication_workflow.py \
-    tests/test_action_discovery.py \
+    tests/test_tool_surface.py \
     tests/test_coverage_gap_fillers.py \
     tests/test_kg_ingest.py \
     tests/test_kg_media.py
 ```
 
 Do not call Postiz or require API credentials in local gates. Preserve the
-existing HTTP client composition, SDK TLS profile, action-routed condensed tool
+existing HTTP client composition, SDK TLS profile, typed per-operation tool
 surface, provider-specific API modules, and governed KG ingestion when changing a
 provider module.
 

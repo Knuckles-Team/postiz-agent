@@ -1,66 +1,51 @@
 # Postiz Channel Management
 
-List, connect, and remove social channels (integrations) via the postiz-agent MCP server, and land them in the knowledge graph as :SocialChannel nodes — enumerate connected accounts, get a provider OAuth connect URL, check connectivity, delete a channel. Use when the agent must inspect or manage which social accounts Postiz can publish to. Do NOT use for creating posts (use postiz-content-scheduling) or reading engagement (use postiz-audience-analytics).
+List, connect, and remove social channels (integrations) via the postiz-mcp connector, and land them in the knowledge graph as :SocialChannel nodes — enumerate connected accounts, get a provider OAuth connect URL, check connectivity, delete a channel. Use when the agent must inspect or manage which social accounts Postiz can publish to. Do NOT use for creating posts (use postiz-content-scheduling) or reading engagement (use postiz-audience-analytics).
 
 # Postiz Channel Management
 
-Domain-typed access to the Postiz **integrations** surface — the connected social
-accounts ("channels") Postiz publishes through. Prefer these tools over raw HTTP; they
-return integration-shaped records and feed the `:SocialChannel` KG nodes that posts and
-analytics link to.
+Which social accounts Postiz can publish to, how to connect another one, and the posting
+rules of each.
 
 ## When to use
-- List all connected channels (to resolve a channel `id` for scheduling/analytics).
-- Get a provider connect/refresh URL to add or re-auth a channel.
-- Check whether the account is connected; delete a channel.
+- List the connected channels and their providers; check the API key works.
+- Get the OAuth URL that connects a new account, or re-authorizes an expired one.
+- Read a channel's posting rules and settings schema; run a provider tool.
 
 ## When NOT to use
-- Creating/scheduling/deleting posts → `postiz-content-scheduling`.
-- Reading engagement metrics → `postiz-audience-analytics`.
+- Creating posts: `postiz-content-scheduling` or `postiz-campaign-post-from-asset`.
+- Engagement: `postiz-audience-analytics`.
 
-## Prerequisites & environment
-Connect via the `mcp-client` skill against the **`postiz-agent`** MCP server.
+## Connection
+Tools are served by the `postiz-mcp` connector; through arbora call
+`act(op="fleet.call", params={"server": "postiz-mcp", "tool": "<tool>", "arguments": {...}})`.
+The connector reads `POSTIZ_URL` (the `/api/public/v1` path is appended) and
+`POSTIZ_TOKEN` (the organization API key from Postiz Settings, sent as `Authorization`).
+`POSTIZ_KG_INGEST=0` turns off the best-effort ingest of listed posts.
 
-| Variable | Required | Notes |
-|----------|----------|-------|
-| `POSTIZ_URL` | ✅ | Base URL; `/public/v1` appended if missing (bare hosts get `/api/public/v1`) |
-| `POSTIZ_API_KEY` | ✅ | Sent as the `Authorization` header |
+## Tools
+| Tool | Purpose |
+|------|---------|
+| `postiz_list_integrations(group?)` | Connected channels: `id`, `identifier` (provider), `name`, `profile`, `disabled` |
+| `postiz_check_connection()` | The API key is accepted |
+| `postiz_get_me()` / `postiz_list_groups()` | The organization behind the key; customer groups |
+| `postiz_get_integration_settings(integration_id)` | Rules, max length, settings schema, provider tools |
+| `postiz_trigger_integration_tool(integration_id, method_name, data?)` | Run a provider tool from that list |
+| `postiz_get_integration_url(integration, refresh?)` | OAuth URL to connect a provider (`x`, `linkedin`, `instagram-standalone`, ...) |
+| `postiz_delete_channel(integration_id, confirm)` | Disconnect a channel and delete its posts |
+| `postiz_ingest_integrations()` | Land channels as `:SocialChannel` |
+| `postiz_get_channel_health(...)` and the other `debug` tools | Super-admin key only (403 otherwise) |
 
-## Tools & actions
-Prefer the **condensed** tool; it takes `action` + a `params_json` **JSON string**.
-
-| Condensed tool | Actions |
-|----------------|---------|
-| `postiz_integrations` | `postiz_list_integrations`, `postiz_get_integration_url`, `postiz_check_connection`, `postiz_delete_channel`, `postiz_find_slot` |
-| `postiz_ingest_integrations` | Wire-First: push connected channels as `:SocialChannel` nodes |
-
-### Key parameters
-- `integration` — provider slug (e.g. `x`, `linkedin`, `mastodon`) for a connect URL.
-- `refresh` — optional flag on `postiz_get_integration_url` to re-auth an existing channel.
-- `integration_id` — the channel id for `postiz_delete_channel` / `postiz_find_slot`.
-
-## Recipes (`params_json`)
-List connected channels (resolve ids):
-```json
-{}
-```
-Get a connect URL for a new LinkedIn channel:
-```json
-{"integration":"linkedin"}
-```
-Delete a channel:
-```json
-{"integration_id":"<channel_id>"}
-```
+## Connecting a new account
+1. The provider's OAuth app credentials must be configured on the Postiz server first
+   (for example `X_API_KEY`/`X_API_SECRET`, `LINKEDIN_CLIENT_ID`/`LINKEDIN_CLIENT_SECRET`,
+   `FACEBOOK_APP_ID`/`FACEBOOK_APP_SECRET` for Facebook and Instagram, `YOUTUBE_CLIENT_ID`/
+   `YOUTUBE_CLIENT_SECRET`, `TIKTOK_CLIENT_ID`/`TIKTOK_CLIENT_SECRET`), with the app's
+   redirect URI set to `<FRONTEND_URL>/integrations/social/<provider>`.
+2. `postiz_get_integration_url(integration="<provider>")` returns `url`; the account owner
+   opens it and approves. The channel then appears in `postiz_list_integrations`.
 
 ## Gotchas
-- `params_json` is a **string** of JSON; `postiz_list_integrations` takes `{}`.
-- A channel `id` (used everywhere else) is NOT the provider slug — resolve it here first.
-- `disabled: true` channels still list but will reject scheduling; check before publishing.
-- `postiz_delete_channel` is destructive and unlinks published-post history from the
-  live account.
-
-## Related
-- **Downstream:** `postiz-content-scheduling` (`posts[].integration.id`) and
-  `postiz-audience-analytics` (`integration_id`) both consume the channel ids listed here.
-- Listed channels map to `:SocialChannel` KG nodes; posts link to them via `:publishedOn`.
+- `postiz_delete_channel` deletes every post of the channel; never run it on a real channel
+  without the owner's approval.
+- A provider without OAuth credentials answers `Failed to generate auth URL`.

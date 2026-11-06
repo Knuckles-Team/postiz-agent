@@ -189,7 +189,11 @@ def test_api_client_endpoints():
         # 9. create_post
         from postiz_agent.postiz_models import PostizCreatePostRequest
 
-        req = PostizCreatePostRequest(date="2026-05-22")
+        req = PostizCreatePostRequest(
+            date="2026-05-22",
+            posts=[{"integration": {"id": "i1"}, "value": [{"content": "hi"}]}],
+        )
+        assert req.type == "draft"
         mock_s.post.return_value.json.return_value = [{"id": "post-new"}]
         assert client.postiz_create_post(req) == [{"id": "post-new"}]
 

@@ -20,6 +20,7 @@ Governing spec: [spec.md](spec.md).
 | T-014 | `CONN-POSTIZ-AGENT-R010.4` | `tests/test_post_lifecycle.py::test_create_maps_type_to_state_and_refuses_a_past_schedule` (planned) | Creation follows the machine. |
 | T-015 | `CONN-POSTIZ-AGENT-R010.5` | `tests/test_post_lifecycle.py::test_ingested_posts_carry_lifecycle_state_only` (planned) | Nodes carry one state field. |
 | T-016 | `CONN-POSTIZ-AGENT-R010.6` | `tests/test_post_lifecycle.py::test_served_tools_refuse_illegal_moves_with_zero_write_requests` (planned) | Zero write requests on refusal. |
+| T-017 | `CONN-POSTIZ-AGENT-R010.7` | `tests/test_post_lifecycle.py::test_governed_writeback_refuses_illegal_move_with_zero_api_calls` (planned) | The descriptor equals the table; a refused proposal makes zero API calls. |
 
 ## Negative and boundary cases
 

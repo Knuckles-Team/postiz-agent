@@ -240,6 +240,8 @@ Postiz reports a post `state` and, once published, a `releaseURL`. The caller st
 | Draft, Queued, Error | Delete | Deleted |
 | Published | Delete (unlist only: the provider post stays) | Deleted |
 
+Deleted is terminal and every other pair is refused with `IllegalTransition` (machine, post id, from-state, event, reason). The stored field is the server `state`; `lifecycleState` is derived. `publishing` is a connector-side state: `PublishNow` enters it after the server accepts the call, and `Succeed`, `Fail` or `RecordRelease` leave it. The server never reports it. `POST_LIFECYCLE` is the SDK descriptor built from the same table (R010.7); `execute_governed` refuses an illegal governed write before the API call. Entry point to attach point: `postiz-mcp` -> `build_server` -> served post tool -> `guarded` (postiz_agent/api_client.py) -> `post_transition` (postiz_agent/lifecycle.py) -> `Api` method (postiz_agent/api/api_client_posts.py). The wiring row and hot-path proof row are R010.6.
+
 The guards run inside the existing tools through one `guarded` wrapper, so the tool surface of `CONN-POSTIZ-AGENT-R003` does not change.
 
 ## Phase 2: Task approach
@@ -275,4 +277,4 @@ None. The rows depend only on the published `scion-sdk` package, which the conne
 
 ### Amendments
 
-- 2026-11-06: post lifecycle state machine (organization constitution Article XXXI). Row `CONN-POSTIZ-AGENT-R010` and children R010.1 to R010.6 add guards to the existing post tools. The ontology half is `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002`.
+- 2026-11-06: post lifecycle state machine (organization constitution Article XXXI). Row `CONN-POSTIZ-AGENT-R010` and children R010.1 to R010.7 add guards to the existing post tools. The ontology half is `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002`.

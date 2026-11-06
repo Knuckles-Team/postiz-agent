@@ -34,6 +34,7 @@ The fleet operator and the engine rely on this behaviour of `postiz-agent`: `pyp
 ## Requirements
 
 - **FR-001**: Default content. Rows: `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R001`.
+- **FR-002**: The post lifecycle machine is described in the ontology (rollup). Rows: `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002`, `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.1`, `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.2`, `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.3`.
 
 ## Success Criteria
 
@@ -49,3 +50,4 @@ The fleet operator and the engine rely on this behaviour of `postiz-agent`: `pyp
 | Label | Rows | Design section | Test ID | Evidence |
 |---|---|---|---|---|
 | FR-001 | `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R001` | plan.md Production caller chain | T-001 | tests/test_default_content_surfaces.py::test_default_content_surfaces |
+| FR-002 | `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002`, `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.1`, `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.2`, `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.3` | [plan.md](plan.md) | T-002 | [test-spec.md](test-spec.md) |

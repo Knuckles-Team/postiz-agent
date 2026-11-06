@@ -110,6 +110,7 @@ The business's social media workflow relies on this behaviour of `postiz-agent`:
 - **FR-007**: Social media manager prompt and campaign skill. Rows: `CONN-POSTIZ-AGENT-R007`.
 - **FR-008**: Ontology pack: surface, data location and core roll-up. Rows: `CONN-POSTIZ-AGENT-R008`.
 - **FR-009**: Declared ingest sources and mapping pins. Rows: `CONN-POSTIZ-AGENT-R009`.
+- **FR-010**: Post lifecycle is one explicit state machine (rollup). Rows: `CONN-POSTIZ-AGENT-R010`, `CONN-POSTIZ-AGENT-R010.1`, `CONN-POSTIZ-AGENT-R010.2`, `CONN-POSTIZ-AGENT-R010.3`, `CONN-POSTIZ-AGENT-R010.4`, `CONN-POSTIZ-AGENT-R010.5`, `CONN-POSTIZ-AGENT-R010.6`.
 
 ## Success Criteria
 
@@ -141,3 +142,4 @@ The business's social media workflow relies on this behaviour of `postiz-agent`:
 | FR-007 | `CONN-POSTIZ-AGENT-R007` | plan.md Production caller chain | T-007 | tests/test_tool_surface.py::test_prompt_and_campaign_skill_are_served |
 | FR-008 | `CONN-POSTIZ-AGENT-R008` | plan.md Production caller chain | T-008 | tests/test_pack_surface.py::test_pack_declares_every_served_tool_prompt_and_skill |
 | FR-009 | `CONN-POSTIZ-AGENT-R009` | plan.md Production caller chain | T-009 | tests/test_pack_surface.py::test_declared_sources_and_mapping_pins_match_the_live_tools |
+| FR-010 | `CONN-POSTIZ-AGENT-R010`, `CONN-POSTIZ-AGENT-R010.1`, `CONN-POSTIZ-AGENT-R010.2`, `CONN-POSTIZ-AGENT-R010.3`, `CONN-POSTIZ-AGENT-R010.4`, `CONN-POSTIZ-AGENT-R010.5`, `CONN-POSTIZ-AGENT-R010.6` | [plan.md](plan.md) | T-010 | [test-spec.md](test-spec.md) |

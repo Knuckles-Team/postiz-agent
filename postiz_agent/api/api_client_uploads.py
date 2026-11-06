@@ -15,8 +15,10 @@ MAX_INLINE_UPLOAD_BYTES = 50 * 1024 * 1024
 
 class UploadsClient(BaseApiClient):
     def _post_file(self, file_name: str, payload: Any, mime_type: str | None):
-        headers = dict(self.headers)
-        headers.pop("Content-Type", None)
+        # requests merges session headers into each request; a None value is
+        # how a request drops the session's JSON Content-Type so the multipart
+        # boundary header is generated.
+        headers = {"Content-Type": None}
         content_type = (
             mime_type
             or mimetypes.guess_type(file_name)[0]

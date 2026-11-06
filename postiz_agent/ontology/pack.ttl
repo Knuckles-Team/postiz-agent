@@ -1,0 +1,374 @@
+@prefix : <http://knuckles.team/kg#> .
+@prefix cp: <http://knuckles.team/kg/connector-pack#> .
+@prefix vg: <http://knuckles.team/kg/virtual-graph#> .
+@prefix c: <http://knuckles.team/kg/connector/postiz#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# The postiz-mcp connector surface (features, tools, prompt, skills), its ingest
+# contract, and where its data lives and how reads are routed. Terms of the core
+# connector-pack and virtual-graph vocabularies are used by IRI; the pack never
+# imports core. Domain classes come from social.ttl and subclass core classes.
+# Keep in step with the served tool surface (tests/test_pack_surface.py).
+
+c:connector a cp:Connector ;
+    rdfs:label "Postiz social media scheduler" ;
+    rdfs:comment "Schedules and publishes posts to the business's social channels and reads their engagement back." ;
+    cp:providesFeature c:feature-channels, c:feature-scheduling, c:feature-media, c:feature-review, c:feature-analytics, c:feature-ingest, c:feature-admin ;
+    cp:hasContract c:contract .
+
+c:source a vg:SourceConnection ;
+    rdfs:label "Postiz public API through the postiz-mcp connector" ;
+    rdfs:comment "Posts, channels, media and analytics live in the Postiz instance (its database and media volume). Medulla reads them live through the connector tools and keeps governed copies of ingested posts, channels and engagement." ;
+    vg:sourceKind "mcp" ;
+    vg:declaredCapability "read", "write-back" .
+
+c:authority-SocialPost a vg:SourceAuthority ;
+    vg:authoritativeSource c:source ;
+    vg:authorityFor :SocialPost ;
+    vg:authorityRank 1 ;
+    vg:authorityContract "mcp" ;
+    vg:sourceRole "live_truth" ;
+    vg:materialisation "accelerated" ;
+    vg:materialisationReason "Posts are ingested on every calendar read so cross-source questions do not call the scheduler." ;
+    vg:freshnessMaxAgeSeconds 3600 ;
+    vg:allowFallback false .
+
+c:authority-SocialChannel a vg:SourceAuthority ;
+    vg:authoritativeSource c:source ;
+    vg:authorityFor :SocialChannel ;
+    vg:authorityRank 1 ;
+    vg:authorityContract "mcp" ;
+    vg:sourceRole "live_truth" ;
+    vg:materialisation "accelerated" ;
+    vg:materialisationReason "Channels change rarely; the ingested copy answers channel questions." ;
+    vg:freshnessMaxAgeSeconds 86400 ;
+    vg:allowFallback false .
+
+c:authority-EngagementMetric a vg:SourceAuthority ;
+    vg:authoritativeSource c:source ;
+    vg:authorityFor :EngagementMetric ;
+    vg:authorityRank 1 ;
+    vg:authorityContract "mcp" ;
+    vg:sourceRole "live_truth" ;
+    vg:materialisation "accelerated" ;
+    vg:materialisationReason "Provider analytics are rate-limited; daily ingested series serve trend questions." ;
+    vg:freshnessMaxAgeSeconds 86400 ;
+    vg:allowFallback false .
+
+c:authority-SocialMediaAsset a vg:SourceAuthority ;
+    vg:authoritativeSource c:source ;
+    vg:authorityFor :SocialMediaAsset ;
+    vg:authorityRank 1 ;
+    vg:authorityContract "mcp" ;
+    vg:sourceRole "live_truth" ;
+    vg:materialisation "virtual" ;
+    vg:allowFallback false .
+
+c:authority-PostReviewComment a vg:SourceAuthority ;
+    vg:authoritativeSource c:source ;
+    vg:authorityFor :PostReviewComment ;
+    vg:authorityRank 1 ;
+    vg:authorityContract "mcp" ;
+    vg:sourceRole "live_truth" ;
+    vg:materialisation "virtual" ;
+    vg:allowFallback false .
+
+c:feature-channels a cp:Feature ;
+    rdfs:label "Channel management" ;
+    cp:realizedBy c:tool-postiz_list_integrations, c:tool-postiz_check_connection, c:tool-postiz_get_me, c:tool-postiz_list_groups, c:tool-postiz_get_integration_settings, c:tool-postiz_trigger_integration_tool, c:tool-postiz_get_integration_url, c:tool-postiz_delete_channel, c:tool-postiz_find_slot, c:skill-postiz-channel-management, c:prompt-social_media_manager .
+
+c:tool-postiz_list_integrations a cp:Tool ;
+    cp:componentId "postiz_list_integrations" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_check_connection a cp:Tool ;
+    cp:componentId "postiz_check_connection" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_get_me a cp:Tool ;
+    cp:componentId "postiz_get_me" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_list_groups a cp:Tool ;
+    cp:componentId "postiz_list_groups" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_get_integration_settings a cp:Tool ;
+    cp:componentId "postiz_get_integration_settings" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_trigger_integration_tool a cp:Tool ;
+    cp:componentId "postiz_trigger_integration_tool" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_get_integration_url a cp:Tool ;
+    cp:componentId "postiz_get_integration_url" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_delete_channel a cp:Tool ;
+    cp:componentId "postiz_delete_channel" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_find_slot a cp:Tool ;
+    cp:componentId "postiz_find_slot" ;
+    cp:operatesOn :ContentCalendar ;
+    cp:produces :ContentCalendar .
+
+c:feature-scheduling a cp:Feature ;
+    rdfs:label "Content scheduling and calendar" ;
+    cp:realizedBy c:tool-postiz_list_posts, c:tool-postiz_create_post, c:tool-postiz_change_post_status, c:tool-postiz_update_post_settings, c:tool-postiz_delete_post, c:tool-postiz_delete_post_by_group, c:tool-postiz_get_missing_content, c:tool-postiz_update_release_id, c:skill-postiz-content-scheduling, c:skill-postiz-campaign-post-from-asset, c:prompt-social_media_manager .
+
+c:tool-postiz_list_posts a cp:Tool ;
+    cp:componentId "postiz_list_posts" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_create_post a cp:Tool ;
+    cp:componentId "postiz_create_post" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_change_post_status a cp:Tool ;
+    cp:componentId "postiz_change_post_status" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_update_post_settings a cp:Tool ;
+    cp:componentId "postiz_update_post_settings" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_delete_post a cp:Tool ;
+    cp:componentId "postiz_delete_post" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_delete_post_by_group a cp:Tool ;
+    cp:componentId "postiz_delete_post_by_group" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_get_missing_content a cp:Tool ;
+    cp:componentId "postiz_get_missing_content" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_update_release_id a cp:Tool ;
+    cp:componentId "postiz_update_release_id" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:feature-media a cp:Feature ;
+    rdfs:label "Media library and generation" ;
+    cp:realizedBy c:tool-postiz_upload_file, c:tool-postiz_upload_file_content, c:tool-postiz_upload_from_url, c:tool-postiz_list_media, c:tool-postiz_generate_video, c:tool-postiz_video_function, c:tool-postiz_start_clipping, c:tool-postiz_list_clippings, c:tool-postiz_get_clipping, c:skill-postiz-campaign-post-from-asset, c:prompt-social_media_manager .
+
+c:tool-postiz_upload_file a cp:Tool ;
+    cp:componentId "postiz_upload_file" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_upload_file_content a cp:Tool ;
+    cp:componentId "postiz_upload_file_content" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_upload_from_url a cp:Tool ;
+    cp:componentId "postiz_upload_from_url" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_list_media a cp:Tool ;
+    cp:componentId "postiz_list_media" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_generate_video a cp:Tool ;
+    cp:componentId "postiz_generate_video" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_video_function a cp:Tool ;
+    cp:componentId "postiz_video_function" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_start_clipping a cp:Tool ;
+    cp:componentId "postiz_start_clipping" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_list_clippings a cp:Tool ;
+    cp:componentId "postiz_list_clippings" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:tool-postiz_get_clipping a cp:Tool ;
+    cp:componentId "postiz_get_clipping" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:feature-review a cp:Feature ;
+    rdfs:label "Preview and review comments" ;
+    cp:realizedBy c:tool-postiz_get_post_preview, c:tool-postiz_list_post_comments, c:tool-postiz_create_post_comment, c:skill-postiz-campaign-post-from-asset, c:prompt-social_media_manager .
+
+c:tool-postiz_get_post_preview a cp:Tool ;
+    cp:componentId "postiz_get_post_preview" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_list_post_comments a cp:Tool ;
+    cp:componentId "postiz_list_post_comments" ;
+    cp:operatesOn :PostReviewComment ;
+    cp:produces :PostReviewComment .
+
+c:tool-postiz_create_post_comment a cp:Tool ;
+    cp:componentId "postiz_create_post_comment" ;
+    cp:operatesOn :PostReviewComment ;
+    cp:produces :PostReviewComment .
+
+c:feature-analytics a cp:Feature ;
+    rdfs:label "Audience analytics and notifications" ;
+    cp:realizedBy c:tool-postiz_get_analytics, c:tool-postiz_get_post_analytics, c:tool-postiz_list_notifications, c:skill-postiz-audience-analytics, c:prompt-social_media_manager .
+
+c:tool-postiz_get_analytics a cp:Tool ;
+    cp:componentId "postiz_get_analytics" ;
+    cp:operatesOn :AggregatedEngagement ;
+    cp:produces :AggregatedEngagement .
+
+c:tool-postiz_get_post_analytics a cp:Tool ;
+    cp:componentId "postiz_get_post_analytics" ;
+    cp:operatesOn :EngagementMetric ;
+    cp:produces :EngagementMetric .
+
+c:tool-postiz_list_notifications a cp:Tool ;
+    cp:componentId "postiz_list_notifications" ;
+    cp:operatesOn :SocialNotification ;
+    cp:produces :SocialNotification .
+
+c:feature-ingest a cp:Feature ;
+    rdfs:label "Knowledge-graph ingest" ;
+    cp:realizedBy c:tool-postiz_ingest_posts, c:tool-postiz_ingest_integrations, c:tool-postiz_ingest_analytics, c:skill-postiz-audience-analytics, c:prompt-social_media_manager .
+
+c:tool-postiz_ingest_posts a cp:Tool ;
+    cp:componentId "postiz_ingest_posts" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_ingest_integrations a cp:Tool ;
+    cp:componentId "postiz_ingest_integrations" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_ingest_analytics a cp:Tool ;
+    cp:componentId "postiz_ingest_analytics" ;
+    cp:operatesOn :DailyEngagement ;
+    cp:produces :DailyEngagement .
+
+c:feature-admin a cp:Feature ;
+    rdfs:label "Instance diagnostics (super-admin key)" ;
+    cp:realizedBy c:tool-postiz_list_users, c:tool-postiz_get_post_timeline, c:tool-postiz_get_account_overview, c:tool-postiz_get_channel_health, c:tool-postiz_get_org_activity, c:tool-postiz_reset_credits, c:skill-postiz-agent-operations, c:prompt-social_media_manager .
+
+c:tool-postiz_list_users a cp:Tool ;
+    cp:componentId "postiz_list_users" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_get_post_timeline a cp:Tool ;
+    cp:componentId "postiz_get_post_timeline" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_get_account_overview a cp:Tool ;
+    cp:componentId "postiz_get_account_overview" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_get_channel_health a cp:Tool ;
+    cp:componentId "postiz_get_channel_health" ;
+    cp:operatesOn :SocialChannel ;
+    cp:produces :SocialChannel .
+
+c:tool-postiz_get_org_activity a cp:Tool ;
+    cp:componentId "postiz_get_org_activity" ;
+    cp:operatesOn :SocialPost ;
+    cp:produces :SocialPost .
+
+c:tool-postiz_reset_credits a cp:Tool ;
+    cp:componentId "postiz_reset_credits" ;
+    cp:operatesOn :SocialMediaAsset ;
+    cp:produces :SocialMediaAsset .
+
+c:prompt-social_media_manager a cp:Prompt ;
+    cp:componentId "social_media_manager" ;
+    cp:appliesTo :SocialPost .
+
+c:skill-postiz-campaign-post-from-asset a cp:Skill ;
+    cp:componentId "postiz-campaign-post-from-asset" ;
+    cp:appliesTo :SocialPost .
+
+c:skill-postiz-content-scheduling a cp:Skill ;
+    cp:componentId "postiz-content-scheduling" ;
+    cp:appliesTo :SocialPost .
+
+c:skill-postiz-channel-management a cp:Skill ;
+    cp:componentId "postiz-channel-management" ;
+    cp:appliesTo :SocialChannel .
+
+c:skill-postiz-audience-analytics a cp:Skill ;
+    cp:componentId "postiz-audience-analytics" ;
+    cp:appliesTo :EngagementMetric .
+
+c:skill-postiz-agent-operations a cp:Skill ;
+    cp:componentId "postiz-agent-operations" ;
+    cp:appliesTo :SocialPost .
+
+c:contract a cp:IngestContract ;
+    cp:contractOf c:connector ;
+    cp:contractVersion "2" ;
+    cp:privacyClass "internal" ;
+    cp:hasSourceObject c:object-post, c:object-channel, c:object-engagement ;
+    cp:hasCursorPolicy c:cursor ;
+    cp:hasAccessPolicy c:access ;
+    cp:requiresProvenance c:provenance .
+
+c:object-post a cp:SourceObject ;
+    cp:objectName "posts" ;
+    cp:ontologyClass :SocialPost ;
+    cp:hasKeyRule c:key-post .
+
+c:key-post a cp:KeyRule ;
+    cp:keyField "id" .
+
+c:object-channel a cp:SourceObject ;
+    cp:objectName "integrations" ;
+    cp:ontologyClass :SocialChannel ;
+    cp:hasKeyRule c:key-channel .
+
+c:key-channel a cp:KeyRule ;
+    cp:keyField "id" .
+
+c:object-engagement a cp:SourceObject ;
+    cp:objectName "analytics" ;
+    cp:ontologyClass :DailyEngagement ;
+    cp:hasKeyRule c:key-engagement .
+
+c:key-engagement a cp:KeyRule ;
+    cp:keyField "integration_id", "label", "date" .
+
+c:cursor a cp:CursorPolicy ;
+    cp:cursorKind "timestamp" .
+
+c:access a cp:AccessPolicy ;
+    cp:defaultAcl "quarantine" .
+
+c:provenance a cp:ProvenanceRequirement ;
+    cp:requiredField "source", "record_id", "as_of" .

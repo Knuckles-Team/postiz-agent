@@ -244,3 +244,38 @@ one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
     rdfs:comment "The analytics series label an EngagementMetric observes (e.g. Impressions, Likes, Followers)." ;
     rdfs:domain :EngagementMetric ;
     rdfs:range xsd:string .
+
+
+# --- Media library, preview review and notifications ------------------------
+
+:SocialMediaAsset a owl:Class ;
+    rdfs:label "Social Media Asset" ;
+    rdfs:comment """One item of the scheduler's media library (an image or a short
+video) that posts attach. Rolls up to the core media item.""" ;
+    rdfs:seeAlso schema:MediaObject ;
+    rdfs:subClassOf :MediaItem .
+
+:PostReviewComment a owl:Class ;
+    rdfs:label "Post Review Comment" ;
+    rdfs:comment """An internal review comment left on a post's preview before it
+publishes. Never posted to the social network.""" ;
+    rdfs:seeAlso schema:Comment ;
+    rdfs:subClassOf :Message .
+
+:SocialNotification a owl:Class ;
+    rdfs:label "Social Notification" ;
+    rdfs:comment """A scheduler event about a channel or post: published (with its
+public URL), failed, or channel disconnected.""" ;
+    rdfs:subClassOf :Message .
+
+:hasReviewComment a owl:ObjectProperty ;
+    rdfs:label "has review comment" ;
+    rdfs:comment "Links a SocialPost to a review comment left on its preview." ;
+    rdfs:domain :SocialPost ;
+    rdfs:range :PostReviewComment .
+
+:usesMediaAsset a owl:ObjectProperty ;
+    rdfs:label "uses media asset" ;
+    rdfs:comment "Links a SocialPost to the media-library item it attaches." ;
+    rdfs:domain :SocialPost ;
+    rdfs:range :SocialMediaAsset .

@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-11-06
+
+### Added
+- One typed tool for every Postiz public API operation: media library, posting rules,
+  post status and settings, provider tools, clipping, preview and review comments, and
+  the super-admin diagnostics.
+- `postiz_upload_file_content` uploads image or video bytes, so assets from other
+  systems can be posted (Postiz refuses private-network URLs).
+- The `social_media_manager` prompt and the `postiz-campaign-post-from-asset` skill.
+- `ontology/pack.ttl`: connector surface, ingest contract and per-class source
+  authority; new `SocialMediaAsset`, `PostReviewComment`, `SocialNotification` classes.
+- Channel, media and notification ingest sources.
+
+### Changed
+- Require `scion-sdk>=0.8.2,<0.9`.
+- `postiz_create_post` defaults to a draft and accepts only draft, schedule or now.
+- Skills describe the typed tools.
+
+### Removed
+- The action-routed `postiz_integrations`, `postiz_posts`, `postiz_uploads`,
+  `postiz_analytics`, `postiz_notifications` and `postiz_video` tools.
+
+### Fixed
+- Delete and status calls no longer fail when Postiz returns a non-string value.
+
 ## [2.3.8] - 2026-10-30
 
 ### Changed

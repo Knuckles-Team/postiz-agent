@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -24,33 +24,52 @@ class PostizTag(BaseModel):
 
 
 class PostizMedia(BaseModel):
-    id: str
-    path: str
+    """One media-library item attached to a post part (from an upload)."""
+
+    id: str = Field(description="Media id returned by an upload.")
+    path: str = Field(description="Media path returned by an upload.")
 
 
 class PostizPostPart(BaseModel):
-    content: str
+    """One message of a thread: the first part is the post, later parts reply to it."""
+
+    content: str = Field(
+        description="Post text (HTML allowed for long-form providers)."
+    )
     id: str | None = None
-    image: list[PostizMedia] = Field(default_factory=list)
+    image: list[PostizMedia] = Field(
+        default_factory=list, description="Images or one video, from uploads."
+    )
 
 
 class PostizPostItem(BaseModel):
     integration: dict[str, str] = Field(
-        description="Integration ID e.g., {'id': '...'} "
+        description="Target channel, {'id': '<integration id>'}."
     )
-    value: list[PostizPostPart]
+    value: list[PostizPostPart] = Field(min_length=1)
     group: str | None = None
-    settings: dict[str, Any] | None = None
+    settings: dict[str, Any] | None = Field(
+        default=None,
+        description=(
+            "Provider settings with '__type' (for X: {'__type': 'x', "
+            "'who_can_reply_post': 'everyone'}); required unless type is draft."
+        ),
+    )
 
 
 class PostizCreatePostRequest(BaseModel):
-    type: str = "schedule"  # 'draft', 'schedule', 'now'
-    date: str
+    """A post group for one or more channels; ``draft`` is the safe default."""
+
+    type: Literal["draft", "schedule", "now"] = Field(
+        default="draft",
+        description="draft = store only; schedule = queue for date; now = publish now.",
+    )
+    date: str = Field(description="Publish date, ISO-8601 UTC.")
     shortLink: bool = False
     order: str | None = None
     inter: int | None = None
     tags: list[PostizTag] = Field(default_factory=list)
-    posts: list[PostizPostItem] | None = None
+    posts: list[PostizPostItem] = Field(min_length=1)
 
 
 class PostizPostIntegration(BaseModel):
@@ -103,6 +122,9 @@ class PostizUploadResponse(BaseModel):
     id: str
     path: str
     name: str | None = None
+    originalName: str | None = None
+    thumbnail: str | None = None
+    status: str | None = None
     organizationId: str | None = None
     createdAt: str | None = None
     updatedAt: str | None = None

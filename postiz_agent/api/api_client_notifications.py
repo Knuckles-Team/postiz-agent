@@ -7,8 +7,14 @@ from postiz_agent.postiz_models import PostizNotificationsResponse
 class NotificationsClient(BaseApiClient):
     @require_auth
     def postiz_list_notifications(self, page: int = 0) -> PostizNotificationsResponse:
-        response = self.session.get(
-            f"{self.base_url}/notifications", params={"page": page}
+        """List the organization's notifications (published, failed, disconnected), paged.
+
+        GET /notifications
+        """
+        return PostizNotificationsResponse(
+            **self._json(
+                self.session.get(
+                    f"{self.base_url}/notifications", params={"page": page}
+                )
+            )
         )
-        response.raise_for_status()
-        return PostizNotificationsResponse(**response.json())

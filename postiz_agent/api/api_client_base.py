@@ -1,3 +1,5 @@
+from typing import Any
+
 import requests
 from scion_sdk.exceptions import UnauthorizedError
 from scion_sdk.tls.profile import ResolvedTLSProfile
@@ -16,6 +18,9 @@ class BaseApiClient:
         # bare /public/v1 path answers with a 307); keep an explicit base path.
         if "/public/v1" not in self.base_url:
             self.base_url = f"{self.base_url}/api/public/v1"
+        # The unauthenticated preview routes (post preview and its review
+        # comments) live one level up, under /api/public.
+        self.preview_url = self.base_url[: -len("/v1")]
 
         self.token = token
         self.tls_profile = tls_profile or resolve_tls_profile("postiz")
@@ -33,6 +38,16 @@ class BaseApiClient:
 
     def postiz_list_integrations(self) -> list:
         return []
+
+    @staticmethod
+    def _json(response: requests.Response) -> Any:
+        """Raise on an HTTP error, then return the JSON body (``{}`` when empty)."""
+        if response.status_code == 401:
+            raise UnauthorizedError("Invalid API key")
+        response.raise_for_status()
+        if not response.content:
+            return {}
+        return response.json()
 
     def close(self) -> None:
         """Release transport resources and runtime-only TLS material."""

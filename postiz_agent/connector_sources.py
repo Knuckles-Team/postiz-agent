@@ -24,6 +24,49 @@ SOURCES = (
         text_field="content",
         title_field="content",
     ),
+    source_meta(
+        tool="postiz_list_integrations",
+        source_id="postiz-channels",
+        record_type="SocialChannel",
+        id_field="id",
+        preset={
+            "doc_type": "social_channel",
+            "params_style": "args",
+        },
+        server="postiz-mcp",
+        text_field="name",
+        title_field="name",
+    ),
+    source_meta(
+        tool="postiz_list_media",
+        source_id="postiz-media",
+        record_type="SocialMediaAsset",
+        id_field="id",
+        cursor_field="createdAt",
+        preset={
+            "doc_type": "social_media_asset",
+            "params_style": "args",
+        },
+        records_path="results",
+        server="postiz-mcp",
+        text_field="name",
+        title_field="name",
+    ),
+    source_meta(
+        tool="postiz_list_notifications",
+        source_id="postiz-notifications",
+        record_type="SocialNotification",
+        id_field="id",
+        cursor_field="createdAt",
+        preset={
+            "doc_type": "social_notification",
+            "params_style": "args",
+        },
+        records_path="notifications",
+        server="postiz-mcp",
+        text_field="content",
+        title_field="content",
+    ),
 )
 
 SCHEMA_VERSION = 2
@@ -82,6 +125,18 @@ SCHEMA_MAPPINGS = {
         "field_sets": ["fields_1"],
         "ontology_class": "System",
     },
+    "PostReviewComment": {
+        "field_sets": ["fields_1"],
+        "ontology_class": "Message",
+    },
+    "SocialMediaAsset": {
+        "field_sets": ["fields_1"],
+        "ontology_class": "MediaItem",
+    },
+    "SocialNotification": {
+        "field_sets": ["fields_1"],
+        "ontology_class": "Message",
+    },
     "SocialPost": {
         "field_sets": ["fields_1"],
         "ontology_class": "CreativeWork",
@@ -129,9 +184,24 @@ RESOURCES = (
         "name": "EngagementMetric",
     },
     {
+        "id_prefix": "postreviewcomment",
+        "label": "Post Review Comment",
+        "name": "PostReviewComment",
+    },
+    {
         "id_prefix": "socialchannel",
         "label": "Social Channel",
         "name": "SocialChannel",
+    },
+    {
+        "id_prefix": "socialmediaasset",
+        "label": "Social Media Asset",
+        "name": "SocialMediaAsset",
+    },
+    {
+        "id_prefix": "socialnotification",
+        "label": "Social Notification",
+        "name": "SocialNotification",
     },
     {
         "id_prefix": "socialpost",

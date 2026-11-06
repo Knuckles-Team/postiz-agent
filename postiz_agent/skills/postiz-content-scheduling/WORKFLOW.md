@@ -1,76 +1,60 @@
 # Postiz Content Scheduling
 
-Schedule, publish, and manage social posts across connected channels via the postiz-agent MCP server — list a date window of posts, create a draft/scheduled/now post, attach uploaded media, find the next open slot, and delete posts. Use when the agent must plan or push social content through Postiz. Do NOT use for reading engagement numbers (use postiz-audience-analytics) or connecting/removing accounts (use postiz-channel-management).
+Schedule, publish, and manage social posts across connected channels via the postiz-mcp connector — list a date window of posts, create a draft/scheduled/now post, attach uploaded media, find the next open slot, and delete posts. Use when the agent must plan or push social content through Postiz. Do NOT use for reading engagement numbers (use postiz-audience-analytics) or connecting/removing accounts (use postiz-channel-management).
 
 # Postiz Content Scheduling
 
-Domain-typed access to the Postiz **posts** + **uploads** surface for planning and
-publishing social content. Prefer these tools over raw HTTP — they carry the Postiz
-post-request shape and return post-shaped records.
+The posts, calendar, media and preview surface of Postiz, one typed tool per API
+operation.
 
 ## When to use
-- List posts in a date window (`startDate`/`endDate`), optionally per customer.
-- Create a post as a `draft`, `schedule` (dated), or `now` publish.
-- Upload a media file (or from a URL) and attach it to a post.
-- Find the next open publishing slot for a channel; delete a post or a whole group.
+- Read the content calendar for a window, create drafts, schedule, cancel.
+- Upload media and attach it to posts; preview a post and read review comments.
 
 ## When NOT to use
-- Reading impressions / likes / follower trends → `postiz-audience-analytics`.
-- Connecting, listing, or removing social accounts → `postiz-channel-management`.
-- Video generation (image-slides / veo3) → the `postiz_video` tool directly.
+- Engagement numbers: `postiz-audience-analytics`.
+- Connecting or removing accounts: `postiz-channel-management`.
+- The end-to-end "asset to scheduled post" flow: `postiz-campaign-post-from-asset`.
 
-## Prerequisites & environment
-Connect via the `mcp-client` skill against the **`postiz-agent`** MCP server.
+## Connection
+Tools are served by the `postiz-mcp` connector; through arbora call
+`act(op="fleet.call", params={"server": "postiz-mcp", "tool": "<tool>", "arguments": {...}})`.
+The connector reads `POSTIZ_URL` (the `/api/public/v1` path is appended) and
+`POSTIZ_TOKEN` (the organization API key from Postiz Settings, sent as `Authorization`).
+`POSTIZ_KG_INGEST=0` turns off the best-effort ingest of listed posts.
 
-| Variable | Required | Notes |
-|----------|----------|-------|
-| `POSTIZ_URL` | ✅ | Base URL; `/api/public/v1` is appended if missing (bare hosts get `/api/public/v1`) |
-| `POSTIZ_API_KEY` | ✅ | Sent as the `Authorization` header |
-| `POSTIZ_KG_INGEST` | optional | `0`/`false` opts out of default-on KG ingestion of listed posts |
+## Tools
+| Tool | Purpose |
+|------|---------|
+| `postiz_list_posts(start_date, end_date, customer?)` | The calendar: posts in a window with `state` (QUEUE, PUBLISHED, ERROR, DRAFT) |
+| `postiz_create_post(request)` | Create a `draft` (default), `schedule` or `now` post group |
+| `postiz_change_post_status(post_id, status)` | `draft` pulls a post out of the queue, `schedule` queues it |
+| `postiz_update_post_settings(post_id, settings)` | Replace a post's provider settings |
+| `postiz_delete_post(post_id, confirm)` / `postiz_delete_post_by_group(group, confirm)` | Cancel and delete; the publishing workflow is terminated |
+| `postiz_find_slot(integration_id)` | Next free publishing time for a channel |
+| `postiz_upload_file_content(file_name, content_base64, mime_type?)` | Upload image or video bytes |
+| `postiz_upload_from_url(url)` | Postiz fetches a public HTTPS URL |
+| `postiz_upload_file(file_path)` | Upload a file on the connector host |
+| `postiz_list_media(page?, search?)` | Browse the media library |
+| `postiz_get_post_preview(post_id)` | What a reviewer sees on the preview page |
+| `postiz_list_post_comments(post_id)` / `postiz_create_post_comment(...)` | Internal review comments on the preview |
+| `postiz_get_missing_content(post_id)` / `postiz_update_release_id(post_id, release_id)` | Re-link a published post to its provider item |
+| `postiz_generate_video(request)` / `postiz_video_function(request)` | AI video generation (uses credits) |
+| `postiz_start_clipping` / `postiz_list_clippings` / `postiz_get_clipping` | Cut a long video into short clips (uses credits) |
 
-`MCP_TOOL_MODE` (`condensed`|`verbose`|`both`) selects the condensed surface (used
-below) vs. the one-to-one verbose tools.
-
-## Tools & actions
-Prefer the **condensed** tools; each takes `action` + a `params_json` **JSON string**
-whose keys are passed straight to the client method.
-
-| Condensed tool | Actions |
-|----------------|---------|
-| `postiz_posts` | `postiz_list_posts`, `postiz_create_post`, `postiz_delete_post`, `postiz_delete_post_by_group`, `postiz_get_missing_content`, `postiz_update_release_id` |
-| `postiz_uploads` | `postiz_upload_file`, `postiz_upload_from_url` |
-| `postiz_integrations` | `postiz_find_slot` (next open slot for a channel) |
-
-## Recipes (`params_json`)
-List a week of posts:
+## Recipe: a draft with an image
 ```json
-{"start_date":"2026-07-01","end_date":"2026-07-07"}
-```
-Schedule a post to one channel at a time (Postiz post shape):
-```json
-{"request":{"type":"schedule","date":"2026-07-05T14:00:00Z","posts":[{"integration":{"id":"<channel_id>"},"value":[{"content":"Launch day! 🚀"}]}]}}
-```
-Upload a local image, then reference its `id` in `value[].image`:
-```json
-{"file_path":"/data/banner.png"}
-```
-Find the next open slot for a channel:
-```json
-{"integration_id":"<channel_id>"}
+{"request": {"type": "draft", "date": "2027-03-01T15:00:00Z", "shortLink": false, "tags": [],
+  "posts": [{"integration": {"id": "<channel id>"},
+             "value": [{"content": "Spring collection is live", "image": [{"id": "<media id>", "path": "<media path>"}]}],
+             "settings": {"__type": "x", "who_can_reply_post": "everyone"}}]}}
 ```
 
 ## Gotchas
-- `params_json` is a **string** of JSON, not an object — serialize it.
-- `type` on a create is one of `draft` | `schedule` | `now`; `schedule`/`now` need a
-  valid ISO-8601 `date`.
-- `posts[].integration.id` is a **channel id** from `postiz-channel-management`
-  (`postiz_list_integrations`), not the provider name.
-- To attach media, `postiz_upload_file` first and put the returned `{id,path}` into the
-  post part's `image` list — a bare filesystem path will not attach.
-- `postiz_delete_post_by_group` removes every platform variant sharing a `group`; scope
-  carefully.
-
-## Related
-- Listing posts natively ingests them into the KG as `:SocialPost` (+ `:SocialChannel`)
-  nodes; force a push with the `postiz_ingest_posts` tool.
-- **Downstream:** `postiz-audience-analytics` reads how those posts performed.
+- `request.type` defaults to `draft`. `schedule` and `now` validate the provider settings,
+  which must carry `__type` (the channel's `identifier`); read the schema with
+  `postiz_get_integration_settings`.
+- The public API keeps one `date` per request; per-channel dates are a dashboard feature.
+- `postiz_delete_post` deletes the whole group the post belongs to.
+- Postiz refuses private-network URLs in `postiz_upload_from_url`; send bytes instead.
+- Media cannot be deleted through the public API.

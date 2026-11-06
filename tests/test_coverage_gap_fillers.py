@@ -334,4 +334,4 @@ def test_api_client_upload_file_removes_content_type():
         with patch("builtins.open", MagicMock()):
             client.postiz_upload_file("dummy_file.png")
             _, kwargs = mock_s.post.call_args
-            assert "Content-Type" not in kwargs["headers"]
+            assert kwargs["headers"] == {"Content-Type": None}

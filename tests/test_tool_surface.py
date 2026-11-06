@@ -133,7 +133,7 @@ def test_upload_file_content_posts_multipart_bytes():
     assert args[0] == "https://postiz.example/api/public/v1/upload"
     name, body, mime = kwargs["files"]["file"]
     assert (name, body, mime) == ("zz-validation.mp4", payload, "video/mp4")
-    assert "Content-Type" not in kwargs["headers"]
+    assert kwargs["headers"] == {"Content-Type": None}
 
 
 @pytest.mark.spec("CONN-POSTIZ-AGENT-R004")
@@ -215,3 +215,31 @@ def test_prompt_and_campaign_skill_are_served(served):
         "postiz_get_post_analytics",
     ):
         assert tool in text and tool in names, tool
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-R004")
+def test_upload_sends_multipart_over_a_json_session():
+    """The session's JSON Content-Type must not reach the multipart upload."""
+    import requests
+
+    client = _client()
+    session = requests.Session()
+    session.headers.update({"Authorization": "t", "Content-Type": "application/json"})
+    client.session = session
+    client.headers = session.headers
+    sent = {}
+
+    def _send(self, request, **kwargs):
+        sent["content_type"] = request.headers.get("Content-Type", "")
+        sent["authorization"] = request.headers.get("Authorization")
+        response = requests.Response()
+        response.status_code = 201
+        response._content = b'{"id": "m1", "path": "p"}'
+        return response
+
+    with patch("requests.adapters.HTTPAdapter.send", _send):
+        client.postiz_upload_file_content(
+            file_name="a.png", content_base64=base64.b64encode(b"png").decode()
+        )
+    assert sent["content_type"].startswith("multipart/form-data; boundary=")
+    assert sent["authorization"] == "t"

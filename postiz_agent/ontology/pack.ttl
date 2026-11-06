@@ -311,6 +311,18 @@ c:prompt-social_media_manager a cp:Prompt ;
     cp:componentId "social_media_manager" ;
     cp:appliesTo :SocialPost .
 
+c:prompt-postiz-operator a cp:Prompt ;
+    cp:componentId "postiz-operator" ;
+    cp:appliesTo :SocialPost .
+
+c:prompt-postiz-channel-administrator a cp:Prompt ;
+    cp:componentId "postiz-channel-administrator" ;
+    cp:appliesTo :SocialChannel .
+
+c:skill-postiz-account-administration a cp:Skill ;
+    cp:componentId "postiz-account-administration" ;
+    cp:appliesTo :SocialMediaAsset .
+
 c:skill-postiz-campaign-post-from-asset a cp:Skill ;
     cp:componentId "postiz-campaign-post-from-asset" ;
     cp:appliesTo :SocialPost .

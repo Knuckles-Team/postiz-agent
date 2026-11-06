@@ -224,6 +224,24 @@ None. The constitution check passed.
 
 None. The rows depend only on the published `scion-sdk` package, which the connector imports.
 
+### Post lifecycle machine (CONN-POSTIZ-AGENT-R010)
+
+Postiz reports a post `state` and, once published, a `releaseURL`. The caller states an intent in `type`. `postiz_agent/lifecycle.py` keeps the two vocabularies apart, maps the server state to `PostState` once, and decides every move in `post_transition`.
+
+| From | Event | To |
+|---|---|---|
+| Draft | Schedule | Queued |
+| Draft, Queued | PublishNow | Publishing |
+| Queued | Unschedule | Draft |
+| Draft, Queued | Edit | same state |
+| Publishing | Succeed or RecordRelease | Published |
+| Publishing | Fail | Error |
+| Error | Retry | Queued |
+| Draft, Queued, Error | Delete | Deleted |
+| Published | Delete (unlist only: the provider post stays) | Deleted |
+
+The guards run inside the existing tools through one `guarded` wrapper, so the tool surface of `CONN-POSTIZ-AGENT-R003` does not change.
+
 ## Phase 2: Task approach
 
 `tasks.md` holds one task per row, producer first. Rows that depend on none run in parallel. A task is checked when its `Spec:` trailer is on the default branch.
@@ -249,7 +267,12 @@ None. The constitution check passed.
 - `CONN-POSTIZ-AGENT-R007`: `scion_sdk.mcp.content` serves `postiz_agent/prompts/*.json` as MCP prompts and `postiz_agent/skills/*/SKILL.md` as `skill://` resources when the server is built.
 - `CONN-POSTIZ-AGENT-R008`: the SDK serves `postiz_agent/ontology/*.ttl` as `ontology://postiz-mcp/<file>` resources, which medulla federates.
 - `CONN-POSTIZ-AGENT-R009`: the SDK serves the declaration as `connector://resources`; the ingest runner validates each preset's pin against the live tool.
+- `CONN-POSTIZ-AGENT-R010`: the `postiz-mcp` console script runs `scion_sdk.cli:serve`, which builds the server; the served post tools call `Api` (`postiz_agent/api_client.py`), whose `guarded` wrapper calls `post_transition` in `postiz_agent/lifecycle.py` before the request in `postiz_agent/api/api_client_posts.py`.
 
 ## Cross-repo seams
 
 None. The rows depend only on the published `scion-sdk` package, which the connector imports.
+
+### Amendments
+
+- 2026-11-06: post lifecycle state machine (organization constitution Article XXXI). Row `CONN-POSTIZ-AGENT-R010` and children R010.1 to R010.6 add guards to the existing post tools. The ontology half is `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002`.

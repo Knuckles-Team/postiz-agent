@@ -13,6 +13,13 @@ Governing spec: [spec.md](spec.md).
 | T-007 | `CONN-POSTIZ-AGENT-R007` | `tests/test_tool_surface.py::test_prompt_and_campaign_skill_are_served` | The prompt is listed and every tool named by the skill is served. |
 | T-008 | `CONN-POSTIZ-AGENT-R008` | `tests/test_pack_surface.py::test_pack_declares_every_served_tool_prompt_and_skill` | The declared tools, prompts and skills equal the served ones, and every domain class rolls up to a core class without an import. |
 | T-009 | `CONN-POSTIZ-AGENT-R009` | `tests/test_pack_surface.py::test_declared_sources_and_mapping_pins_match_the_live_tools` | The served sources are exactly the four declared tools and every pin equals the live tool's compatibility digest. |
+| T-010 | `CONN-POSTIZ-AGENT-R010` | `tests/test_post_lifecycle.py::test_served_tools_refuse_illegal_moves_with_zero_write_requests` (planned) | Every state and event pair either moves to its declared state or is refused with a typed error before any write request. |
+| T-011 | `CONN-POSTIZ-AGENT-R010.1` | `tests/test_post_lifecycle.py::test_every_legal_transition_reaches_its_state` (planned) | Every legal pair reaches its state and every other pair raises `IllegalTransition`. |
+| T-012 | `CONN-POSTIZ-AGENT-R010.2` | `tests/test_post_lifecycle.py::test_create_type_maps_to_the_intent_event` (planned) | Both vocabularies map once. |
+| T-013 | `CONN-POSTIZ-AGENT-R010.3` | `tests/test_post_lifecycle.py::test_update_is_refused_outside_draft_and_queued_without_a_write` (planned) | A refused call makes no write request. |
+| T-014 | `CONN-POSTIZ-AGENT-R010.4` | `tests/test_post_lifecycle.py::test_create_maps_type_to_state_and_refuses_a_past_schedule` (planned) | Creation follows the machine. |
+| T-015 | `CONN-POSTIZ-AGENT-R010.5` | `tests/test_post_lifecycle.py::test_ingested_posts_carry_lifecycle_state_only` (planned) | Nodes carry one state field. |
+| T-016 | `CONN-POSTIZ-AGENT-R010.6` | `tests/test_post_lifecycle.py::test_served_tools_refuse_illegal_moves_with_zero_write_requests` (planned) | Zero write requests on refusal. |
 
 ## Negative and boundary cases
 

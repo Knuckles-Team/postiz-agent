@@ -204,6 +204,10 @@ None. The constitution check passed.
 
 None. The rows depend only on the published `scion-sdk` package, which the connector imports.
 
+### Lifecycle ontology (CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002)
+
+`postiz_agent/ontology/social.ttl` describes the machine of `CONN-POSTIZ-AGENT-R010`. Every class extends a medulla core state-machine class; the file never imports the core ontology. The test compares the ontology with the code table, so a state added in code without a class fails the build.
+
 ## Phase 2: Task approach
 
 `tasks.md` holds one task per row, producer first. Rows that depend on none run in parallel. A task is checked when its `Spec:` trailer is on the default branch.
@@ -221,7 +225,12 @@ None. The constitution check passed.
 ## Production caller chain
 
 - `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R001`: `postiz-mcp` in `pyproject.toml` runs `scion_sdk.cli:serve`, which builds the server from the `scion_sdk.connector` entry point `postiz_agent:connector` (`postiz_agent/__init__.py:12`); the SDK `Connector` then lists the packaged skills, ontology and prompts.
+- `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002`: the SDK serves `postiz_agent/ontology/*.ttl` as `ontology://postiz-mcp/<file>` resources; the lifecycle classes of social.ttl are checked against `postiz_agent/lifecycle.py`.
 
 ## Cross-repo seams
 
 None. The rows depend only on the published `scion-sdk` package, which the connector imports.
+
+### Amendments
+
+- 2026-11-06: lifecycle ontology (organization constitution Article XXXI). Row `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002` and children R002.1 to R002.3 describe the machine of `CONN-POSTIZ-AGENT-R010`.

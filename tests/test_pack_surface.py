@@ -60,7 +60,7 @@ def test_pack_declares_every_served_tool_prompt_and_skill(surface):
     declared_tools = set(re.findall(r'c:tool-(\w+) a cp:Tool', pack))
     served_tools = {t.name for t in tools.tools}
     assert declared_tools == served_tools
-    declared_prompts = set(re.findall(r'c:prompt-(\w+) a cp:Prompt', pack))
+    declared_prompts = set(re.findall(r'c:prompt-([\w-]+) a cp:Prompt', pack))
     assert declared_prompts == {p.name for p in prompts} - {"connector-status"}
     declared_skills = set(re.findall(r"c:skill-([\w-]+) a cp:Skill", pack))
     packaged = {

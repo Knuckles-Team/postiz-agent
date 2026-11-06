@@ -20,3 +20,4 @@ Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Tasks run p
 - [ ] T014 [US10] CONN-POSTIZ-AGENT-R010.4 Guard creation by intent.
 - [ ] T015 [US10] CONN-POSTIZ-AGENT-R010.5 Lifecycle state is one typed field in the knowledge-graph mirror.
 - [ ] T016 [US10] CONN-POSTIZ-AGENT-R010.6 Wiring and hot-path proof: an illegal move never reaches the server.
+- [ ] T017 [US10] CONN-POSTIZ-AGENT-R010.7 Declare the descriptor and refuse through the SDK writeback guard.

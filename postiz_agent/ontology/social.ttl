@@ -555,4 +555,3 @@ public URL), failed, or channel disconnected.""" ;
     rdfs:comment "The derived lifecycle state of a SocialPost; the stored field is the server state." ;
     rdfs:domain :SocialPost ;
     rdfs:range :State .
-

@@ -199,7 +199,7 @@ class PostsClient(BaseApiClient):
         """Link a post to the provider item it was published as.
 
         PUT /posts/{post_id}/release-id
-        Legal only while the post is Publishing (RecordRelease moves it to Published).
+        Legal while the post is Publishing or Published (RecordRelease relinks it).
         """
         self._guard(post_id, PostEvent.RECORD_RELEASE)
         return self._json(

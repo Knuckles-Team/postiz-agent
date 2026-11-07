@@ -32,6 +32,7 @@ LEGAL = {
     "draft-edit": (S.DRAFT, E.EDIT, S.DRAFT),
     "queued-edit": (S.QUEUED, E.EDIT, S.QUEUED),
     "publishing-recordrelease": (S.PUBLISHING, E.RECORD_RELEASE, S.PUBLISHED),
+    "published-recordrelease": (S.PUBLISHED, E.RECORD_RELEASE, S.PUBLISHED),
     "draft-delete": (S.DRAFT, E.DELETE, S.DELETED),
     "queued-delete": (S.QUEUED, E.DELETE, S.DELETED),
     "error-delete": (S.ERROR, E.DELETE, S.DELETED),
@@ -228,3 +229,11 @@ def test_served_tools_refuse_illegal_moves_with_zero_write_requests():
     with pytest.raises(IllegalTransition):
         client.postiz_delete_post("p")
     assert _writes(client) == 0
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-R010.3")
+def test_release_id_relinks_a_published_post():
+    client = _with_posts(_client(), {"id": "p", "state": "PUBLISHED"})
+    client.session.put.return_value = _ok({"ok": True})
+    client.postiz_update_release_id("p", "r1")
+    assert client.session.put.call_count == 1

@@ -170,7 +170,7 @@ c:tool-postiz_get_missing_content a cp:Tool ;
 c:tool-postiz_update_release_id a cp:Tool ;
     cp:componentId "postiz_update_release_id" ;
     cp:operatesOn :SocialPost ,
-        :PublishingRecordReleaseTransition ;
+        :PublishingRecordReleaseTransition , :PublishedRecordReleaseTransition ;
     cp:produces :SocialPost .
 
 c:feature-media a cp:Feature ;

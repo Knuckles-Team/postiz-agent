@@ -455,6 +455,14 @@ public URL), failed, or channel disconnected.""" ;
     :toState :PublishedState ;
     rdfs:subClassOf :Transition .
 
+:PublishedRecordReleaseTransition a owl:Class ;
+    rdfs:label "Published RecordRelease transition" ;
+    rdfs:comment "Published on RecordRelease reaches Published." ;
+    :fromState :PublishedState ;
+    :onEvent :RecordReleaseEvent ;
+    :toState :PublishedState ;
+    rdfs:subClassOf :Transition .
+
 :DraftDeleteTransition a owl:Class ;
     rdfs:label "Draft Delete transition" ;
     rdfs:comment "Draft on Delete reaches Deleted." ;

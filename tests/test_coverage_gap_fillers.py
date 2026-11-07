@@ -2,9 +2,6 @@ import os
 from unittest.mock import MagicMock, patch
 
 import pytest
-
-
-
 from scion_sdk.exceptions import UnauthorizedError
 
 from postiz_agent.api_client import PostizApi
@@ -109,7 +106,8 @@ def test_api_client_unauthorized_handling():
             PostizApi(base_url="https://api.test.com", token="bad-key")
 
 
-def test_api_client_endpoints():
+def test_api_client_endpoints(tmp_path, monkeypatch):
+    monkeypatch.setenv("POSTIZ_LIFECYCLE_STORE", str(tmp_path / "lc.sqlite3"))
     """CONCEPT:PZ-OS.config.unified-interface-integrations-posts - Parity verification on CRUD and video generation endpoints."""
     with patch("requests.Session") as mock_session:
         # Prepare session mock setup
@@ -197,7 +195,10 @@ def test_api_client_endpoints():
         mock_s.post.return_value.json.return_value = [{"id": "post-new"}]
         assert client.postiz_create_post(req) == [{"id": "post-new"}]
 
-        # 10. delete_post
+        # 10. delete_post (the guard reads the post first)
+        mock_s.get.return_value.json.return_value = {
+            "posts": [{"id": "post-1", "state": "DRAFT", "group": "grp-1"}]
+        }
         mock_s.delete.return_value.json.return_value = {"status": "removed"}
         assert client.postiz_delete_post("post-1") == {"status": "removed"}
 
@@ -219,7 +220,11 @@ def test_api_client_endpoints():
         mock_s.get.return_value.json.return_value = {"error": "bad"}
         assert client.postiz_get_missing_content("post-1") == []
 
-        # 14. update_release_id
+        # 14. update_release_id (legal only while Publishing)
+        client.lifecycle_store.enter("post-1")
+        mock_s.get.return_value.json.return_value = {
+            "posts": [{"id": "post-1", "state": "QUEUE"}]
+        }
         mock_s.put.return_value.json.return_value = {"status": "updated"}
         assert client.postiz_update_release_id("post-1", "rel-1") == {
             "status": "updated"

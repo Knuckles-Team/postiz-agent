@@ -50,6 +50,8 @@
       "create a draft and preview it",
       "confirm with the requester, then schedule",
       "verify the post on the calendar with state QUEUE",
+      "legal moves: Draft to Queued, Queued back to Draft, edit in Draft or Queued, Error retry to Queued, delete from Draft, Queued, Error or Published (deleting a Published post only unlists the record; the provider post is untouched)",
+      "an illegal move is refused before the call with a reason: IllegalMove, TerminalState, UnknownPost, ScheduleInPast, ReleaseWithoutPublish, UnknownServerState or UnknownIntent",
       "after publishing, read notifications and analytics"
     ],
     "quality_checklist": [

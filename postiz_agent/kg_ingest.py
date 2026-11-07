@@ -93,6 +93,17 @@ def _channel_entity(integ: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
+def _lifecycle_state(post: dict[str, Any]) -> str | None:
+    """The derived ``PostState`` name of a server post (the stored field is ``state``)."""
+    from postiz_agent.lifecycle import IllegalTransition, PublishingStore, state_of
+
+    try:
+        held = PublishingStore().contains(str(post.get("id")))
+        return state_of(post, publishing=held).value
+    except (IllegalTransition, OSError):
+        return None
+
+
 def _posts_to_records(
     posts: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -116,7 +127,7 @@ def _posts_to_records(
                 "node_type": "SocialPost",
                 "name": (post.get("content") or "")[:120] or None,
                 "text": post.get("content"),
-                "postState": post.get("state"),
+                "lifecycleState": _lifecycle_state(post),
                 "publishDate": post.get("publishDate"),
                 "releaseURL": post.get("releaseURL"),
                 "externalToolId": str(pid),

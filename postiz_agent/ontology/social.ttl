@@ -11,11 +11,6 @@
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-:ContentDraft a owl:Class ;
-    rdfs:label "Content Draft" ;
-    rdfs:comment "An unpublished draft of a SocialPost. Subclass of SocialPost." ;
-    rdfs:subClassOf :SocialPost .
-
 :aggregatesDaily a owl:ObjectProperty ;
     rdfs:label "aggregates daily" ;
     rdfs:comment """Links an AggregatedEngagement to its constituent DailyEngagement
@@ -215,12 +210,6 @@ one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
     rdfs:domain :SocialChannel ;
     rdfs:range xsd:boolean .
 
-:postState a owl:DatatypeProperty ;
-    rdfs:label "post state" ;
-    rdfs:comment "Lifecycle state of a SocialPost: QUEUE, PUBLISHED, ERROR, DRAFT." ;
-    rdfs:domain :SocialPost ;
-    rdfs:range xsd:string .
-
 :publishDate a owl:DatatypeProperty ;
     rdfs:label "publish date" ;
     rdfs:comment "Scheduled or actual publish timestamp of a SocialPost (ISO-8601)." ;
@@ -279,3 +268,283 @@ public URL), failed, or channel disconnected.""" ;
     rdfs:comment "Links a SocialPost to the media-library item it attaches." ;
     rdfs:domain :SocialPost ;
     rdfs:range :SocialMediaAsset .
+
+# --- Post lifecycle machine (mirrors postiz_agent/lifecycle.py) ---
+
+:PostLifecycle a owl:Class ;
+    rdfs:label "Post Lifecycle" ;
+    rdfs:comment "The state machine of a Postiz post: Draft, Queued, Publishing, Published, Error, Deleted (terminal)." ;
+    rdfs:subClassOf :StateMachine .
+
+:DraftState a owl:Class ;
+    rdfs:label "Draft state" ;
+    rdfs:comment "The Draft state of a post lifecycle." ;
+    rdfs:subClassOf :State .
+
+:QueuedState a owl:Class ;
+    rdfs:label "Queued state" ;
+    rdfs:comment "The Queued state of a post lifecycle." ;
+    rdfs:subClassOf :State .
+
+:PublishingState a owl:Class ;
+    rdfs:label "Publishing state" ;
+    rdfs:comment "The Publishing state of a post lifecycle. This is a connector-side state, persisted by the connector; it is not an observed upstream value." ;
+    rdfs:subClassOf :State .
+
+:PublishedState a owl:Class ;
+    rdfs:label "Published state" ;
+    rdfs:comment "The Published state of a post lifecycle." ;
+    rdfs:subClassOf :State .
+
+:ErrorState a owl:Class ;
+    rdfs:label "Error state" ;
+    rdfs:comment "The Error state of a post lifecycle." ;
+    rdfs:subClassOf :State .
+
+:DeletedState a owl:Class ;
+    rdfs:label "Deleted state" ;
+    rdfs:comment "The Deleted state of a post lifecycle." ;
+    rdfs:subClassOf :State .
+
+:SchedulePostEvent a owl:Class ;
+    rdfs:label "Schedule event" ;
+    rdfs:comment "The Schedule event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:PublishNowEvent a owl:Class ;
+    rdfs:label "PublishNow event" ;
+    rdfs:comment "The PublishNow event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:UnscheduleEvent a owl:Class ;
+    rdfs:label "Unschedule event" ;
+    rdfs:comment "The Unschedule event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:EditEvent a owl:Class ;
+    rdfs:label "Edit event" ;
+    rdfs:comment "The Edit event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:SucceedEvent a owl:Class ;
+    rdfs:label "Succeed event" ;
+    rdfs:comment "The Succeed event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:FailEvent a owl:Class ;
+    rdfs:label "Fail event" ;
+    rdfs:comment "The Fail event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:RetryEvent a owl:Class ;
+    rdfs:label "Retry event" ;
+    rdfs:comment "The Retry event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:RecordReleaseEvent a owl:Class ;
+    rdfs:label "RecordRelease event" ;
+    rdfs:comment "The RecordRelease event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:DeleteEvent a owl:Class ;
+    rdfs:label "Delete event" ;
+    rdfs:comment "The Delete event of the post lifecycle." ;
+    rdfs:subClassOf :Event .
+
+:EditableStateGuard a owl:Class ;
+    rdfs:label "editable_state" ;
+    rdfs:comment "Guard editable_state of the post lifecycle." ;
+    rdfs:subClassOf :Guard .
+
+:RetryFromErrorGuard a owl:Class ;
+    rdfs:label "retry_from_error" ;
+    rdfs:comment "Guard retry_from_error of the post lifecycle." ;
+    rdfs:subClassOf :Guard .
+
+:ScheduleInFutureGuard a owl:Class ;
+    rdfs:label "schedule_in_future" ;
+    rdfs:comment "Guard schedule_in_future of the post lifecycle." ;
+    rdfs:subClassOf :Guard .
+
+:DeletePublishedUnlistsGuard a owl:Class ;
+    rdfs:label "delete_published_unlists" ;
+    rdfs:comment "Guard delete_published_unlists of the post lifecycle." ;
+    rdfs:subClassOf :Guard .
+
+:DraftScheduleTransition a owl:Class ;
+    rdfs:label "Draft Schedule transition" ;
+    rdfs:comment "Draft on Schedule reaches Queued." ;
+    :fromState :DraftState ;
+    :onEvent :SchedulePostEvent ;
+    :toState :QueuedState ;
+    :guardedBy :ScheduleInFutureGuard ;
+    rdfs:subClassOf :Transition .
+
+:DraftPublishNowTransition a owl:Class ;
+    rdfs:label "Draft PublishNow transition" ;
+    rdfs:comment "Draft on PublishNow reaches Publishing." ;
+    :fromState :DraftState ;
+    :onEvent :PublishNowEvent ;
+    :toState :PublishingState ;
+    rdfs:subClassOf :Transition .
+
+:QueuedUnscheduleTransition a owl:Class ;
+    rdfs:label "Queued Unschedule transition" ;
+    rdfs:comment "Queued on Unschedule reaches Draft." ;
+    :fromState :QueuedState ;
+    :onEvent :UnscheduleEvent ;
+    :toState :DraftState ;
+    rdfs:subClassOf :Transition .
+
+:QueuedPublishNowTransition a owl:Class ;
+    rdfs:label "Queued PublishNow transition" ;
+    rdfs:comment "Queued on PublishNow reaches Publishing." ;
+    :fromState :QueuedState ;
+    :onEvent :PublishNowEvent ;
+    :toState :PublishingState ;
+    rdfs:subClassOf :Transition .
+
+:PublishingSucceedTransition a owl:Class ;
+    rdfs:label "Publishing Succeed transition" ;
+    rdfs:comment "Publishing on Succeed reaches Published." ;
+    :fromState :PublishingState ;
+    :onEvent :SucceedEvent ;
+    :toState :PublishedState ;
+    rdfs:subClassOf :Transition .
+
+:PublishingFailTransition a owl:Class ;
+    rdfs:label "Publishing Fail transition" ;
+    rdfs:comment "Publishing on Fail reaches Error." ;
+    :fromState :PublishingState ;
+    :onEvent :FailEvent ;
+    :toState :ErrorState ;
+    rdfs:subClassOf :Transition .
+
+:ErrorRetryTransition a owl:Class ;
+    rdfs:label "Error Retry transition" ;
+    rdfs:comment "Error on Retry reaches Queued." ;
+    :fromState :ErrorState ;
+    :onEvent :RetryEvent ;
+    :toState :QueuedState ;
+    :guardedBy :RetryFromErrorGuard ;
+    rdfs:subClassOf :Transition .
+
+:DraftEditTransition a owl:Class ;
+    rdfs:label "Draft Edit transition" ;
+    rdfs:comment "Draft on Edit reaches Draft." ;
+    :fromState :DraftState ;
+    :onEvent :EditEvent ;
+    :toState :DraftState ;
+    :guardedBy :EditableStateGuard ;
+    rdfs:subClassOf :Transition .
+
+:QueuedEditTransition a owl:Class ;
+    rdfs:label "Queued Edit transition" ;
+    rdfs:comment "Queued on Edit reaches Queued." ;
+    :fromState :QueuedState ;
+    :onEvent :EditEvent ;
+    :toState :QueuedState ;
+    :guardedBy :EditableStateGuard ;
+    rdfs:subClassOf :Transition .
+
+:PublishingRecordReleaseTransition a owl:Class ;
+    rdfs:label "Publishing RecordRelease transition" ;
+    rdfs:comment "Publishing on RecordRelease reaches Published." ;
+    :fromState :PublishingState ;
+    :onEvent :RecordReleaseEvent ;
+    :toState :PublishedState ;
+    rdfs:subClassOf :Transition .
+
+:DraftDeleteTransition a owl:Class ;
+    rdfs:label "Draft Delete transition" ;
+    rdfs:comment "Draft on Delete reaches Deleted." ;
+    :fromState :DraftState ;
+    :onEvent :DeleteEvent ;
+    :toState :DeletedState ;
+    :guardedBy :DeletePublishedUnlistsGuard ;
+    rdfs:subClassOf :Transition .
+
+:QueuedDeleteTransition a owl:Class ;
+    rdfs:label "Queued Delete transition" ;
+    rdfs:comment "Queued on Delete reaches Deleted." ;
+    :fromState :QueuedState ;
+    :onEvent :DeleteEvent ;
+    :toState :DeletedState ;
+    :guardedBy :DeletePublishedUnlistsGuard ;
+    rdfs:subClassOf :Transition .
+
+:ErrorDeleteTransition a owl:Class ;
+    rdfs:label "Error Delete transition" ;
+    rdfs:comment "Error on Delete reaches Deleted." ;
+    :fromState :ErrorState ;
+    :onEvent :DeleteEvent ;
+    :toState :DeletedState ;
+    :guardedBy :DeletePublishedUnlistsGuard ;
+    rdfs:subClassOf :Transition .
+
+:PublishedDeleteTransition a owl:Class ;
+    rdfs:label "Published Delete transition" ;
+    rdfs:comment "Published on Delete reaches Deleted." ;
+    :fromState :PublishedState ;
+    :onEvent :DeleteEvent ;
+    :toState :DeletedState ;
+    :guardedBy :DeletePublishedUnlistsGuard ;
+    rdfs:subClassOf :Transition .
+
+:IllegalMoveRefusal a owl:Class ;
+    rdfs:label "IllegalMove" ;
+    rdfs:comment "Refusal reason IllegalMove: the move is refused before any server call." ;
+    rdfs:subClassOf :TransitionRefused .
+
+:TerminalStateRefusal a owl:Class ;
+    rdfs:label "TerminalState" ;
+    rdfs:comment "Refusal reason TerminalState: the move is refused before any server call." ;
+    rdfs:subClassOf :TransitionRefused .
+
+:UnknownIntentRefusal a owl:Class ;
+    rdfs:label "UnknownIntent" ;
+    rdfs:comment "Refusal reason UnknownIntent: the move is refused before any server call." ;
+    rdfs:subClassOf :TransitionRefused .
+
+:UnknownServerStateRefusal a owl:Class ;
+    rdfs:label "UnknownServerState" ;
+    rdfs:comment "Refusal reason UnknownServerState: the move is refused before any server call." ;
+    rdfs:subClassOf :TransitionRefused .
+
+:ReleaseWithoutPublishRefusal a owl:Class ;
+    rdfs:label "ReleaseWithoutPublish" ;
+    rdfs:comment "Refusal reason ReleaseWithoutPublish: the move is refused before any server call." ;
+    rdfs:subClassOf :TransitionRefused .
+
+:ScheduleInPastRefusal a owl:Class ;
+    rdfs:label "ScheduleInPast" ;
+    rdfs:comment "Refusal reason ScheduleInPast: the move is refused before any server call." ;
+    rdfs:subClassOf :TransitionRefused .
+
+:UnknownPostRefusal a owl:Class ;
+    rdfs:label "UnknownPost" ;
+    rdfs:comment "Refusal reason UnknownPost: the move is refused before any server call." ;
+    rdfs:subClassOf :TransitionRefused .
+
+:fromState a owl:ObjectProperty ;
+    rdfs:label "from state" ;
+    rdfs:domain :Transition .
+
+:toState a owl:ObjectProperty ;
+    rdfs:label "to state" ;
+    rdfs:domain :Transition .
+
+:onEvent a owl:ObjectProperty ;
+    rdfs:label "on event" ;
+    rdfs:domain :Transition .
+
+:guardedBy a owl:ObjectProperty ;
+    rdfs:label "guarded by" ;
+    rdfs:domain :Transition .
+
+:lifecycleState a owl:ObjectProperty ;
+    rdfs:label "lifecycle state" ;
+    rdfs:comment "The derived lifecycle state of a SocialPost; the stored field is the server state." ;
+    rdfs:domain :SocialPost ;
+    rdfs:range :State .
+

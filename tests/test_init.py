@@ -1,5 +1,4 @@
 from fastmcp import FastMCP
-
 from scion_sdk.connector import build_server
 
 

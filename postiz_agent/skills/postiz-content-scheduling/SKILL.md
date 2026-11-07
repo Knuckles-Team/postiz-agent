@@ -70,3 +70,14 @@ The connector reads `POSTIZ_URL` (the `/api/public/v1` path is appended) and
 - `postiz_delete_post` deletes the whole group the post belongs to.
 - Postiz refuses private-network URLs in `postiz_upload_from_url`; send bytes instead.
 - Media cannot be deleted through the public API.
+
+## Post lifecycle: legal moves and refusals
+A post is in one state: Draft, Queued, Publishing, Published, Error or Deleted (terminal).
+Legal moves: Draft to Queued (`postiz_change_post_status` schedule), Queued back to Draft
+(`postiz_change_post_status` draft), edit in Draft or Queued (`postiz_update_post_settings`),
+Error back to Queued (retry through `postiz_change_post_status` schedule), delete from
+Draft, Queued, Error or Published (`postiz_delete_post`). Deleting a Published post only
+unlists the Postiz record; the provider post is untouched. `Publishing` is held by the
+connector (persisted) while a publish-now call is in flight. An illegal move is refused
+before the server call with a reason code: IllegalMove, TerminalState, UnknownPost,
+ScheduleInPast, ReleaseWithoutPublish, UnknownServerState or UnknownIntent.

@@ -168,8 +168,12 @@ def test_create_post_defaults_to_draft():
 
 
 @pytest.mark.spec("CONN-POSTIZ-AGENT-R005")
-def test_change_status_and_cancel_return_any_json():
+def test_change_status_and_cancel_return_any_json(tmp_path, monkeypatch):
+    monkeypatch.setenv("POSTIZ_LIFECYCLE_STORE", str(tmp_path / "lc.sqlite3"))
     client = _client()
+    client.session.get.return_value = _ok(
+        {"posts": [{"id": "p1", "state": "QUEUE", "group": "g1"}]}
+    )
     client.session.put.return_value = _ok({"id": "p1", "status": "draft"})
     assert client.postiz_change_post_status("p1", "draft")["status"] == "draft"
     assert client.session.put.call_args.args[0].endswith("/posts/p1/status")

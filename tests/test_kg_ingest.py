@@ -108,7 +108,7 @@ async def test_ingest_posts_maps_post_channel_and_media(ingest):
     assert res == {"nodes": 2, "edges": 2}
     post = _node(transport, "social:post:p1")
     assert post["text"] == "hello world"
-    assert post["postState"] == "PUBLISHED"
+    assert post["lifecycleState"] == "Published"
     assert post["externalToolId"] == "p1"
     ch = _node(transport, "social:channel:ch7")
     assert ch["providerIdentifier"] == "x"

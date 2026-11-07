@@ -22,6 +22,11 @@ CORE_PARENTS = {
     "Event",
     "MediaItem",
     "Message",
+    "StateMachine",
+    "State",
+    "Transition",
+    "TransitionRefused",
+    "Guard",
 }
 
 
@@ -121,3 +126,80 @@ def test_declared_sources_and_mapping_pins_match_the_live_tools(surface):
         assert contract.compatibility_sha256 == entry["tool_schema_sha256"], entry[
             "preset"
         ]
+
+
+def _classes():
+    social = (ONTOLOGY / "social.ttl").read_text()
+    return dict(
+        re.findall(
+            r"^:(\w+) a owl:Class ;.*?rdfs:subClassOf :(\w+) \.", social, re.M | re.S
+        )
+    )
+
+
+def _root(classes, name):
+    parent = classes[name]
+    while parent in classes:
+        parent = classes[parent]
+    return parent
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002")
+def test_every_class_reaches_a_core_class():
+    classes = _classes()
+    for name in classes:
+        assert _root(classes, name) in CORE_PARENTS, name
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.1")
+def test_lifecycle_classes_extend_core_state_machine_classes():
+    classes = _classes()
+    assert classes["PostLifecycle"] == "StateMachine"
+    for state in ("Draft", "Queued", "Publishing", "Published", "Error", "Deleted"):
+        assert classes[f"{state}State"] == "State"
+    for event in (
+        "SchedulePostEvent", "PublishNowEvent", "UnscheduleEvent", "EditEvent",
+        "SucceedEvent", "FailEvent", "RetryEvent", "RecordReleaseEvent", "DeleteEvent",
+    ):
+        assert classes[event] == "Event"
+    for guard in (
+        "EditableStateGuard", "RetryFromErrorGuard", "ScheduleInFutureGuard",
+        "DeletePublishedUnlistsGuard",
+    ):
+        assert classes[guard] == "Guard"
+    assert "connector-side" in (ONTOLOGY / "social.ttl").read_text()
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.2")
+def test_ontology_states_and_transitions_equal_the_code_machine():
+    from postiz_agent.lifecycle import TRANSITIONS, PostState
+
+    classes = _classes()
+    assert {n for n, p in classes.items() if p == "State"} == {
+        f"{s.value}State" for s in PostState
+    }
+    assert {n for n, p in classes.items() if p == "Transition"} == {
+        f"{s.value}{e.value}Transition" for (s, e) in TRANSITIONS
+    }
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.2")
+def test_no_module_or_ontology_file_names_contentdraft():
+    root = ONTOLOGY.parent
+    for path in root.rglob("*"):
+        if path.is_file() and path.suffix in {".py", ".ttl", ".yaml", ".json", ".md"}:
+            assert "ContentDraft" not in path.read_text(), path
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.3")
+def test_lifecycle_guidance_names_legal_moves_and_refusal_reasons(surface):
+    root = ONTOLOGY.parent
+    skill = (root / "skills/postiz-campaign-post-from-asset/SKILL.md").read_text()
+    prompt = (root / "prompts/social_media_manager.json").read_text()
+    for text in (skill, prompt):
+        for needle in ("IllegalMove", "ScheduleInPast", "UnknownPost", "unlist"):
+            assert needle in text
+    pack = (ONTOLOGY / "pack.ttl").read_text()
+    assert ":DraftScheduleTransition" in pack
+    tools = {t.name for t in surface[0].tools}
+    assert {"postiz_change_post_status", "postiz_delete_post"} <= tools

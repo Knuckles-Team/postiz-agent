@@ -70,3 +70,14 @@ tool below is a typed tool of the `postiz-mcp` server; through arbora call it wi
 - `postiz-content-scheduling`: the full posts and calendar surface.
 - `postiz-channel-management`: connect a channel (needs the provider's OAuth app).
 - `postiz-audience-analytics`: engagement reporting.
+
+## Post lifecycle: legal moves and refusals
+A post is in one state: Draft, Queued, Publishing, Published, Error or Deleted (terminal).
+Legal moves: Draft to Queued (`postiz_change_post_status` schedule), Queued back to Draft
+(`postiz_change_post_status` draft), edit in Draft or Queued (`postiz_update_post_settings`),
+Error back to Queued (retry through `postiz_change_post_status` schedule), delete from
+Draft, Queued, Error or Published (`postiz_delete_post`). Deleting a Published post only
+unlists the Postiz record; the provider post is untouched. `Publishing` is held by the
+connector (persisted) while a publish-now call is in flight. An illegal move is refused
+before the server call with a reason code: IllegalMove, TerminalState, UnknownPost,
+ScheduleInPast, ReleaseWithoutPublish, UnknownServerState or UnknownIntent.

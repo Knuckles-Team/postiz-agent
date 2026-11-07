@@ -1,10 +1,20 @@
 import logging
 import os
+from datetime import UTC, datetime
 from typing import Any, Literal
 
 from scion_sdk.exceptions import require_auth
 
 from postiz_agent.api.api_client_base import BaseApiClient
+from postiz_agent.lifecycle import (
+    IllegalTransition,
+    PostEvent,
+    PostState,
+    PublishingStore,
+    intent_event,
+    post_transition,
+    reconcile,
+)
 from postiz_agent.postiz_models import (
     PostizCreatePostRequest,
     PostizMissingContentItem,
@@ -24,7 +34,36 @@ def _kg_ingest_enabled() -> bool:
     )
 
 
+#: The window that covers every post (a scheduled post can be years ahead).
+_ALL_TIME = (datetime(2000, 1, 1, tzinfo=UTC), datetime(2100, 1, 1, tzinfo=UTC))
+
+
 class PostsClient(BaseApiClient):
+    _lifecycle_store: PublishingStore | None = None
+
+    @property
+    def lifecycle_store(self) -> PublishingStore:
+        if self._lifecycle_store is None:
+            self._lifecycle_store = PublishingStore()
+        return self._lifecycle_store
+
+    def _raw_posts(self, start: datetime, end: datetime) -> list[dict[str, Any]]:
+        params = {"startDate": start.isoformat(), "endDate": end.isoformat()}
+        data = self._json(self.session.get(f"{self.base_url}/posts", params=params))
+        return data.get("posts", []) if isinstance(data, dict) else []
+
+    def _locate(self, post_id: str) -> dict[str, Any]:
+        """Find one post on the calendar (a wide window) or refuse with UnknownPost."""
+        for post in self._raw_posts(*_ALL_TIME):
+            if str(post.get("id")) == str(post_id):
+                return post
+        raise IllegalTransition("UnknownPost", post_id=str(post_id))
+
+    def _guard(self, post_id: str, event: PostEvent) -> tuple[PostState, PostState]:
+        """Read the post, decide the move; raise before any write. Returns (from, to)."""
+        state = reconcile(self._locate(post_id), self.lifecycle_store)
+        return state, post_transition(state, event, str(post_id))
+
     @require_auth
     def postiz_list_posts(
         self,
@@ -78,11 +117,28 @@ class PostsClient(BaseApiClient):
         """
         if isinstance(request, dict):
             request = PostizCreatePostRequest(**request)
-        return self._json(
+        event = intent_event(request.type)
+        if event is PostEvent.SCHEDULE:
+            when = datetime.fromisoformat(request.date.replace("Z", "+00:00"))
+            if when.tzinfo is None:
+                when = when.replace(tzinfo=UTC)
+            if when <= datetime.now(UTC):
+                raise IllegalTransition(
+                    "ScheduleInPast",
+                    from_state=str(PostState.DRAFT),
+                    event=str(event),
+                    guard="schedule_in_future",
+                )
+        result = self._json(
             self.session.post(
                 f"{self.base_url}/posts", json=request.model_dump(exclude_none=True)
             )
         )
+        if event is PostEvent.PUBLISH_NOW:  # the server accepted the publish-now call
+            for item in result if isinstance(result, list) else []:
+                if isinstance(item, dict) and item.get("postId"):
+                    self.lifecycle_store.enter(str(item["postId"]))
+        return result
 
     @require_auth
     def postiz_delete_post(self, post_id: str) -> dict[str, Any]:
@@ -90,17 +146,40 @@ class PostsClient(BaseApiClient):
 
         DELETE /posts/{post_id}
         A scheduled post is removed from the queue and its publishing workflow is
-        terminated, so it never publishes.
+        terminated, so it never publishes. Deleting a Published post only removes
+        the Postiz record; the provider post is untouched (unlist only). Refused
+        with a typed reason while the post is Publishing.
         """
-        return self._json(self.session.delete(f"{self.base_url}/posts/{post_id}"))
+        state, _ = self._guard(post_id, PostEvent.DELETE)
+        result = self._json(self.session.delete(f"{self.base_url}/posts/{post_id}"))
+        self.lifecycle_store.leave(post_id)
+        if state is PostState.PUBLISHED and isinstance(result, dict):
+            result = {
+                **result,
+                "note": "record removed; provider post untouched (unlist only)",
+            }
+        return result
 
     @require_auth
     def postiz_delete_post_by_group(self, group: str) -> dict[str, Any]:
         """Delete (cancel) every post of one post group.
 
         DELETE /posts/group/{group}
+        The guard runs per post and refuses the whole call if any post refuses.
         """
-        return self._json(self.session.delete(f"{self.base_url}/posts/group/{group}"))
+        members = [
+            p for p in self._raw_posts(*_ALL_TIME) if str(p.get("group")) == str(group)
+        ]
+        if not members:
+            raise IllegalTransition("UnknownPost", post_id=f"group:{group}")
+        for post in members:
+            post_transition(
+                reconcile(post, self.lifecycle_store), PostEvent.DELETE, str(post["id"])
+            )
+        result = self._json(self.session.delete(f"{self.base_url}/posts/group/{group}"))
+        for post in members:
+            self.lifecycle_store.leave(str(post["id"]))
+        return result
 
     @require_auth
     def postiz_get_missing_content(
@@ -120,7 +199,9 @@ class PostsClient(BaseApiClient):
         """Link a post to the provider item it was published as.
 
         PUT /posts/{post_id}/release-id
+        Legal while the post is Publishing or Published (RecordRelease relinks it).
         """
+        self._guard(post_id, PostEvent.RECORD_RELEASE)
         return self._json(
             self.session.put(
                 f"{self.base_url}/posts/{post_id}/release-id",
@@ -135,7 +216,9 @@ class PostsClient(BaseApiClient):
         """Replace the provider settings object of one post.
 
         PUT /posts/{post_id}/settings
+        Allowed only while the post is Draft or Queued.
         """
+        self._guard(post_id, PostEvent.EDIT)
         return self._json(
             self.session.put(
                 f"{self.base_url}/posts/{post_id}/settings",
@@ -151,8 +234,16 @@ class PostsClient(BaseApiClient):
 
         PUT /posts/{post_id}/status
         ``draft`` pulls a scheduled post back out of the queue (it will not
-        publish); ``schedule`` queues a draft for its publish date.
+        publish; legal only from Queued); ``schedule`` queues a draft for its publish
+        date (from Draft), or retries a post in Error (back to Queued). Any other
+        state is refused with a typed reason before the call.
         """
+        if status == "draft":
+            self._guard(post_id, PostEvent.UNSCHEDULE)
+        else:
+            state = reconcile(self._locate(post_id), self.lifecycle_store)
+            event = PostEvent.RETRY if state is PostState.ERROR else PostEvent.SCHEDULE
+            post_transition(state, event, str(post_id))
         return self._json(
             self.session.put(
                 f"{self.base_url}/posts/{post_id}/status", json={"status": status}

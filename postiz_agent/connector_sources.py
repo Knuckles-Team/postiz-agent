@@ -83,7 +83,7 @@ FIELD_SETS = {
         "metricLabel": "xsd:string",
         "peakViewers": "xsd:integer",
         "platform": "xsd:string",
-        "postState": "xsd:string",
+        "lifecycleState": "xsd:string",
         "providerIdentifier": "xsd:string",
         "publishDate": "xsd:dateTime",
         "reach": "xsd:integer",
@@ -108,10 +108,6 @@ SCHEMA_MAPPINGS = {
     "ContentCalendar": {
         "field_sets": ["fields_1"],
         "ontology_class": "Phase",
-    },
-    "ContentDraft": {
-        "field_sets": ["fields_1"],
-        "ontology_class": "SocialPost",
     },
     "DailyEngagement": {
         "field_sets": ["fields_1"],
@@ -167,11 +163,6 @@ RESOURCES = (
         "id_prefix": "contentcalendar",
         "label": "Content Calendar",
         "name": "ContentCalendar",
-    },
-    {
-        "id_prefix": "contentdraft",
-        "label": "Content Draft",
-        "name": "ContentDraft",
     },
     {
         "id_prefix": "dailyengagement",

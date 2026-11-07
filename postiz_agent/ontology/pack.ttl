@@ -134,27 +134,32 @@ c:tool-postiz_list_posts a cp:Tool ;
 
 c:tool-postiz_create_post a cp:Tool ;
     cp:componentId "postiz_create_post" ;
-    cp:operatesOn :SocialPost ;
+    cp:operatesOn :SocialPost ,
+        :DraftScheduleTransition , :DraftPublishNowTransition , :QueuedPublishNowTransition ;
     cp:produces :SocialPost .
 
 c:tool-postiz_change_post_status a cp:Tool ;
     cp:componentId "postiz_change_post_status" ;
-    cp:operatesOn :SocialPost ;
+    cp:operatesOn :SocialPost ,
+        :DraftScheduleTransition , :QueuedUnscheduleTransition , :ErrorRetryTransition ;
     cp:produces :SocialPost .
 
 c:tool-postiz_update_post_settings a cp:Tool ;
     cp:componentId "postiz_update_post_settings" ;
-    cp:operatesOn :SocialPost ;
+    cp:operatesOn :SocialPost ,
+        :DraftEditTransition , :QueuedEditTransition ;
     cp:produces :SocialPost .
 
 c:tool-postiz_delete_post a cp:Tool ;
     cp:componentId "postiz_delete_post" ;
-    cp:operatesOn :SocialPost ;
+    cp:operatesOn :SocialPost ,
+        :DraftDeleteTransition , :QueuedDeleteTransition , :ErrorDeleteTransition , :PublishedDeleteTransition ;
     cp:produces :SocialPost .
 
 c:tool-postiz_delete_post_by_group a cp:Tool ;
     cp:componentId "postiz_delete_post_by_group" ;
-    cp:operatesOn :SocialPost ;
+    cp:operatesOn :SocialPost ,
+        :DraftDeleteTransition , :QueuedDeleteTransition , :ErrorDeleteTransition , :PublishedDeleteTransition ;
     cp:produces :SocialPost .
 
 c:tool-postiz_get_missing_content a cp:Tool ;
@@ -164,7 +169,8 @@ c:tool-postiz_get_missing_content a cp:Tool ;
 
 c:tool-postiz_update_release_id a cp:Tool ;
     cp:componentId "postiz_update_release_id" ;
-    cp:operatesOn :SocialPost ;
+    cp:operatesOn :SocialPost ,
+        :PublishingRecordReleaseTransition , :PublishedRecordReleaseTransition ;
     cp:produces :SocialPost .
 
 c:feature-media a cp:Feature ;

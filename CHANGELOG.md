@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.4.2] - 2026-11-06
 
+### Added
+- Post lifecycle state machine (Draft, Queued, Publishing, Published, Error, Deleted): one transition function, typed refusals before any server call, and a persisted `Publishing` state (`POSTIZ_LIFECYCLE_STORE`, SQLite on a volume). Relinking a published post is legal.
+
 ### Changed
 - Surface backfill: 11 tool-use contracts covering all 41 tools, operator and two business-role prompts, account-administration skill, scion-sdk 0.9
 

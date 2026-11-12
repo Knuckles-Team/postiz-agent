@@ -25,8 +25,8 @@ CORE_PARENTS = {
     "StateMachine",
     "State",
     "Transition",
-    "TransitionRefused",
-    "Guard",
+    "RefusalCode",
+    "TransitionGuard",
 }
 
 
@@ -85,7 +85,7 @@ def test_domain_classes_roll_up_to_core_without_import():
     social = (ONTOLOGY / "social.ttl").read_text()
     classes = dict(
         re.findall(
-            r"^:(\w+) a owl:Class ;.*?rdfs:subClassOf :(\w+) \.",
+            r"^:(\w+) a owl:Class ;.*?rdfs:subClassOf (?:core)?:(\w+) \.",
             social,
             re.M | re.S,
         )
@@ -132,7 +132,7 @@ def _classes():
     social = (ONTOLOGY / "social.ttl").read_text()
     return dict(
         re.findall(
-            r"^:(\w+) a owl:Class ;.*?rdfs:subClassOf :(\w+) \.", social, re.M | re.S
+            r"^:(\w+) a owl:Class ;.*?rdfs:subClassOf (?:core)?:(\w+) \.", social, re.M | re.S
         )
     )
 
@@ -166,7 +166,7 @@ def test_lifecycle_classes_extend_core_state_machine_classes():
         "EditableStateGuard", "RetryFromErrorGuard", "ScheduleInFutureGuard",
         "DeletePublishedUnlistsGuard",
     ):
-        assert classes[guard] == "Guard"
+        assert classes[guard] == "TransitionGuard"
     assert "connector-side" in (ONTOLOGY / "social.ttl").read_text()
 
 

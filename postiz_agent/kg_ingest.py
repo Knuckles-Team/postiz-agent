@@ -1,8 +1,8 @@
-"""Native epistemic-graph ingestion for Postiz records (typed graph nodes).
+"""Native medulla ingestion for Postiz records (typed graph nodes).
 
 CONCEPT:AU-KG.ingest.enterprise-source-extractor. This is the record-source twin of
 media-downloader's blob ingestion: the postiz-agent connector natively pushes its data
-into the ONE epistemic-graph knowledge graph as **typed OWL nodes** (``:SocialPost``,
+into the ONE medulla knowledge graph as **typed OWL nodes** (``:SocialPost``,
 ``:SocialChannel``, ``:DailyEngagement``, ``:AggregatedEngagement`` …) + links.
 
 The write path is the ``scion_sdk.ingest`` knowledge-ingest facade. Engine
@@ -61,7 +61,7 @@ async def ingest_entities(
     *,
     ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
-    """Write typed OWL nodes (+ edges) into epistemic-graph in one change set."""
+    """Write typed OWL nodes (+ edges) into medulla in one change set."""
     if not entities:
         raise IngestError("ingest_entities needs at least one entity")
     change_set = ChangeSet(

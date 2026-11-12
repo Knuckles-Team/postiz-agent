@@ -65,8 +65,8 @@ This table is auto-generated from the live server — do not edit by hand.
 |----------|----------------|-------------|
 | `postiz_analytics` | `ANALYTICSTOOL` | Manage postiz analytics operations. |
 | `postiz_ingest_analytics` | `INGESTTOOL` | Natively ingest Postiz analytics as :DailyEngagement / :AggregatedEngagement time-series. |
-| `postiz_ingest_integrations` | `INGESTTOOL` | Natively ingest Postiz integrations into epistemic-graph as :SocialChannel nodes. |
-| `postiz_ingest_posts` | `INGESTTOOL` | Natively ingest Postiz posts into epistemic-graph as typed :SocialPost nodes. |
+| `postiz_ingest_integrations` | `INGESTTOOL` | Natively ingest Postiz integrations into medulla as :SocialChannel nodes. |
+| `postiz_ingest_posts` | `INGESTTOOL` | Natively ingest Postiz posts into medulla as typed :SocialPost nodes. |
 | `postiz_integrations` | `INTEGRATIONSTOOL` | Manage postiz integrations operations. |
 | `postiz_notifications` | `NOTIFICATIONSTOOL` | Manage postiz notifications operations. |
 | `postiz_posts` | `POSTSTOOL` | Manage postiz posts operations. |
@@ -133,7 +133,7 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `postiz-agent[mcp]` to add
 > FastMCP / FastAPI through `scion-sdk`; the required Scion SDK core
-> still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
+> still carries `medulla[full]`. The `[agent-runtime]` extra additionally
 > enables model orchestration.
 
 #### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
@@ -470,7 +470,7 @@ Pick the extra that matches what the operator want to run:
 
 | Extra | Installs | Use when |
 |-------|----------|----------|
-| `postiz-agent[mcp]` | Connector-focused MCP server (`scion-sdk` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator only run the **MCP server** (smallest install / image) |
+| `postiz-agent[mcp]` | Connector-focused MCP server (`scion-sdk` — FastMCP/FastAPI + `medulla[full]`) | The operator only run the **MCP server** (smallest install / image) |
 | `postiz-agent[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
@@ -495,14 +495,14 @@ One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 
 agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
 
-### Knowledge-graph database (`epistemic-graph`)
+### Knowledge-graph database (`medulla`)
 
-Scion SDK core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+Scion SDK core dependency (`medulla[full]`). The `[mcp]` extra keeps
 deployments can use the bundled engine. For production or shared state, run
-**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+**medulla as a dedicated database service** and configure the runtime to use it.
 Deployment recipes (single-node + Raft HA), connection configuration, and architecture
 diagrams are documented in the
-[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+[medulla deployment guide](https://knuckles-team.github.io/medulla/deployment/).
 
 ---
 

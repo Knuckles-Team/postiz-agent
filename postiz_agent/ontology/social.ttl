@@ -354,22 +354,22 @@ public URL), failed, or channel disconnected.""" ;
 :EditableStateGuard a owl:Class ;
     rdfs:label "editable_state" ;
     rdfs:comment "Guard editable_state of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf :TransitionGuard .
 
 :RetryFromErrorGuard a owl:Class ;
     rdfs:label "retry_from_error" ;
     rdfs:comment "Guard retry_from_error of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf :TransitionGuard .
 
 :ScheduleInFutureGuard a owl:Class ;
     rdfs:label "schedule_in_future" ;
     rdfs:comment "Guard schedule_in_future of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf :TransitionGuard .
 
 :DeletePublishedUnlistsGuard a owl:Class ;
     rdfs:label "delete_published_unlists" ;
     rdfs:comment "Guard delete_published_unlists of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf :TransitionGuard .
 
 :DraftScheduleTransition a owl:Class ;
     rdfs:label "Draft Schedule transition" ;
@@ -502,37 +502,37 @@ public URL), failed, or channel disconnected.""" ;
 :IllegalMoveRefusal a owl:Class ;
     rdfs:label "IllegalMove" ;
     rdfs:comment "Refusal reason IllegalMove: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf :RefusalCode .
 
 :TerminalStateRefusal a owl:Class ;
     rdfs:label "TerminalState" ;
     rdfs:comment "Refusal reason TerminalState: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf :RefusalCode .
 
 :UnknownIntentRefusal a owl:Class ;
     rdfs:label "UnknownIntent" ;
     rdfs:comment "Refusal reason UnknownIntent: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf :RefusalCode .
 
 :UnknownServerStateRefusal a owl:Class ;
     rdfs:label "UnknownServerState" ;
     rdfs:comment "Refusal reason UnknownServerState: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf :RefusalCode .
 
 :ReleaseWithoutPublishRefusal a owl:Class ;
     rdfs:label "ReleaseWithoutPublish" ;
     rdfs:comment "Refusal reason ReleaseWithoutPublish: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf :RefusalCode .
 
 :ScheduleInPastRefusal a owl:Class ;
     rdfs:label "ScheduleInPast" ;
     rdfs:comment "Refusal reason ScheduleInPast: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf :RefusalCode .
 
 :UnknownPostRefusal a owl:Class ;
     rdfs:label "UnknownPost" ;
     rdfs:comment "Refusal reason UnknownPost: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf :RefusalCode .
 
 :fromState a owl:ObjectProperty ;
     rdfs:label "from state" ;

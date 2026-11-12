@@ -221,7 +221,7 @@ def test_api_client_endpoints(tmp_path, monkeypatch):
         assert client.postiz_get_missing_content("post-1") == []
 
         # 14. update_release_id (legal only while Publishing)
-        client.lifecycle_store.enter("post-1")
+        client._publishing_store.enter("post-1")
         mock_s.get.return_value.json.return_value = {
             "posts": [{"id": "post-1", "state": "QUEUE"}]
         }

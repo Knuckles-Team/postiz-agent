@@ -25,8 +25,8 @@ CORE_PARENTS = {
     "StateMachine",
     "State",
     "Transition",
-    "TransitionRefused",
-    "Guard",
+    "RefusalCode",
+    "TransitionGuard",
 }
 
 
@@ -166,7 +166,7 @@ def test_lifecycle_classes_extend_core_state_machine_classes():
         "EditableStateGuard", "RetryFromErrorGuard", "ScheduleInFutureGuard",
         "DeletePublishedUnlistsGuard",
     ):
-        assert classes[guard] == "Guard"
+        assert classes[guard] == "TransitionGuard"
     assert "connector-side" in (ONTOLOGY / "social.ttl").read_text()
 
 

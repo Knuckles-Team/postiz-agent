@@ -39,13 +39,13 @@ _ALL_TIME = (datetime(2000, 1, 1, tzinfo=UTC), datetime(2100, 1, 1, tzinfo=UTC))
 
 
 class PostsClient(BaseApiClient):
-    _lifecycle_store: PublishingStore | None = None
+    _publishing_store_cache: PublishingStore | None = None
 
     @property
-    def lifecycle_store(self) -> PublishingStore:
-        if self._lifecycle_store is None:
-            self._lifecycle_store = PublishingStore()
-        return self._lifecycle_store
+    def _publishing_store(self) -> PublishingStore:
+        if self._publishing_store_cache is None:
+            self._publishing_store_cache = PublishingStore()
+        return self._publishing_store_cache
 
     def _raw_posts(self, start: datetime, end: datetime) -> list[dict[str, Any]]:
         params = {"startDate": start.isoformat(), "endDate": end.isoformat()}
@@ -61,7 +61,7 @@ class PostsClient(BaseApiClient):
 
     def _guard(self, post_id: str, event: PostEvent) -> tuple[PostState, PostState]:
         """Read the post, decide the move; raise before any write. Returns (from, to)."""
-        state = reconcile(self._locate(post_id), self.lifecycle_store)
+        state = reconcile(self._locate(post_id), self._publishing_store)
         return state, post_transition(state, event, str(post_id))
 
     @require_auth
@@ -137,7 +137,7 @@ class PostsClient(BaseApiClient):
         if event is PostEvent.PUBLISH_NOW:  # the server accepted the publish-now call
             for item in result if isinstance(result, list) else []:
                 if isinstance(item, dict) and item.get("postId"):
-                    self.lifecycle_store.enter(str(item["postId"]))
+                    self._publishing_store.enter(str(item["postId"]))
         return result
 
     @require_auth
@@ -152,7 +152,7 @@ class PostsClient(BaseApiClient):
         """
         state, _ = self._guard(post_id, PostEvent.DELETE)
         result = self._json(self.session.delete(f"{self.base_url}/posts/{post_id}"))
-        self.lifecycle_store.leave(post_id)
+        self._publishing_store.leave(post_id)
         if state is PostState.PUBLISHED and isinstance(result, dict):
             result = {
                 **result,
@@ -174,11 +174,11 @@ class PostsClient(BaseApiClient):
             raise IllegalTransition("UnknownPost", post_id=f"group:{group}")
         for post in members:
             post_transition(
-                reconcile(post, self.lifecycle_store), PostEvent.DELETE, str(post["id"])
+                reconcile(post, self._publishing_store), PostEvent.DELETE, str(post["id"])
             )
         result = self._json(self.session.delete(f"{self.base_url}/posts/group/{group}"))
         for post in members:
-            self.lifecycle_store.leave(str(post["id"]))
+            self._publishing_store.leave(str(post["id"]))
         return result
 
     @require_auth
@@ -241,7 +241,7 @@ class PostsClient(BaseApiClient):
         if status == "draft":
             self._guard(post_id, PostEvent.UNSCHEDULE)
         else:
-            state = reconcile(self._locate(post_id), self.lifecycle_store)
+            state = reconcile(self._locate(post_id), self._publishing_store)
             event = PostEvent.RETRY if state is PostState.ERROR else PostEvent.SCHEDULE
             post_transition(state, event, str(post_id))
         return self._json(

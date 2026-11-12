@@ -92,7 +92,7 @@ def test_publishing_is_entered_on_accepted_publish_now_and_left_on_succeed_fail_
         posts=[{"integration": {"id": "i"}, "value": [{"content": "x"}]}],
     )
     client.postiz_create_post(req)
-    store = client.lifecycle_store
+    store = client._publishing_store
     assert store.contains("p1")
     # durable: a fresh process (new store object on the same file) still sees it
     assert PublishingStore(store.path).contains("p1")
@@ -179,7 +179,7 @@ def test_create_maps_type_to_state_and_refuses_a_past_schedule():
     client.postiz_create_post(
         PostizCreatePostRequest(type="draft", date=past, posts=posts)
     )
-    assert not client.lifecycle_store.contains("d1")
+    assert not client._publishing_store.contains("d1")
 
 
 @pytest.mark.spec("CONN-POSTIZ-AGENT-R010.5")
@@ -225,7 +225,7 @@ def test_served_tools_refuse_illegal_moves_with_zero_write_requests():
         assert _writes(client) == 0, tool
     # a Publishing post cannot be deleted
     client = _with_posts(_client(), {"id": "p", "state": "QUEUE"})
-    client.lifecycle_store.enter("p")
+    client._publishing_store.enter("p")
     with pytest.raises(IllegalTransition):
         client.postiz_delete_post("p")
     assert _writes(client) == 0

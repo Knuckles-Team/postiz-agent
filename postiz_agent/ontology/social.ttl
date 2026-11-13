@@ -1,11 +1,12 @@
 @prefix fibo-fi: <https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/> .
+@prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix fibo-org: <https://spec.edmcouncil.org/fibo/ontology/FND/Organizations/Organizations/> .
 @prefix bibo: <http://purl.org/ontology/bibo/> .
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dc: <http://purl.org/dc/terms/> .
-@prefix : <http://knuckles.team/kg#> .
+@prefix : <https://knuckles-team.github.io/ontology/connector/postiz#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <http://schema.org/> .
@@ -28,7 +29,7 @@ nodes. Enables drill-down from totals to daily trends.""" ;
     rdfs:label "broadcasted via" ;
     rdfs:comment "Links a BroadcastSession to the streaming platform System." ;
     rdfs:domain :BroadcastSession ;
-    rdfs:range :System .
+    rdfs:range core:System .
 
 :comments a owl:DatatypeProperty ;
     rdfs:label "comments" ;
@@ -43,7 +44,7 @@ nodes. Enables drill-down from totals to daily trends.""" ;
 :createdBy a owl:ObjectProperty ;
     rdfs:label "created by" ;
     rdfs:domain :SocialPost ;
-    rdfs:range :Person .
+    rdfs:range core:Person .
 
 :derivedFromContent a owl:ObjectProperty ;
     rdfs:label "derived from content" ;
@@ -92,13 +93,13 @@ nodes. Enables drill-down from totals to daily trends.""" ;
     rdfs:label "promotes research" ;
     rdfs:comment "Links a SocialPost to the research Document it promotes." ;
     rdfs:domain :SocialPost ;
-    rdfs:range :Document .
+    rdfs:range core:Document .
 
 :publishedOn a owl:ObjectProperty ;
     rdfs:label "published on" ;
     rdfs:comment "Links a SocialPost to the platform System it was published on." ;
     rdfs:domain :SocialPost ;
-    rdfs:range :System .
+    rdfs:range core:System .
 
 :reach a owl:DatatypeProperty ;
     rdfs:label "reach" ;
@@ -116,7 +117,7 @@ nodes. Enables drill-down from totals to daily trends.""" ;
     rdfs:domain :EngagementMetric ;
     rdfs:range xsd:integer .
 
-<http://knuckles.team/kg/social> a owl:Ontology ;
+<https://knuckles-team.github.io/ontology/connector/social> a owl:Ontology ;
     rdfs:label "Social & Content Ontology" ;
     rdfs:comment """Social media, content creation, and audience engagement ontology
 bridging Postiz (content scheduling), Owncast (live streaming), and
@@ -140,18 +141,18 @@ Updated incrementally as new daily data arrives.""" ;
     rdfs:label "Content Calendar" ;
     rdfs:comment """A scheduled content publishing window. Organizes SocialPosts
 into a coherent publication strategy. BFO:TemporalRegion via Phase.""" ;
-    rdfs:subClassOf :Phase .
+    rdfs:subClassOf core:Phase .
 
 :StreamHighlight a owl:Class ;
     rdfs:label "Stream Highlight" ;
     rdfs:comment "A clipped highlight segment from a BroadcastSession." ;
-    rdfs:subClassOf :CreativeWork .
+    rdfs:subClassOf core:CreativeWork .
 
 :AudienceMetric a owl:Class ;
     rdfs:label "Audience Metric" ;
     rdfs:comment """Audience composition and reach data for a BroadcastSession.
 Peak viewers, concurrent viewers, unique visitors.""" ;
-    rdfs:subClassOf :Observation .
+    rdfs:subClassOf core:Observation .
 
 :DailyEngagement a owl:Class ;
     rdfs:label "Daily Engagement" ;
@@ -165,21 +166,21 @@ One node per day per content item.""" ;
     rdfs:comment """A live stream session on Owncast or equivalent platform.
 BFO:Process via Event. Aligned to schema:BroadcastEvent.""" ;
     rdfs:seeAlso schema:BroadcastEvent ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :SocialPost a owl:Class ;
     rdfs:label "Social Post" ;
     rdfs:comment """A post published to one or more social platforms via Postiz.
 BFO:GenericallyDependentContinuant. Aligned to schema:SocialMediaPosting.""" ;
     rdfs:seeAlso schema:SocialMediaPosting ;
-    rdfs:subClassOf :CreativeWork .
+    rdfs:subClassOf core:CreativeWork .
 
 :EngagementMetric a owl:Class ;
     rdfs:label "Engagement Metric" ;
     rdfs:comment """Base class for engagement data. Both time-series observations
 and aggregated snapshots inherit from this class.
 BFO:SpecificallyDependentContinuant via Observation.""" ;
-    rdfs:subClassOf :Observation .
+    rdfs:subClassOf core:Observation .
 
 
 # --- Fleet-enrichment extensions (postiz-agent native ingestion) -------------
@@ -190,13 +191,13 @@ BFO:SpecificallyDependentContinuant via Observation.""" ;
 (an X, LinkedIn, Mastodon, Bluesky, … channel). A SocialPost is published on
 one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
     rdfs:seeAlso foaf:OnlineAccount ;
-    rdfs:subClassOf :System .
+    rdfs:subClassOf core:System .
 
 :hasMedia a owl:ObjectProperty ;
     rdfs:label "has media" ;
     rdfs:comment "Links a SocialPost to an AssetOccurrence blob (image/video) attached to it." ;
     rdfs:domain :SocialPost ;
-    rdfs:range :AssetOccurrence .
+    rdfs:range core:AssetOccurrence .
 
 :providerIdentifier a owl:DatatypeProperty ;
     rdfs:label "provider identifier" ;
@@ -242,20 +243,20 @@ one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
     rdfs:comment """One item of the scheduler's media library (an image or a short
 video) that posts attach. Rolls up to the core media item.""" ;
     rdfs:seeAlso schema:MediaObject ;
-    rdfs:subClassOf :MediaItem .
+    rdfs:subClassOf core:MediaItem .
 
 :PostReviewComment a owl:Class ;
     rdfs:label "Post Review Comment" ;
     rdfs:comment """An internal review comment left on a post's preview before it
 publishes. Never posted to the social network.""" ;
     rdfs:seeAlso schema:Comment ;
-    rdfs:subClassOf :Message .
+    rdfs:subClassOf core:Message .
 
 :SocialNotification a owl:Class ;
     rdfs:label "Social Notification" ;
     rdfs:comment """A scheduler event about a channel or post: published (with its
 public URL), failed, or channel disconnected.""" ;
-    rdfs:subClassOf :Message .
+    rdfs:subClassOf core:Message .
 
 :hasReviewComment a owl:ObjectProperty ;
     rdfs:label "has review comment" ;
@@ -274,102 +275,102 @@ public URL), failed, or channel disconnected.""" ;
 :PostLifecycle a owl:Class ;
     rdfs:label "Post Lifecycle" ;
     rdfs:comment "The state machine of a Postiz post: Draft, Queued, Publishing, Published, Error, Deleted (terminal)." ;
-    rdfs:subClassOf :StateMachine .
+    rdfs:subClassOf core:StateMachine .
 
 :DraftState a owl:Class ;
     rdfs:label "Draft state" ;
     rdfs:comment "The Draft state of a post lifecycle." ;
-    rdfs:subClassOf :State .
+    rdfs:subClassOf core:State .
 
 :QueuedState a owl:Class ;
     rdfs:label "Queued state" ;
     rdfs:comment "The Queued state of a post lifecycle." ;
-    rdfs:subClassOf :State .
+    rdfs:subClassOf core:State .
 
 :PublishingState a owl:Class ;
     rdfs:label "Publishing state" ;
     rdfs:comment "The Publishing state of a post lifecycle. This is a connector-side state, persisted by the connector; it is not an observed upstream value." ;
-    rdfs:subClassOf :State .
+    rdfs:subClassOf core:State .
 
 :PublishedState a owl:Class ;
     rdfs:label "Published state" ;
     rdfs:comment "The Published state of a post lifecycle." ;
-    rdfs:subClassOf :State .
+    rdfs:subClassOf core:State .
 
 :ErrorState a owl:Class ;
     rdfs:label "Error state" ;
     rdfs:comment "The Error state of a post lifecycle." ;
-    rdfs:subClassOf :State .
+    rdfs:subClassOf core:State .
 
 :DeletedState a owl:Class ;
     rdfs:label "Deleted state" ;
     rdfs:comment "The Deleted state of a post lifecycle." ;
-    rdfs:subClassOf :State .
+    rdfs:subClassOf core:State .
 
 :SchedulePostEvent a owl:Class ;
     rdfs:label "Schedule event" ;
     rdfs:comment "The Schedule event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :PublishNowEvent a owl:Class ;
     rdfs:label "PublishNow event" ;
     rdfs:comment "The PublishNow event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :UnscheduleEvent a owl:Class ;
     rdfs:label "Unschedule event" ;
     rdfs:comment "The Unschedule event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :EditEvent a owl:Class ;
     rdfs:label "Edit event" ;
     rdfs:comment "The Edit event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :SucceedEvent a owl:Class ;
     rdfs:label "Succeed event" ;
     rdfs:comment "The Succeed event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :FailEvent a owl:Class ;
     rdfs:label "Fail event" ;
     rdfs:comment "The Fail event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :RetryEvent a owl:Class ;
     rdfs:label "Retry event" ;
     rdfs:comment "The Retry event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :RecordReleaseEvent a owl:Class ;
     rdfs:label "RecordRelease event" ;
     rdfs:comment "The RecordRelease event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :DeleteEvent a owl:Class ;
     rdfs:label "Delete event" ;
     rdfs:comment "The Delete event of the post lifecycle." ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf core:Event .
 
 :EditableStateGuard a owl:Class ;
     rdfs:label "editable_state" ;
     rdfs:comment "Guard editable_state of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf core:TransitionGuard .
 
 :RetryFromErrorGuard a owl:Class ;
     rdfs:label "retry_from_error" ;
     rdfs:comment "Guard retry_from_error of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf core:TransitionGuard .
 
 :ScheduleInFutureGuard a owl:Class ;
     rdfs:label "schedule_in_future" ;
     rdfs:comment "Guard schedule_in_future of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf core:TransitionGuard .
 
 :DeletePublishedUnlistsGuard a owl:Class ;
     rdfs:label "delete_published_unlists" ;
     rdfs:comment "Guard delete_published_unlists of the post lifecycle." ;
-    rdfs:subClassOf :Guard .
+    rdfs:subClassOf core:TransitionGuard .
 
 :DraftScheduleTransition a owl:Class ;
     rdfs:label "Draft Schedule transition" ;
@@ -378,7 +379,7 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :SchedulePostEvent ;
     :toState :QueuedState ;
     :guardedBy :ScheduleInFutureGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :DraftPublishNowTransition a owl:Class ;
     rdfs:label "Draft PublishNow transition" ;
@@ -386,7 +387,7 @@ public URL), failed, or channel disconnected.""" ;
     :fromState :DraftState ;
     :onEvent :PublishNowEvent ;
     :toState :PublishingState ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :QueuedUnscheduleTransition a owl:Class ;
     rdfs:label "Queued Unschedule transition" ;
@@ -394,7 +395,7 @@ public URL), failed, or channel disconnected.""" ;
     :fromState :QueuedState ;
     :onEvent :UnscheduleEvent ;
     :toState :DraftState ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :QueuedPublishNowTransition a owl:Class ;
     rdfs:label "Queued PublishNow transition" ;
@@ -402,7 +403,7 @@ public URL), failed, or channel disconnected.""" ;
     :fromState :QueuedState ;
     :onEvent :PublishNowEvent ;
     :toState :PublishingState ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :PublishingSucceedTransition a owl:Class ;
     rdfs:label "Publishing Succeed transition" ;
@@ -410,7 +411,7 @@ public URL), failed, or channel disconnected.""" ;
     :fromState :PublishingState ;
     :onEvent :SucceedEvent ;
     :toState :PublishedState ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :PublishingFailTransition a owl:Class ;
     rdfs:label "Publishing Fail transition" ;
@@ -418,7 +419,7 @@ public URL), failed, or channel disconnected.""" ;
     :fromState :PublishingState ;
     :onEvent :FailEvent ;
     :toState :ErrorState ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :ErrorRetryTransition a owl:Class ;
     rdfs:label "Error Retry transition" ;
@@ -427,7 +428,7 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :RetryEvent ;
     :toState :QueuedState ;
     :guardedBy :RetryFromErrorGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :DraftEditTransition a owl:Class ;
     rdfs:label "Draft Edit transition" ;
@@ -436,7 +437,7 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :EditEvent ;
     :toState :DraftState ;
     :guardedBy :EditableStateGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :QueuedEditTransition a owl:Class ;
     rdfs:label "Queued Edit transition" ;
@@ -445,7 +446,7 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :EditEvent ;
     :toState :QueuedState ;
     :guardedBy :EditableStateGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :PublishingRecordReleaseTransition a owl:Class ;
     rdfs:label "Publishing RecordRelease transition" ;
@@ -453,7 +454,7 @@ public URL), failed, or channel disconnected.""" ;
     :fromState :PublishingState ;
     :onEvent :RecordReleaseEvent ;
     :toState :PublishedState ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :PublishedRecordReleaseTransition a owl:Class ;
     rdfs:label "Published RecordRelease transition" ;
@@ -461,7 +462,7 @@ public URL), failed, or channel disconnected.""" ;
     :fromState :PublishedState ;
     :onEvent :RecordReleaseEvent ;
     :toState :PublishedState ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :DraftDeleteTransition a owl:Class ;
     rdfs:label "Draft Delete transition" ;
@@ -470,7 +471,7 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :DeleteEvent ;
     :toState :DeletedState ;
     :guardedBy :DeletePublishedUnlistsGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :QueuedDeleteTransition a owl:Class ;
     rdfs:label "Queued Delete transition" ;
@@ -479,7 +480,7 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :DeleteEvent ;
     :toState :DeletedState ;
     :guardedBy :DeletePublishedUnlistsGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :ErrorDeleteTransition a owl:Class ;
     rdfs:label "Error Delete transition" ;
@@ -488,7 +489,7 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :DeleteEvent ;
     :toState :DeletedState ;
     :guardedBy :DeletePublishedUnlistsGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :PublishedDeleteTransition a owl:Class ;
     rdfs:label "Published Delete transition" ;
@@ -497,61 +498,61 @@ public URL), failed, or channel disconnected.""" ;
     :onEvent :DeleteEvent ;
     :toState :DeletedState ;
     :guardedBy :DeletePublishedUnlistsGuard ;
-    rdfs:subClassOf :Transition .
+    rdfs:subClassOf core:Transition .
 
 :IllegalMoveRefusal a owl:Class ;
     rdfs:label "IllegalMove" ;
     rdfs:comment "Refusal reason IllegalMove: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf core:RefusalCode .
 
 :TerminalStateRefusal a owl:Class ;
     rdfs:label "TerminalState" ;
     rdfs:comment "Refusal reason TerminalState: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf core:RefusalCode .
 
 :UnknownIntentRefusal a owl:Class ;
     rdfs:label "UnknownIntent" ;
     rdfs:comment "Refusal reason UnknownIntent: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf core:RefusalCode .
 
 :UnknownServerStateRefusal a owl:Class ;
     rdfs:label "UnknownServerState" ;
     rdfs:comment "Refusal reason UnknownServerState: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf core:RefusalCode .
 
 :ReleaseWithoutPublishRefusal a owl:Class ;
     rdfs:label "ReleaseWithoutPublish" ;
     rdfs:comment "Refusal reason ReleaseWithoutPublish: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf core:RefusalCode .
 
 :ScheduleInPastRefusal a owl:Class ;
     rdfs:label "ScheduleInPast" ;
     rdfs:comment "Refusal reason ScheduleInPast: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf core:RefusalCode .
 
 :UnknownPostRefusal a owl:Class ;
     rdfs:label "UnknownPost" ;
     rdfs:comment "Refusal reason UnknownPost: the move is refused before any server call." ;
-    rdfs:subClassOf :TransitionRefused .
+    rdfs:subClassOf core:RefusalCode .
 
 :fromState a owl:ObjectProperty ;
     rdfs:label "from state" ;
-    rdfs:domain :Transition .
+    rdfs:domain core:Transition .
 
 :toState a owl:ObjectProperty ;
     rdfs:label "to state" ;
-    rdfs:domain :Transition .
+    rdfs:domain core:Transition .
 
 :onEvent a owl:ObjectProperty ;
     rdfs:label "on event" ;
-    rdfs:domain :Transition .
+    rdfs:domain core:Transition .
 
 :guardedBy a owl:ObjectProperty ;
     rdfs:label "guarded by" ;
-    rdfs:domain :Transition .
+    rdfs:domain core:Transition .
 
 :lifecycleState a owl:ObjectProperty ;
     rdfs:label "lifecycle state" ;
     rdfs:comment "The derived lifecycle state of a SocialPost; the stored field is the server state." ;
     rdfs:domain :SocialPost ;
-    rdfs:range :State .
+    rdfs:range core:State .

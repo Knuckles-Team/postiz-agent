@@ -1,7 +1,7 @@
-@prefix : <http://knuckles.team/kg#> .
-@prefix cp: <http://knuckles.team/kg/connector-pack#> .
-@prefix vg: <http://knuckles.team/kg/virtual-graph#> .
-@prefix c: <http://knuckles.team/kg/connector/postiz#> .
+@prefix : <https://knuckles-team.github.io/ontology/connector/postiz#> .
+@prefix cp: <https://knuckles-team.github.io/ontology/connector-pack#> .
+@prefix vg: <https://knuckles-team.github.io/ontology/virtual-graph#> .
+@prefix c: <https://knuckles-team.github.io/ontology/connector/postiz#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 

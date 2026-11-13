@@ -1,7 +1,7 @@
-"""Native epistemic-graph blob ingestion for Postiz media assets.
+"""Native medulla blob ingestion for Postiz media assets.
 
 CONCEPT:AU-KG.ingest.list-durable-media. Postiz posts carry image/video attachments
-(and the ``/upload`` endpoint mints media assets). When a live epistemic-graph engine is
+(and the ``/upload`` endpoint mints media assets). When a live medulla engine is
 reachable, the raw bytes of such an asset are stored as a content-addressed **blob** with a
 ``:MediaAsset`` graph node (carrying its Postiz metadata), via the SDK's knowledge-ingest
 facade (:mod:`scion_sdk.ingest`) — the same ``ChangeSet.media`` path every

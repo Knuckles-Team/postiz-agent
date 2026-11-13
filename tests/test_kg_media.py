@@ -1,4 +1,4 @@
-"""Native epistemic-graph media (blob) ingestion — Wire-First coverage.
+"""Native medulla media (blob) ingestion — Wire-First coverage.
 
 Exercises the real ``ingest_media_bytes`` / ``ingest_media_file`` / ``ingest_media_url``
 seam with a fake SDK ingest transport (no engine required), asserting the stored media

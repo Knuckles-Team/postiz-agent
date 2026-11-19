@@ -174,7 +174,9 @@ class PostsClient(BaseApiClient):
             raise IllegalTransition("UnknownPost", post_id=f"group:{group}")
         for post in members:
             post_transition(
-                reconcile(post, self._publishing_store), PostEvent.DELETE, str(post["id"])
+                reconcile(post, self._publishing_store),
+                PostEvent.DELETE,
+                str(post["id"]),
             )
         result = self._json(self.session.delete(f"{self.base_url}/posts/group/{group}"))
         for post in members:

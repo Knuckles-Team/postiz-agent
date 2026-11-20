@@ -62,12 +62,12 @@ def surface():
 def test_pack_declares_every_served_tool_prompt_and_skill(surface):
     tools, prompts, _ = surface
     pack = (ONTOLOGY / "pack.ttl").read_text()
-    declared_tools = set(re.findall(r'c:tool-(\w+) a cp:Tool', pack))
+    declared_tools = set(re.findall(r"<tool://postiz-mcp/(\w+)> a cp:Tool", pack))
     served_tools = {t.name for t in tools.tools}
     assert declared_tools == served_tools
-    declared_prompts = set(re.findall(r'c:prompt-([\w-]+) a cp:Prompt', pack))
+    declared_prompts = set(re.findall(r"<prompt://postiz-mcp/([\w-]+)> a cp:Prompt", pack))
     assert declared_prompts == {p.name for p in prompts} - {"connector-status"}
-    declared_skills = set(re.findall(r"c:skill-([\w-]+) a cp:Skill", pack))
+    declared_skills = set(re.findall(r"<skill://([\w-]+)/SKILL.md> a cp:Skill", pack))
     packaged = {
         p.parent.name
         for p in (ONTOLOGY.parent / "skills").glob("*/SKILL.md")
@@ -76,6 +76,24 @@ def test_pack_declares_every_served_tool_prompt_and_skill(surface):
     assert declared_skills == packaged
     for klass in ("SocialPost", "SocialChannel", "EngagementMetric"):
         assert f"vg:authorityFor :{klass}" in pack
+
+
+@pytest.mark.spec("CONN-POSTIZ-AGENT-R008.1")
+def test_surface_links_name_served_member_uris(surface):
+    tools, prompts, _ = surface
+    pack = (ONTOLOGY / "pack.ttl").read_text()
+    assert not re.search(r"\bc:(?:tool|prompt|skill)-", pack)
+    served = {f"tool://postiz-mcp/{t.name}" for t in tools.tools}
+    served |= {f"prompt://postiz-mcp/{p.name}" for p in prompts}
+    served |= {
+        f"skill://{p.parent.name}/SKILL.md"
+        for p in (ONTOLOGY.parent / "skills").glob("*/SKILL.md")
+    }
+    linked = set()
+    for objects in re.findall(r"cp:realizedBy (.+?) [;.]$", pack, re.M):
+        linked |= set(re.findall(r"<([^<>]+)>", objects))
+    assert linked
+    assert linked <= served, sorted(linked - served)
 
 
 @pytest.mark.spec("CONN-POSTIZ-AGENT-R008")

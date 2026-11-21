@@ -9,6 +9,7 @@ Governing spec: [spec.md](spec.md).
 | T-003 | `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.1` | `tests/test_pack_surface.py::test_every_class_reaches_a_core_class` (planned) | Every class reaches a core class by `rdfs:subClassOf`. |
 | T-004 | `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.2` | `tests/test_pack_surface.py::test_ontology_states_and_transitions_equal_the_code_machine` and `tests/test_pack_surface.py::test_no_module_or_ontology_file_names_contentdraft` (planned) | Ontology and code agree and `ContentDraft` is absent. |
 | T-005 | `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.3` | `tests/test_pack_surface.py::test_lifecycle_guidance_names_legal_moves_and_refusal_reasons` (planned) | Guidance names the moves and the reasons. |
+| T-006 | `CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R003` | `tests/test_pack_extends_core.py` | No core term is redeclared and no retired IRI base remains. |
 
 ## Negative and boundary cases
 

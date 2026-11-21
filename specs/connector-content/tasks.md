@@ -9,3 +9,4 @@ Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Tasks run p
 - [ ] T003 [US2] CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.1 State, transition and machine classes roll up to the core vocabulary.
 - [ ] T004 [US2] CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.2 The ontology states equal the code enum; a draft is a state and not a post class.
 - [ ] T005 [US2] CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R002.3 The pack, skills and prompts state the legal moves and the refusals.
+- [x] T006 [US1] CONN-POSTIZ-AGENT-CONNECTOR-CONTENT-R003 Pack extends only the core ontology.

@@ -22,7 +22,7 @@ nodes. Enables drill-down from totals to daily trends.""" ;
 :broadcastEngagement a owl:ObjectProperty ;
     rdfs:label "broadcast engagement" ;
     rdfs:comment "Links an EngagementMetric to a BroadcastSession." ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range :BroadcastSession .
 
 :broadcastedVia a owl:ObjectProperty ;
@@ -33,7 +33,7 @@ nodes. Enables drill-down from totals to daily trends.""" ;
 
 :comments a owl:DatatypeProperty ;
     rdfs:label "comments" ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range xsd:integer .
 
 :concurrentViewers a owl:DatatypeProperty ;
@@ -41,16 +41,11 @@ nodes. Enables drill-down from totals to daily trends.""" ;
     rdfs:domain :AudienceMetric ;
     rdfs:range xsd:integer .
 
-:createdBy a owl:ObjectProperty ;
-    rdfs:label "created by" ;
-    rdfs:domain :SocialPost ;
-    rdfs:range core:Person .
-
 :derivedFromContent a owl:ObjectProperty ;
     rdfs:label "derived from content" ;
     rdfs:comment "Links a BroadcastSession to the SocialPost that inspired it." ;
     rdfs:domain :BroadcastSession ;
-    rdfs:range :SocialPost .
+    rdfs:range core:SocialPost .
 
 :engagementDate a owl:DatatypeProperty ;
     rdfs:label "engagement date" ;
@@ -60,8 +55,8 @@ nodes. Enables drill-down from totals to daily trends.""" ;
 :engagementOf a owl:ObjectProperty ;
     rdfs:label "engagement of" ;
     rdfs:comment "Links an EngagementMetric to its source content." ;
-    rdfs:domain :EngagementMetric ;
-    rdfs:range :SocialPost .
+    rdfs:domain core:EngagementMetric ;
+    rdfs:range core:SocialPost .
 
 :highlightFrom a owl:ObjectProperty ;
     rdfs:label "highlight from" ;
@@ -70,12 +65,12 @@ nodes. Enables drill-down from totals to daily trends.""" ;
 
 :impressions a owl:DatatypeProperty ;
     rdfs:label "impressions" ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range xsd:integer .
 
 :likes a owl:DatatypeProperty ;
     rdfs:label "likes" ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range xsd:integer .
 
 :peakViewers a owl:DatatypeProperty ;
@@ -83,38 +78,32 @@ nodes. Enables drill-down from totals to daily trends.""" ;
     rdfs:domain :AudienceMetric ;
     rdfs:range xsd:integer .
 
-:platform a owl:DatatypeProperty ;
-    rdfs:label "platform name" ;
-    rdfs:comment "Platform identifier: postiz, owncast, x, linkedin, etc." ;
-    rdfs:domain :SocialPost ;
-    rdfs:range xsd:string .
-
 :promotesResearch a owl:ObjectProperty ;
     rdfs:label "promotes research" ;
     rdfs:comment "Links a SocialPost to the research Document it promotes." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range core:Document .
 
 :publishedOn a owl:ObjectProperty ;
     rdfs:label "published on" ;
     rdfs:comment "Links a SocialPost to the platform System it was published on." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range core:System .
 
 :reach a owl:DatatypeProperty ;
     rdfs:label "reach" ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range xsd:integer .
 
 :scheduledIn a owl:ObjectProperty ;
     rdfs:label "scheduled in" ;
     rdfs:comment "Links a SocialPost to its ContentCalendar slot." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range :ContentCalendar .
 
 :shares a owl:DatatypeProperty ;
     rdfs:label "shares" ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range xsd:integer .
 
 <https://knuckles-team.github.io/ontology/connector/social> a owl:Ontology ;
@@ -129,13 +118,12 @@ relationships between them.
 
 Standards alignment: schema:SocialMediaPosting, schema:BroadcastEvent.""" .
 
-
 :AggregatedEngagement a owl:Class ;
     rdfs:label "Aggregated Engagement" ;
     rdfs:comment """Lifetime or period-total engagement snapshot for a SocialPost
 or BroadcastSession. Computed from DailyEngagement nodes.
 Updated incrementally as new daily data arrives.""" ;
-    rdfs:subClassOf :EngagementMetric .
+    rdfs:subClassOf core:EngagementMetric .
 
 :ContentCalendar a owl:Class ;
     rdfs:label "Content Calendar" ;
@@ -159,7 +147,7 @@ Peak viewers, concurrent viewers, unique visitors.""" ;
     rdfs:comment """A single day's engagement data point for a SocialPost or
 BroadcastSession. Enables time-series trend analysis across days.
 One node per day per content item.""" ;
-    rdfs:subClassOf :EngagementMetric .
+    rdfs:subClassOf core:EngagementMetric .
 
 :BroadcastSession a owl:Class ;
     rdfs:label "Broadcast Session" ;
@@ -167,21 +155,6 @@ One node per day per content item.""" ;
 BFO:Process via Event. Aligned to schema:BroadcastEvent.""" ;
     rdfs:seeAlso schema:BroadcastEvent ;
     rdfs:subClassOf core:Event .
-
-:SocialPost a owl:Class ;
-    rdfs:label "Social Post" ;
-    rdfs:comment """A post published to one or more social platforms via Postiz.
-BFO:GenericallyDependentContinuant. Aligned to schema:SocialMediaPosting.""" ;
-    rdfs:seeAlso schema:SocialMediaPosting ;
-    rdfs:subClassOf core:CreativeWork .
-
-:EngagementMetric a owl:Class ;
-    rdfs:label "Engagement Metric" ;
-    rdfs:comment """Base class for engagement data. Both time-series observations
-and aggregated snapshots inherit from this class.
-BFO:SpecificallyDependentContinuant via Observation.""" ;
-    rdfs:subClassOf core:Observation .
-
 
 # --- Fleet-enrichment extensions (postiz-agent native ingestion) -------------
 
@@ -196,7 +169,7 @@ one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
 :hasMedia a owl:ObjectProperty ;
     rdfs:label "has media" ;
     rdfs:comment "Links a SocialPost to an AssetOccurrence blob (image/video) attached to it." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range core:AssetOccurrence .
 
 :providerIdentifier a owl:DatatypeProperty ;
@@ -214,27 +187,26 @@ one or more channels. Subclass of :System so :publishedOn resolves to it.""" ;
 :publishDate a owl:DatatypeProperty ;
     rdfs:label "publish date" ;
     rdfs:comment "Scheduled or actual publish timestamp of a SocialPost (ISO-8601)." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range xsd:dateTime .
 
 :releaseURL a owl:DatatypeProperty ;
     rdfs:label "release URL" ;
     rdfs:comment "Public URL of a SocialPost once published on its channel." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range xsd:anyURI .
 
 :engagementTotal a owl:DatatypeProperty ;
     rdfs:label "engagement total" ;
     rdfs:comment "The measured value of a DailyEngagement/AggregatedEngagement observation for its metric label." ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range xsd:integer .
 
 :metricLabel a owl:DatatypeProperty ;
     rdfs:label "metric label" ;
     rdfs:comment "The analytics series label an EngagementMetric observes (e.g. Impressions, Likes, Followers)." ;
-    rdfs:domain :EngagementMetric ;
+    rdfs:domain core:EngagementMetric ;
     rdfs:range xsd:string .
-
 
 # --- Media library, preview review and notifications ------------------------
 
@@ -261,13 +233,13 @@ public URL), failed, or channel disconnected.""" ;
 :hasReviewComment a owl:ObjectProperty ;
     rdfs:label "has review comment" ;
     rdfs:comment "Links a SocialPost to a review comment left on its preview." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range :PostReviewComment .
 
 :usesMediaAsset a owl:ObjectProperty ;
     rdfs:label "uses media asset" ;
     rdfs:comment "Links a SocialPost to the media-library item it attaches." ;
-    rdfs:domain :SocialPost ;
+    rdfs:domain core:SocialPost ;
     rdfs:range :SocialMediaAsset .
 
 # --- Post lifecycle machine (mirrors postiz_agent/lifecycle.py) ---
@@ -375,129 +347,129 @@ public URL), failed, or channel disconnected.""" ;
 :DraftScheduleTransition a owl:Class ;
     rdfs:label "Draft Schedule transition" ;
     rdfs:comment "Draft on Schedule reaches Queued." ;
-    :fromState :DraftState ;
+    core:fromState :DraftState ;
     :onEvent :SchedulePostEvent ;
-    :toState :QueuedState ;
-    :guardedBy :ScheduleInFutureGuard ;
+    core:toState :QueuedState ;
+    core:guardedBy :ScheduleInFutureGuard ;
     rdfs:subClassOf core:Transition .
 
 :DraftPublishNowTransition a owl:Class ;
     rdfs:label "Draft PublishNow transition" ;
     rdfs:comment "Draft on PublishNow reaches Publishing." ;
-    :fromState :DraftState ;
+    core:fromState :DraftState ;
     :onEvent :PublishNowEvent ;
-    :toState :PublishingState ;
+    core:toState :PublishingState ;
     rdfs:subClassOf core:Transition .
 
 :QueuedUnscheduleTransition a owl:Class ;
     rdfs:label "Queued Unschedule transition" ;
     rdfs:comment "Queued on Unschedule reaches Draft." ;
-    :fromState :QueuedState ;
+    core:fromState :QueuedState ;
     :onEvent :UnscheduleEvent ;
-    :toState :DraftState ;
+    core:toState :DraftState ;
     rdfs:subClassOf core:Transition .
 
 :QueuedPublishNowTransition a owl:Class ;
     rdfs:label "Queued PublishNow transition" ;
     rdfs:comment "Queued on PublishNow reaches Publishing." ;
-    :fromState :QueuedState ;
+    core:fromState :QueuedState ;
     :onEvent :PublishNowEvent ;
-    :toState :PublishingState ;
+    core:toState :PublishingState ;
     rdfs:subClassOf core:Transition .
 
 :PublishingSucceedTransition a owl:Class ;
     rdfs:label "Publishing Succeed transition" ;
     rdfs:comment "Publishing on Succeed reaches Published." ;
-    :fromState :PublishingState ;
+    core:fromState :PublishingState ;
     :onEvent :SucceedEvent ;
-    :toState :PublishedState ;
+    core:toState :PublishedState ;
     rdfs:subClassOf core:Transition .
 
 :PublishingFailTransition a owl:Class ;
     rdfs:label "Publishing Fail transition" ;
     rdfs:comment "Publishing on Fail reaches Error." ;
-    :fromState :PublishingState ;
+    core:fromState :PublishingState ;
     :onEvent :FailEvent ;
-    :toState :ErrorState ;
+    core:toState :ErrorState ;
     rdfs:subClassOf core:Transition .
 
 :ErrorRetryTransition a owl:Class ;
     rdfs:label "Error Retry transition" ;
     rdfs:comment "Error on Retry reaches Queued." ;
-    :fromState :ErrorState ;
+    core:fromState :ErrorState ;
     :onEvent :RetryEvent ;
-    :toState :QueuedState ;
-    :guardedBy :RetryFromErrorGuard ;
+    core:toState :QueuedState ;
+    core:guardedBy :RetryFromErrorGuard ;
     rdfs:subClassOf core:Transition .
 
 :DraftEditTransition a owl:Class ;
     rdfs:label "Draft Edit transition" ;
     rdfs:comment "Draft on Edit reaches Draft." ;
-    :fromState :DraftState ;
+    core:fromState :DraftState ;
     :onEvent :EditEvent ;
-    :toState :DraftState ;
-    :guardedBy :EditableStateGuard ;
+    core:toState :DraftState ;
+    core:guardedBy :EditableStateGuard ;
     rdfs:subClassOf core:Transition .
 
 :QueuedEditTransition a owl:Class ;
     rdfs:label "Queued Edit transition" ;
     rdfs:comment "Queued on Edit reaches Queued." ;
-    :fromState :QueuedState ;
+    core:fromState :QueuedState ;
     :onEvent :EditEvent ;
-    :toState :QueuedState ;
-    :guardedBy :EditableStateGuard ;
+    core:toState :QueuedState ;
+    core:guardedBy :EditableStateGuard ;
     rdfs:subClassOf core:Transition .
 
 :PublishingRecordReleaseTransition a owl:Class ;
     rdfs:label "Publishing RecordRelease transition" ;
     rdfs:comment "Publishing on RecordRelease reaches Published." ;
-    :fromState :PublishingState ;
+    core:fromState :PublishingState ;
     :onEvent :RecordReleaseEvent ;
-    :toState :PublishedState ;
+    core:toState :PublishedState ;
     rdfs:subClassOf core:Transition .
 
 :PublishedRecordReleaseTransition a owl:Class ;
     rdfs:label "Published RecordRelease transition" ;
     rdfs:comment "Published on RecordRelease reaches Published." ;
-    :fromState :PublishedState ;
+    core:fromState :PublishedState ;
     :onEvent :RecordReleaseEvent ;
-    :toState :PublishedState ;
+    core:toState :PublishedState ;
     rdfs:subClassOf core:Transition .
 
 :DraftDeleteTransition a owl:Class ;
     rdfs:label "Draft Delete transition" ;
     rdfs:comment "Draft on Delete reaches Deleted." ;
-    :fromState :DraftState ;
+    core:fromState :DraftState ;
     :onEvent :DeleteEvent ;
-    :toState :DeletedState ;
-    :guardedBy :DeletePublishedUnlistsGuard ;
+    core:toState :DeletedState ;
+    core:guardedBy :DeletePublishedUnlistsGuard ;
     rdfs:subClassOf core:Transition .
 
 :QueuedDeleteTransition a owl:Class ;
     rdfs:label "Queued Delete transition" ;
     rdfs:comment "Queued on Delete reaches Deleted." ;
-    :fromState :QueuedState ;
+    core:fromState :QueuedState ;
     :onEvent :DeleteEvent ;
-    :toState :DeletedState ;
-    :guardedBy :DeletePublishedUnlistsGuard ;
+    core:toState :DeletedState ;
+    core:guardedBy :DeletePublishedUnlistsGuard ;
     rdfs:subClassOf core:Transition .
 
 :ErrorDeleteTransition a owl:Class ;
     rdfs:label "Error Delete transition" ;
     rdfs:comment "Error on Delete reaches Deleted." ;
-    :fromState :ErrorState ;
+    core:fromState :ErrorState ;
     :onEvent :DeleteEvent ;
-    :toState :DeletedState ;
-    :guardedBy :DeletePublishedUnlistsGuard ;
+    core:toState :DeletedState ;
+    core:guardedBy :DeletePublishedUnlistsGuard ;
     rdfs:subClassOf core:Transition .
 
 :PublishedDeleteTransition a owl:Class ;
     rdfs:label "Published Delete transition" ;
     rdfs:comment "Published on Delete reaches Deleted." ;
-    :fromState :PublishedState ;
+    core:fromState :PublishedState ;
     :onEvent :DeleteEvent ;
-    :toState :DeletedState ;
-    :guardedBy :DeletePublishedUnlistsGuard ;
+    core:toState :DeletedState ;
+    core:guardedBy :DeletePublishedUnlistsGuard ;
     rdfs:subClassOf core:Transition .
 
 :IllegalMoveRefusal a owl:Class ;
@@ -535,24 +507,6 @@ public URL), failed, or channel disconnected.""" ;
     rdfs:comment "Refusal reason UnknownPost: the move is refused before any server call." ;
     rdfs:subClassOf core:RefusalCode .
 
-:fromState a owl:ObjectProperty ;
-    rdfs:label "from state" ;
-    rdfs:domain core:Transition .
-
-:toState a owl:ObjectProperty ;
-    rdfs:label "to state" ;
-    rdfs:domain core:Transition .
-
 :onEvent a owl:ObjectProperty ;
     rdfs:label "on event" ;
     rdfs:domain core:Transition .
-
-:guardedBy a owl:ObjectProperty ;
-    rdfs:label "guarded by" ;
-    rdfs:domain core:Transition .
-
-:lifecycleState a owl:ObjectProperty ;
-    rdfs:label "lifecycle state" ;
-    rdfs:comment "The derived lifecycle state of a SocialPost; the stored field is the server state." ;
-    rdfs:domain :SocialPost ;
-    rdfs:range core:State .

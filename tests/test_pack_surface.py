@@ -16,6 +16,8 @@ from scion_sdk.manifest.presets import ToolPreset
 ONTOLOGY = Path(__file__).resolve().parents[1] / "postiz_agent" / "ontology"
 CORE_PARENTS = {
     "CreativeWork",
+    "EngagementMetric",
+    "SocialPost",
     "Observation",
     "System",
     "Phase",
@@ -62,12 +64,12 @@ def surface():
 def test_pack_declares_every_served_tool_prompt_and_skill(surface):
     tools, prompts, _ = surface
     pack = (ONTOLOGY / "pack.ttl").read_text()
-    declared_tools = set(re.findall(r"<tool://postiz-mcp/(\w+)> a cp:Tool", pack))
+    declared_tools = set(re.findall(r"<tool://postiz-mcp/(\w+)> a cp:SurfaceTool", pack))
     served_tools = {t.name for t in tools.tools}
     assert declared_tools == served_tools
-    declared_prompts = set(re.findall(r"<prompt://postiz-mcp/([\w-]+)> a cp:Prompt", pack))
+    declared_prompts = set(re.findall(r"<prompt://postiz-mcp/([\w-]+)> a cp:SurfacePrompt", pack))
     assert declared_prompts == {p.name for p in prompts} - {"connector-status"}
-    declared_skills = set(re.findall(r"<skill://([\w-]+)/SKILL.md> a cp:Skill", pack))
+    declared_skills = set(re.findall(r"<skill://([\w-]+)/SKILL.md> a cp:SurfaceSkill", pack))
     packaged = {
         p.parent.name
         for p in (ONTOLOGY.parent / "skills").glob("*/SKILL.md")
@@ -75,7 +77,7 @@ def test_pack_declares_every_served_tool_prompt_and_skill(surface):
     }
     assert declared_skills == packaged
     for klass in ("SocialPost", "SocialChannel", "EngagementMetric"):
-        assert f"vg:authorityFor :{klass}" in pack
+        assert re.search(rf"vg:authorityFor (?::|core:){klass}\b", pack), klass
 
 
 @pytest.mark.spec("CONN-POSTIZ-AGENT-R008.1")

@@ -109,6 +109,7 @@ The business's social media workflow relies on this behaviour of `postiz-agent`:
 - **FR-006**: Preview and review comments. Rows: `CONN-POSTIZ-AGENT-R006`.
 - **FR-007**: Social media manager prompt and campaign skill. Rows: `CONN-POSTIZ-AGENT-R007`.
 - **FR-008**: Ontology pack: surface, data location and core roll-up. Rows: `CONN-POSTIZ-AGENT-R008`.
+- **FR-008A**: Surface links name the served members by their member URIs. Rows: `CONN-POSTIZ-AGENT-R008.1`.
 - **FR-009**: Declared ingest sources and mapping pins. Rows: `CONN-POSTIZ-AGENT-R009`.
 - **FR-010**: Post lifecycle is one explicit state machine (rollup). Rows: `CONN-POSTIZ-AGENT-R010`, `CONN-POSTIZ-AGENT-R010.1`, `CONN-POSTIZ-AGENT-R010.2`, `CONN-POSTIZ-AGENT-R010.3`, `CONN-POSTIZ-AGENT-R010.4`, `CONN-POSTIZ-AGENT-R010.5`, `CONN-POSTIZ-AGENT-R010.6`, `CONN-POSTIZ-AGENT-R010.7`.
 

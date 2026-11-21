@@ -12,6 +12,7 @@ Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Tasks run p
 - [x] T006 [US6] CONN-POSTIZ-AGENT-R006 Preview and review comments.
 - [x] T007 [US7] CONN-POSTIZ-AGENT-R007 Social media manager prompt and campaign skill.
 - [x] T008 [US8] CONN-POSTIZ-AGENT-R008 Ontology pack: surface, data location and core roll-up.
+- [x] T018 [US8] CONN-POSTIZ-AGENT-R008.1 Surface links name the served members by their member URIs.
 - [x] T009 [US9] CONN-POSTIZ-AGENT-R009 Declared ingest sources and mapping pins.
 - [ ] T010 [US10] CONN-POSTIZ-AGENT-R010 Post lifecycle is one explicit state machine (rollup).
 - [ ] T011 [US10] CONN-POSTIZ-AGENT-R010.1 Declare the post machine and its transition function.

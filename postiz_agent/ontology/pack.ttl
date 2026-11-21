@@ -76,98 +76,98 @@ c:authority-PostReviewComment a vg:SourceAuthority ;
 
 c:feature-channels a cp:Feature ;
     rdfs:label "Channel management" ;
-    cp:realizedBy c:tool-postiz_list_integrations, c:tool-postiz_check_connection, c:tool-postiz_get_me, c:tool-postiz_list_groups, c:tool-postiz_get_integration_settings, c:tool-postiz_trigger_integration_tool, c:tool-postiz_get_integration_url, c:tool-postiz_delete_channel, c:tool-postiz_find_slot, c:skill-postiz-channel-management, c:prompt-social_media_manager .
+    cp:realizedBy <tool://postiz-mcp/postiz_list_integrations>, <tool://postiz-mcp/postiz_check_connection>, <tool://postiz-mcp/postiz_get_me>, <tool://postiz-mcp/postiz_list_groups>, <tool://postiz-mcp/postiz_get_integration_settings>, <tool://postiz-mcp/postiz_trigger_integration_tool>, <tool://postiz-mcp/postiz_get_integration_url>, <tool://postiz-mcp/postiz_delete_channel>, <tool://postiz-mcp/postiz_find_slot>, <skill://postiz-channel-management/SKILL.md>, <prompt://postiz-mcp/social_media_manager> .
 
-c:tool-postiz_list_integrations a cp:Tool ;
+<tool://postiz-mcp/postiz_list_integrations> a cp:Tool ;
     cp:componentId "postiz_list_integrations" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_check_connection a cp:Tool ;
+<tool://postiz-mcp/postiz_check_connection> a cp:Tool ;
     cp:componentId "postiz_check_connection" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_get_me a cp:Tool ;
+<tool://postiz-mcp/postiz_get_me> a cp:Tool ;
     cp:componentId "postiz_get_me" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_list_groups a cp:Tool ;
+<tool://postiz-mcp/postiz_list_groups> a cp:Tool ;
     cp:componentId "postiz_list_groups" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_get_integration_settings a cp:Tool ;
+<tool://postiz-mcp/postiz_get_integration_settings> a cp:Tool ;
     cp:componentId "postiz_get_integration_settings" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_trigger_integration_tool a cp:Tool ;
+<tool://postiz-mcp/postiz_trigger_integration_tool> a cp:Tool ;
     cp:componentId "postiz_trigger_integration_tool" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_get_integration_url a cp:Tool ;
+<tool://postiz-mcp/postiz_get_integration_url> a cp:Tool ;
     cp:componentId "postiz_get_integration_url" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_delete_channel a cp:Tool ;
+<tool://postiz-mcp/postiz_delete_channel> a cp:Tool ;
     cp:componentId "postiz_delete_channel" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_find_slot a cp:Tool ;
+<tool://postiz-mcp/postiz_find_slot> a cp:Tool ;
     cp:componentId "postiz_find_slot" ;
     cp:operatesOn :ContentCalendar ;
     cp:produces :ContentCalendar .
 
 c:feature-scheduling a cp:Feature ;
     rdfs:label "Content scheduling and calendar" ;
-    cp:realizedBy c:tool-postiz_list_posts, c:tool-postiz_create_post, c:tool-postiz_change_post_status, c:tool-postiz_update_post_settings, c:tool-postiz_delete_post, c:tool-postiz_delete_post_by_group, c:tool-postiz_get_missing_content, c:tool-postiz_update_release_id, c:skill-postiz-content-scheduling, c:skill-postiz-campaign-post-from-asset, c:prompt-social_media_manager .
+    cp:realizedBy <tool://postiz-mcp/postiz_list_posts>, <tool://postiz-mcp/postiz_create_post>, <tool://postiz-mcp/postiz_change_post_status>, <tool://postiz-mcp/postiz_update_post_settings>, <tool://postiz-mcp/postiz_delete_post>, <tool://postiz-mcp/postiz_delete_post_by_group>, <tool://postiz-mcp/postiz_get_missing_content>, <tool://postiz-mcp/postiz_update_release_id>, <skill://postiz-content-scheduling/SKILL.md>, <skill://postiz-campaign-post-from-asset/SKILL.md>, <prompt://postiz-mcp/social_media_manager> .
 
-c:tool-postiz_list_posts a cp:Tool ;
+<tool://postiz-mcp/postiz_list_posts> a cp:Tool ;
     cp:componentId "postiz_list_posts" ;
     cp:operatesOn :SocialPost ;
     cp:produces :SocialPost .
 
-c:tool-postiz_create_post a cp:Tool ;
+<tool://postiz-mcp/postiz_create_post> a cp:Tool ;
     cp:componentId "postiz_create_post" ;
     cp:operatesOn :SocialPost ,
         :DraftScheduleTransition , :DraftPublishNowTransition , :QueuedPublishNowTransition ;
     cp:produces :SocialPost .
 
-c:tool-postiz_change_post_status a cp:Tool ;
+<tool://postiz-mcp/postiz_change_post_status> a cp:Tool ;
     cp:componentId "postiz_change_post_status" ;
     cp:operatesOn :SocialPost ,
         :DraftScheduleTransition , :QueuedUnscheduleTransition , :ErrorRetryTransition ;
     cp:produces :SocialPost .
 
-c:tool-postiz_update_post_settings a cp:Tool ;
+<tool://postiz-mcp/postiz_update_post_settings> a cp:Tool ;
     cp:componentId "postiz_update_post_settings" ;
     cp:operatesOn :SocialPost ,
         :DraftEditTransition , :QueuedEditTransition ;
     cp:produces :SocialPost .
 
-c:tool-postiz_delete_post a cp:Tool ;
+<tool://postiz-mcp/postiz_delete_post> a cp:Tool ;
     cp:componentId "postiz_delete_post" ;
     cp:operatesOn :SocialPost ,
         :DraftDeleteTransition , :QueuedDeleteTransition , :ErrorDeleteTransition , :PublishedDeleteTransition ;
     cp:produces :SocialPost .
 
-c:tool-postiz_delete_post_by_group a cp:Tool ;
+<tool://postiz-mcp/postiz_delete_post_by_group> a cp:Tool ;
     cp:componentId "postiz_delete_post_by_group" ;
     cp:operatesOn :SocialPost ,
         :DraftDeleteTransition , :QueuedDeleteTransition , :ErrorDeleteTransition , :PublishedDeleteTransition ;
     cp:produces :SocialPost .
 
-c:tool-postiz_get_missing_content a cp:Tool ;
+<tool://postiz-mcp/postiz_get_missing_content> a cp:Tool ;
     cp:componentId "postiz_get_missing_content" ;
     cp:operatesOn :SocialPost ;
     cp:produces :SocialPost .
 
-c:tool-postiz_update_release_id a cp:Tool ;
+<tool://postiz-mcp/postiz_update_release_id> a cp:Tool ;
     cp:componentId "postiz_update_release_id" ;
     cp:operatesOn :SocialPost ,
         :PublishingRecordReleaseTransition , :PublishedRecordReleaseTransition ;
@@ -175,177 +175,177 @@ c:tool-postiz_update_release_id a cp:Tool ;
 
 c:feature-media a cp:Feature ;
     rdfs:label "Media library and generation" ;
-    cp:realizedBy c:tool-postiz_upload_file, c:tool-postiz_upload_file_content, c:tool-postiz_upload_from_url, c:tool-postiz_list_media, c:tool-postiz_generate_video, c:tool-postiz_video_function, c:tool-postiz_start_clipping, c:tool-postiz_list_clippings, c:tool-postiz_get_clipping, c:skill-postiz-campaign-post-from-asset, c:prompt-social_media_manager .
+    cp:realizedBy <tool://postiz-mcp/postiz_upload_file>, <tool://postiz-mcp/postiz_upload_file_content>, <tool://postiz-mcp/postiz_upload_from_url>, <tool://postiz-mcp/postiz_list_media>, <tool://postiz-mcp/postiz_generate_video>, <tool://postiz-mcp/postiz_video_function>, <tool://postiz-mcp/postiz_start_clipping>, <tool://postiz-mcp/postiz_list_clippings>, <tool://postiz-mcp/postiz_get_clipping>, <skill://postiz-campaign-post-from-asset/SKILL.md>, <prompt://postiz-mcp/social_media_manager> .
 
-c:tool-postiz_upload_file a cp:Tool ;
+<tool://postiz-mcp/postiz_upload_file> a cp:Tool ;
     cp:componentId "postiz_upload_file" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_upload_file_content a cp:Tool ;
+<tool://postiz-mcp/postiz_upload_file_content> a cp:Tool ;
     cp:componentId "postiz_upload_file_content" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_upload_from_url a cp:Tool ;
+<tool://postiz-mcp/postiz_upload_from_url> a cp:Tool ;
     cp:componentId "postiz_upload_from_url" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_list_media a cp:Tool ;
+<tool://postiz-mcp/postiz_list_media> a cp:Tool ;
     cp:componentId "postiz_list_media" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_generate_video a cp:Tool ;
+<tool://postiz-mcp/postiz_generate_video> a cp:Tool ;
     cp:componentId "postiz_generate_video" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_video_function a cp:Tool ;
+<tool://postiz-mcp/postiz_video_function> a cp:Tool ;
     cp:componentId "postiz_video_function" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_start_clipping a cp:Tool ;
+<tool://postiz-mcp/postiz_start_clipping> a cp:Tool ;
     cp:componentId "postiz_start_clipping" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_list_clippings a cp:Tool ;
+<tool://postiz-mcp/postiz_list_clippings> a cp:Tool ;
     cp:componentId "postiz_list_clippings" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:tool-postiz_get_clipping a cp:Tool ;
+<tool://postiz-mcp/postiz_get_clipping> a cp:Tool ;
     cp:componentId "postiz_get_clipping" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
 c:feature-review a cp:Feature ;
     rdfs:label "Preview and review comments" ;
-    cp:realizedBy c:tool-postiz_get_post_preview, c:tool-postiz_list_post_comments, c:tool-postiz_create_post_comment, c:skill-postiz-campaign-post-from-asset, c:prompt-social_media_manager .
+    cp:realizedBy <tool://postiz-mcp/postiz_get_post_preview>, <tool://postiz-mcp/postiz_list_post_comments>, <tool://postiz-mcp/postiz_create_post_comment>, <skill://postiz-campaign-post-from-asset/SKILL.md>, <prompt://postiz-mcp/social_media_manager> .
 
-c:tool-postiz_get_post_preview a cp:Tool ;
+<tool://postiz-mcp/postiz_get_post_preview> a cp:Tool ;
     cp:componentId "postiz_get_post_preview" ;
     cp:operatesOn :SocialPost ;
     cp:produces :SocialPost .
 
-c:tool-postiz_list_post_comments a cp:Tool ;
+<tool://postiz-mcp/postiz_list_post_comments> a cp:Tool ;
     cp:componentId "postiz_list_post_comments" ;
     cp:operatesOn :PostReviewComment ;
     cp:produces :PostReviewComment .
 
-c:tool-postiz_create_post_comment a cp:Tool ;
+<tool://postiz-mcp/postiz_create_post_comment> a cp:Tool ;
     cp:componentId "postiz_create_post_comment" ;
     cp:operatesOn :PostReviewComment ;
     cp:produces :PostReviewComment .
 
 c:feature-analytics a cp:Feature ;
     rdfs:label "Audience analytics and notifications" ;
-    cp:realizedBy c:tool-postiz_get_analytics, c:tool-postiz_get_post_analytics, c:tool-postiz_list_notifications, c:skill-postiz-audience-analytics, c:prompt-social_media_manager .
+    cp:realizedBy <tool://postiz-mcp/postiz_get_analytics>, <tool://postiz-mcp/postiz_get_post_analytics>, <tool://postiz-mcp/postiz_list_notifications>, <skill://postiz-audience-analytics/SKILL.md>, <prompt://postiz-mcp/social_media_manager> .
 
-c:tool-postiz_get_analytics a cp:Tool ;
+<tool://postiz-mcp/postiz_get_analytics> a cp:Tool ;
     cp:componentId "postiz_get_analytics" ;
     cp:operatesOn :AggregatedEngagement ;
     cp:produces :AggregatedEngagement .
 
-c:tool-postiz_get_post_analytics a cp:Tool ;
+<tool://postiz-mcp/postiz_get_post_analytics> a cp:Tool ;
     cp:componentId "postiz_get_post_analytics" ;
     cp:operatesOn :EngagementMetric ;
     cp:produces :EngagementMetric .
 
-c:tool-postiz_list_notifications a cp:Tool ;
+<tool://postiz-mcp/postiz_list_notifications> a cp:Tool ;
     cp:componentId "postiz_list_notifications" ;
     cp:operatesOn :SocialNotification ;
     cp:produces :SocialNotification .
 
 c:feature-ingest a cp:Feature ;
     rdfs:label "Knowledge-graph ingest" ;
-    cp:realizedBy c:tool-postiz_ingest_posts, c:tool-postiz_ingest_integrations, c:tool-postiz_ingest_analytics, c:skill-postiz-audience-analytics, c:prompt-social_media_manager .
+    cp:realizedBy <tool://postiz-mcp/postiz_ingest_posts>, <tool://postiz-mcp/postiz_ingest_integrations>, <tool://postiz-mcp/postiz_ingest_analytics>, <skill://postiz-audience-analytics/SKILL.md>, <prompt://postiz-mcp/social_media_manager> .
 
-c:tool-postiz_ingest_posts a cp:Tool ;
+<tool://postiz-mcp/postiz_ingest_posts> a cp:Tool ;
     cp:componentId "postiz_ingest_posts" ;
     cp:operatesOn :SocialPost ;
     cp:produces :SocialPost .
 
-c:tool-postiz_ingest_integrations a cp:Tool ;
+<tool://postiz-mcp/postiz_ingest_integrations> a cp:Tool ;
     cp:componentId "postiz_ingest_integrations" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_ingest_analytics a cp:Tool ;
+<tool://postiz-mcp/postiz_ingest_analytics> a cp:Tool ;
     cp:componentId "postiz_ingest_analytics" ;
     cp:operatesOn :DailyEngagement ;
     cp:produces :DailyEngagement .
 
 c:feature-admin a cp:Feature ;
     rdfs:label "Instance diagnostics (super-admin key)" ;
-    cp:realizedBy c:tool-postiz_list_users, c:tool-postiz_get_post_timeline, c:tool-postiz_get_account_overview, c:tool-postiz_get_channel_health, c:tool-postiz_get_org_activity, c:tool-postiz_reset_credits, c:skill-postiz-agent-operations, c:prompt-social_media_manager .
+    cp:realizedBy <tool://postiz-mcp/postiz_list_users>, <tool://postiz-mcp/postiz_get_post_timeline>, <tool://postiz-mcp/postiz_get_account_overview>, <tool://postiz-mcp/postiz_get_channel_health>, <tool://postiz-mcp/postiz_get_org_activity>, <tool://postiz-mcp/postiz_reset_credits>, <skill://postiz-agent-operations/SKILL.md>, <prompt://postiz-mcp/social_media_manager> .
 
-c:tool-postiz_list_users a cp:Tool ;
+<tool://postiz-mcp/postiz_list_users> a cp:Tool ;
     cp:componentId "postiz_list_users" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_get_post_timeline a cp:Tool ;
+<tool://postiz-mcp/postiz_get_post_timeline> a cp:Tool ;
     cp:componentId "postiz_get_post_timeline" ;
     cp:operatesOn :SocialPost ;
     cp:produces :SocialPost .
 
-c:tool-postiz_get_account_overview a cp:Tool ;
+<tool://postiz-mcp/postiz_get_account_overview> a cp:Tool ;
     cp:componentId "postiz_get_account_overview" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_get_channel_health a cp:Tool ;
+<tool://postiz-mcp/postiz_get_channel_health> a cp:Tool ;
     cp:componentId "postiz_get_channel_health" ;
     cp:operatesOn :SocialChannel ;
     cp:produces :SocialChannel .
 
-c:tool-postiz_get_org_activity a cp:Tool ;
+<tool://postiz-mcp/postiz_get_org_activity> a cp:Tool ;
     cp:componentId "postiz_get_org_activity" ;
     cp:operatesOn :SocialPost ;
     cp:produces :SocialPost .
 
-c:tool-postiz_reset_credits a cp:Tool ;
+<tool://postiz-mcp/postiz_reset_credits> a cp:Tool ;
     cp:componentId "postiz_reset_credits" ;
     cp:operatesOn :SocialMediaAsset ;
     cp:produces :SocialMediaAsset .
 
-c:prompt-social_media_manager a cp:Prompt ;
+<prompt://postiz-mcp/social_media_manager> a cp:Prompt ;
     cp:componentId "social_media_manager" ;
     cp:appliesTo :SocialPost .
 
-c:prompt-postiz-operator a cp:Prompt ;
+<prompt://postiz-mcp/postiz-operator> a cp:Prompt ;
     cp:componentId "postiz-operator" ;
     cp:appliesTo :SocialPost .
 
-c:prompt-postiz-channel-administrator a cp:Prompt ;
+<prompt://postiz-mcp/postiz-channel-administrator> a cp:Prompt ;
     cp:componentId "postiz-channel-administrator" ;
     cp:appliesTo :SocialChannel .
 
-c:skill-postiz-account-administration a cp:Skill ;
+<skill://postiz-account-administration/SKILL.md> a cp:Skill ;
     cp:componentId "postiz-account-administration" ;
     cp:appliesTo :SocialMediaAsset .
 
-c:skill-postiz-campaign-post-from-asset a cp:Skill ;
+<skill://postiz-campaign-post-from-asset/SKILL.md> a cp:Skill ;
     cp:componentId "postiz-campaign-post-from-asset" ;
     cp:appliesTo :SocialPost .
 
-c:skill-postiz-content-scheduling a cp:Skill ;
+<skill://postiz-content-scheduling/SKILL.md> a cp:Skill ;
     cp:componentId "postiz-content-scheduling" ;
     cp:appliesTo :SocialPost .
 
-c:skill-postiz-channel-management a cp:Skill ;
+<skill://postiz-channel-management/SKILL.md> a cp:Skill ;
     cp:componentId "postiz-channel-management" ;
     cp:appliesTo :SocialChannel .
 
-c:skill-postiz-audience-analytics a cp:Skill ;
+<skill://postiz-audience-analytics/SKILL.md> a cp:Skill ;
     cp:componentId "postiz-audience-analytics" ;
     cp:appliesTo :EngagementMetric .
 
-c:skill-postiz-agent-operations a cp:Skill ;
+<skill://postiz-agent-operations/SKILL.md> a cp:Skill ;
     cp:componentId "postiz-agent-operations" ;
     cp:appliesTo :SocialPost .
 

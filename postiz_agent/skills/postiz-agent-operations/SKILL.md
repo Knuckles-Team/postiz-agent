@@ -27,6 +27,22 @@ Use the provider's governed MCP tools through Arbora delegation.
 - Require explicit approval for destructive, externally visible, or irreversible actions.
 - Keep runtime traces policy-scoped and privacy-sanitized.
 
+## Steps
+
+1. Confirm the session and tenant with `postiz_get_me` before any call. Verify the GraphSession id and tenant are reported by Arbora.
+2. Discover the current tool surface with `find(intent="postiz")`. Verify the tool you plan to call appears with its parameter schema.
+3. Inspect state read-only first with `act(op="fleet.call", params={"server": "postiz-mcp", "tool": "postiz_list_integrations", "arguments": {}})`. Verify the result lists the expected channel.
+4. Run a change as a fenced WorkItem with `act(op="fleet.call", ...)` after previewing impact and getting approval. Verify the preview names the object and effect before you execute.
+5. Check the outcome with the matching read tool such as `postiz_list_posts`. Verify the changed object shows the expected state and a trace id exists.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Tool not found | Stale tool name | Call `find(intent="postiz")` again and use the name it returns |
+| 401 from the connector | `POSTIZ_TOKEN` missing in the deployment | Ask the deployment owner to set `POSTIZ_TOKEN` and verify with `postiz_check_connection` |
+| Mutation refused | Approval not given or ACL unknown | Present the impact to the requester, obtain explicit approval and resubmit with the returned plan reference |
+
 ## Specialized workflows
 
 Read [the workflow catalog](references/catalog.md) only when the request needs a

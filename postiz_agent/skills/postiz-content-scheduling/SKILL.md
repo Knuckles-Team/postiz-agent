@@ -2,12 +2,7 @@
 name: postiz-content-scheduling
 skill_type: skill
 description: >-
-  Schedule, publish, and manage social posts across connected channels via the
-  postiz-mcp connector — list a date window of posts, create a draft/scheduled/now
-  post, attach uploaded media, find the next open slot, and delete posts. Use when the
-  agent must plan or push social content through Postiz. Do NOT use for reading
-  engagement numbers (use postiz-audience-analytics) or connecting/removing accounts
-  (use postiz-channel-management).
+  Schedule, publish, and manage social posts across connected channels via the postiz-mcp connector — list a date window of posts, create a draft/scheduled/now post, attach uploaded media, find the next open slot, and delete posts. Use when the agent must plan or push social content through Postiz.
 license: MIT
 tags: [postiz, social, scheduling, content, mcp]
 metadata:
@@ -15,6 +10,8 @@ metadata:
   version: '1.0.0'
 ---
 # Postiz Content Scheduling
+
+Scope: Schedule, publish, and manage social posts across connected channels via the postiz-mcp connector — list a date window of posts, create a draft/scheduled/now post, attach uploaded media, find the next open slot, and delete posts. Use when the agent must plan or push social content through Postiz. Do NOT use for reading engagement numbers (use postiz-audience-analytics) or connecting/removing accounts (use postiz-channel-management).
 
 The posts, calendar, media and preview surface of Postiz, one typed tool per API
 operation.
@@ -53,6 +50,23 @@ The connector reads `POSTIZ_URL` (the `/api/public/v1` path is appended) and
 | `postiz_get_missing_content(post_id)` / `postiz_update_release_id(post_id, release_id)` | Re-link a published post to its provider item |
 | `postiz_generate_video(request)` / `postiz_video_function(request)` | AI video generation (uses credits) |
 | `postiz_start_clipping` / `postiz_list_clippings` / `postiz_get_clipping` | Cut a long video into short clips (uses credits) |
+
+## Steps
+
+1. Read the calendar with `postiz_list_posts` (`start_date`, `end_date`). Verify the window returns the posts you expect with their `state`.
+2. Read the channel schema with `postiz_get_integration_settings` (`integration_id`). Verify you have the `__type` value for the channel.
+3. Attach media with `postiz_upload_file_content` or `postiz_upload_from_url`, or reuse `postiz_list_media`. Verify a media `id` and `path` are returned.
+4. Create a post with `postiz_create_post` (`request`), using `type: "draft"` first. Verify a `postId` is returned.
+5. Queue it with `postiz_change_post_status` (`post_id`, `status="schedule"`). Verify `postiz_list_posts` shows `state: "QUEUE"`.
+6. Cancel when needed with `postiz_delete_post` (`post_id`, `confirm=true`). Verify the post no longer appears in `postiz_list_posts`.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Schedule or now rejected | Provider settings missing `__type` | Copy the channel `identifier` into `settings.__type` and resubmit with `postiz_create_post` |
+| Upload from URL refused | Private-network URL | Send bytes with `postiz_upload_file_content` |
+| Illegal move reason code | Status change not legal for the post state | Read the post state with `postiz_list_posts` and use a move from the lifecycle section below |
 
 ## Recipe: a draft with an image
 ```json

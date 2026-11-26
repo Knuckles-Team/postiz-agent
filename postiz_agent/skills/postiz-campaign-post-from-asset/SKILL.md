@@ -2,14 +2,7 @@
 name: postiz-campaign-post-from-asset
 skill_type: skill
 description: >-
-  Schedule a marketing campaign post from a finished asset (an image or a short MP4,
-  typically generated in the creative suite) on the business's social channels through
-  the postiz-mcp connector: pick the channel, check its posting rules, upload the asset
-  to the Postiz media library, create a draft, preview it, schedule it, verify it on the
-  calendar, and read the analytics back after it publishes. Use when an asset is approved
-  and must go out on social media at a planned time. Do NOT use to connect a new social
-  account (use postiz-channel-management) or for analytics-only reporting (use
-  postiz-audience-analytics).
+  Schedule a marketing campaign post from an approved image or short MP4 on social channels via the postiz-mcp connector: pick the channel, upload, draft, preview, schedule, verify. Use when an asset must go out at a planned time. Do NOT use to connect accounts (postiz-channel-management) or for analytics-only reporting.
 license: MIT
 tags: [postiz, social, campaign, scheduling, media, marketing, mcp]
 metadata:
@@ -17,6 +10,8 @@ metadata:
   version: '1.0.0'
 ---
 # Schedule a campaign post from an asset
+
+Scope: Schedule a marketing campaign post from a finished asset (an image or a short MP4, typically generated in the creative suite) on the business's social channels through the postiz-mcp connector: pick the channel, check its posting rules, upload the asset to the Postiz media library, create a draft, preview it, schedule it, verify it on the calendar, and read the analytics back after it publishes. Use when an asset is approved and must go out on social media at a planned time. Do NOT use to connect a new social account (use postiz-channel-management) or for analytics-only reporting (use postiz-audience-analytics).
 
 One asset in, one scheduled social post out, with a preview and a cancel path. Every
 tool below is a typed tool of the `postiz-mcp` server; through arbora call it with
@@ -57,6 +52,23 @@ tool below is a typed tool of the `postiz-mcp` server; through arbora call it wi
    `postiz_get_post_analytics(post_id, date="7")` and `postiz_get_analytics(integration_id)`
    read engagement back; `postiz_ingest_posts` / `postiz_ingest_analytics` land it in the
    knowledge graph.
+
+## Steps
+
+1. Pick the channel with `postiz_list_integrations`. Verify the chosen channel has `disabled: false`.
+2. Read its rules with `postiz_get_integration_settings` (`integration_id`). Verify the copy length is within `output.maxLength`.
+3. Upload the asset with `postiz_upload_file_content` (`file_name`, `content_base64`) or `postiz_upload_from_url` (`url`). Verify the response carries a media `id` and `path`.
+4. Create the draft with `postiz_create_post` (`request` with `type: "draft"`). Verify a `postId` is returned.
+5. Review with `postiz_get_post_preview` (`post_id`). Verify the preview shows the intended copy and media.
+6. Schedule with `postiz_change_post_status` (`post_id`, `status="schedule"`) after the requester confirms date, channel and copy. Verify `postiz_list_posts` shows the post with `state: "QUEUE"`.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Upload by URL refused | Private-network URL | Send the bytes with `postiz_upload_file_content` instead |
+| Scheduling rejected | Provider settings lack `__type` | Add `__type` set to the channel `identifier` in `settings` as read from `postiz_get_integration_settings` |
+| Post scheduled by mistake | Wrong date or copy | Pull it back with `postiz_change_post_status` (`status="draft"`) or delete it with `postiz_delete_post` (`confirm=true`) |
 
 ## Safety
 - Never use `type: "now"` for a test. Test objects are named `zz-validation-<date>`,

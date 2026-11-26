@@ -2,12 +2,7 @@
 name: postiz-audience-analytics
 skill_type: skill
 description: >-
-  Read channel and per-post engagement analytics via the postiz-mcp connector and
-  land them in the knowledge graph as time-series engagement — impressions, likes,
-  follower trends over a date window. Use when the agent must report on how content or
-  a channel is performing, or backfill engagement history into the KG. Do NOT use for
-  creating/scheduling posts (use postiz-content-scheduling) or managing accounts (use
-  postiz-channel-management).
+  Read channel and per-post engagement analytics via the postiz-mcp connector and land them in the knowledge graph as time-series engagement — impressions, likes, follower trends over a date window. Use when the agent must report on how content or a channel is performing, or backfill engagement history into the KG.
 license: MIT
 tags: [postiz, social, analytics, engagement, timeseries, mcp]
 metadata:
@@ -15,6 +10,8 @@ metadata:
   version: '1.0.0'
 ---
 # Postiz Audience Analytics
+
+Scope: Read channel and per-post engagement analytics via the postiz-mcp connector and land them in the knowledge graph as time-series engagement — impressions, likes, follower trends over a date window. Use when the agent must report on how content or a channel is performing, or backfill engagement history into the KG. Do NOT use for creating/scheduling posts (use postiz-content-scheduling) or managing accounts (use postiz-channel-management).
 
 Read channel-level and post-level engagement from Postiz and land it in the knowledge
 graph as engagement time series.
@@ -50,6 +47,22 @@ The connector reads `POSTIZ_URL` (the `/api/public/v1` path is appended) and
    `postiz_list_posts` and call `postiz_get_post_analytics`.
 3. Compare against the previous window with `percentageChange`; cite the window.
 4. Ingest with `postiz_ingest_analytics` when the numbers should be queryable later.
+
+## Steps
+
+1. List channels with `postiz_list_integrations`. Verify the target channel id is present and not `disabled`.
+2. Read channel metrics with `postiz_get_analytics` (`integration_id`, `date="30"`). Verify at least one series with daily points is returned.
+3. Read single posts with `postiz_list_posts` (`start_date`, `end_date`) and `postiz_get_post_analytics` (`post_id`). Verify the post has `state: PUBLISHED`.
+4. Compare to the previous window using `percentageChange`. Verify the reported window length matches the `date` value you passed.
+5. Land the data with `postiz_ingest_analytics` (`integration_id`, `date`) when it should be queryable. Verify the result reports engagement nodes written.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Empty series | Provider returns no analytics (for example X on the free API tier) | Report that the provider returned nothing and do not state zero |
+| Analytics call rejected | `date` passed as a non-numeric value | Pass `date` as a day count string such as `"7"` |
+| Ingest writes nothing | `POSTIZ_KG_INGEST=0` in the connector environment | Ask the deployment owner to unset it and call `postiz_ingest_analytics` again to confirm |
 
 ## Gotchas
 - An empty list means the provider returned nothing for the window. Some providers (X on

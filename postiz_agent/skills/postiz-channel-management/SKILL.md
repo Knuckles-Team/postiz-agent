@@ -2,12 +2,7 @@
 name: postiz-channel-management
 skill_type: skill
 description: >-
-  List, connect, and remove social channels (integrations) via the postiz-mcp
-  connector, and land them in the knowledge graph as :SocialChannel nodes — enumerate
-  connected accounts, get a provider OAuth connect URL, check connectivity, delete a
-  channel. Use when the agent must inspect or manage which social accounts Postiz can
-  publish to. Do NOT use for creating posts (use postiz-content-scheduling) or reading
-  engagement (use postiz-audience-analytics).
+  List, connect, and remove social channels (integrations) via the postiz-mcp connector, and land them in the knowledge graph as :SocialChannel nodes — enumerate connected accounts, get a provider OAuth connect URL, check connectivity, delete a channel. Use when the agent must inspect or manage which social accounts Postiz can publish to.
 license: MIT
 tags: [postiz, social, integrations, channels, mcp]
 metadata:
@@ -15,6 +10,8 @@ metadata:
   version: '1.0.0'
 ---
 # Postiz Channel Management
+
+Scope: List, connect, and remove social channels (integrations) via the postiz-mcp connector, and land them in the knowledge graph as :SocialChannel nodes — enumerate connected accounts, get a provider OAuth connect URL, check connectivity, delete a channel. Use when the agent must inspect or manage which social accounts Postiz can publish to. Do NOT use for creating posts (use postiz-content-scheduling) or reading engagement (use postiz-audience-analytics).
 
 Which social accounts Postiz can publish to, how to connect another one, and the posting
 rules of each.
@@ -47,6 +44,23 @@ The connector reads `POSTIZ_URL` (the `/api/public/v1` path is appended) and
 | `postiz_delete_channel(integration_id, confirm)` | Disconnect a channel and delete its posts |
 | `postiz_ingest_integrations()` | Land channels as `:SocialChannel` |
 | `postiz_get_channel_health(...)` and the other `debug` tools | Super-admin key only (403 otherwise) |
+
+## Steps
+
+1. Check the key with `postiz_check_connection`. Verify it reports the key as accepted.
+2. List channels with `postiz_list_integrations`. Verify each expected channel appears with its `identifier` and `disabled` flag.
+3. Read a channel's rules with `postiz_get_integration_settings` (`integration_id`). Verify the rules and settings schema are returned.
+4. Connect a new account with `postiz_get_integration_url` (`integration`). Verify a `url` is returned and give it to the account owner.
+5. Land channels in the graph with `postiz_ingest_integrations`. Verify the result reports `:SocialChannel` nodes written.
+6. Remove a channel only on the owner's approval with `postiz_delete_channel` (`integration_id`, `confirm=true`). Verify the channel no longer appears in `postiz_list_integrations`.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| `Failed to generate auth URL` | Provider OAuth app credentials not set on the Postiz server | Configure the provider client id and secret on the Postiz server, then call `postiz_get_integration_url` again |
+| Debug tool returns 403 | Key is not a super-admin key | Use the non-debug tools such as `postiz_get_integration_settings` |
+| `postiz_delete_channel` refused | `confirm=true` not given | Obtain owner approval and pass `confirm=true` |
 
 ## Connecting a new account
 1. The provider's OAuth app credentials must be configured on the Postiz server first

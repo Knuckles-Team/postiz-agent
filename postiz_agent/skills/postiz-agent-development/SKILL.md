@@ -45,6 +45,23 @@ spec row in the commit trailer.
   declarations coherent. Put `Spec: <ID>` and the assisting-agent trailer on
   consecutive final commit message lines.
 
+## Steps
+
+1. Find the owning spec row with `git grep -n "<term>" -- specs`. Verify one row owns the change before editing code.
+2. Install the pinned environment with `uv sync --locked`. Verify the command exits 0 and `uv.lock` is unchanged in `git status --short`.
+3. Make the change in the existing client, tool or content module and add a focused test. Verify the test fails before the change and passes after with `uv run --locked --extra test pytest -q tests/test_tool_surface.py`.
+4. Run the shared gates with `uvx pre-commit run --all-files`. Verify every hook reports Passed.
+5. Build the wheel with `uv build`. Verify `postiz_agent/skills/postiz-agent-development/SKILL.md` is listed in the wheel contents.
+6. Commit with the `Spec: <ID>` trailer directly above the assisting-agent trailer. Verify with `git log -1` that both lines are adjacent.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| `uv sync --locked` fails | `uv.lock` out of step with `pyproject.toml` | Run `uv lock`, review the diff and commit the lock file with the change |
+| Pre-commit hook rewrites files | Formatter or spelling hook applied fixes | Stage the rewritten paths with `git add -- <path>` and commit again |
+| Skill missing from the wheel | Package-data declaration omits `postiz_agent/skills/` | Add the skills path to the package-data declaration in `pyproject.toml` and run `uv build` again |
+
 ## Setup and gates
 
 Use the pinned environment and shared gates from the checkout root:
